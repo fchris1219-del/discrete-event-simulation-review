@@ -48,15 +48,17 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size
 .page-subtitle{font-size:14px;color:var(--ink-faint);font-family:var(--sans);font-weight:300;line-height:1.6}
 
 /* Chapter / Section */
-.chapter{margin-bottom:3rem;scroll-margin-top:1rem}
-.chapter-banner{background:linear-gradient(135deg,#2a1818,#3a2424);color:white;padding:1.4rem 1.8rem;margin-bottom:1.5rem;border-radius:3px;position:relative}
-.chapter-banner .cb-num{font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--gold-pale);margin-bottom:.3rem}
-.chapter-banner .cb-title{font-size:1.5rem;font-weight:700;margin-bottom:.4rem}
-.chapter-banner .cb-meta{font-size:12.5px;color:#c8b8a8;font-family:var(--sans)}
-.section{margin-bottom:2.2rem;scroll-margin-top:1rem;position:relative}
-.section-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--rule);position:relative}
-.section-num{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:700;flex-shrink:0}
-.section-title{font-size:1.25rem;font-weight:700;flex:1}
+.chapter{margin-bottom:0;scroll-margin-top:1rem;display:none}
+.chapter.active-page{display:block}
+.chapter-banner{background:linear-gradient(135deg,#2a1818,#3a2424);color:white;padding:1.8rem 2rem;margin-bottom:2.5rem;border-radius:4px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.chapter-banner .cb-num{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--gold-pale);margin-bottom:.5rem}
+.chapter-banner .cb-title{font-size:1.75rem;font-weight:700;margin-bottom:.5rem;line-height:1.25}
+.chapter-banner .cb-meta{font-size:13px;color:#c8b8a8;font-family:var(--sans)}
+.section{margin-bottom:3.5rem;scroll-margin-top:1rem;position:relative;padding-bottom:2rem;border-bottom:1px dashed var(--rule)}
+.section:last-child{border-bottom:none}
+.section-header{display:flex;align-items:center;gap:.9rem;margin-bottom:1.4rem;padding-bottom:.7rem;border-bottom:2px solid var(--rule);position:relative}
+.section-num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:700;flex-shrink:0;background:var(--accent-pale);padding:.2rem .55rem;border-radius:3px}
+.section-title{font-size:1.5rem;font-weight:700;flex:1;color:var(--ink)}
 .section-tools{display:flex;gap:.4rem;align-items:center}
 .bookmark-btn,.note-btn{background:none;border:1px solid var(--rule);border-radius:3px;padding:.2rem .5rem;cursor:pointer;font-size:11px;font-family:var(--sans);color:var(--ink-faint);transition:all .15s;white-space:nowrap}
 .bookmark-btn:hover{border-color:var(--accent);color:var(--accent)}
@@ -65,9 +67,9 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size
 .note-btn:hover{border-color:var(--blue);color:var(--blue)}
 .note-btn.has-note{background:var(--blue-pale);color:var(--blue);border-color:var(--blue)}
 
-.subsection{margin-bottom:1.6rem}
-.subsection-title{font-size:1.02rem;font-weight:700;margin-bottom:.6rem;display:flex;align-items:center;gap:.6rem}
-.subsection-title::before{content:'';display:inline-block;width:4px;height:1rem;background:var(--accent-light);flex-shrink:0}
+.subsection{margin-bottom:2.2rem}
+.subsection-title{font-size:1.08rem;font-weight:700;margin-bottom:.8rem;display:flex;align-items:center;gap:.7rem;color:var(--ink)}
+.subsection-title::before{content:'';display:inline-block;width:5px;height:1.1rem;background:var(--accent-light);flex-shrink:0;border-radius:2px}
 
 p{margin-bottom:.8rem;color:var(--ink-light);font-size:14.5px}
 strong{color:var(--ink);font-weight:600}
@@ -222,7 +224,22 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 /* last-read marker */
 .last-read-marker{display:inline-block;background:var(--green);color:white;font-family:var(--mono);font-size:10px;padding:.15rem .45rem;border-radius:2px;margin-left:.5rem;vertical-align:middle}
 
-@media print{.sidebar,.fab,.section-tools{display:none}.layout{grid-template-columns:1fr}.main{padding:2rem}}
+/* Pagination */
+.pagination-bar{display:flex;align-items:center;justify-content:space-between;margin-top:3rem;padding:1.2rem 0;border-top:2px solid var(--rule);gap:1rem}
+.pg-btn{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;font-family:var(--sans);font-size:13px;font-weight:500;background:white;border:1.5px solid var(--rule);border-radius:4px;cursor:pointer;color:var(--ink-light);transition:all .15s;text-decoration:none}
+.pg-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-pale)}
+.pg-btn:disabled{opacity:.3;cursor:default;pointer-events:none}
+.pg-btn.primary{background:var(--accent);color:white;border-color:var(--accent)}
+.pg-btn.primary:hover{background:#8a2828;border-color:#8a2828}
+.pg-info{font-family:var(--mono);font-size:12px;color:var(--ink-faint);text-align:center;flex:1}
+.pg-info strong{color:var(--ink);font-size:13px}
+.pg-dots{display:flex;gap:.4rem;justify-content:center;margin-top:.4rem}
+.pg-dot{width:8px;height:8px;border-radius:50%;background:var(--rule);cursor:pointer;transition:all .15s;border:none;padding:0}
+.pg-dot.active{background:var(--accent);transform:scale(1.2)}
+/* Sidebar chapter nav highlight */
+.nav-chapter-btn{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;padding:.38rem 1.4rem;font-family:var(--sans);font-size:12.5px;color:var(--ink-light);background:none;border:none;border-left:2px solid transparent;cursor:pointer;transition:all .15s;line-height:1.4}
+.nav-chapter-btn:hover,.nav-chapter-btn.active-chapter{color:var(--accent);border-left-color:var(--accent);background:var(--accent-pale);font-weight:600}
+@media print{.sidebar,.fab,.section-tools,.pagination-bar{display:none}.layout{grid-template-columns:1fr}.main{padding:2rem}.chapter{display:block!important}}
 </style>
 </head>
 <body>
@@ -243,32 +260,38 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <nav>
-<div class="nav-section-label">考前必看</div>
-<a href="#exam" class="nav-link" data-sec="exam">考试题型与策略<span class="nav-bookmark">🔖</span></a>
-<div class="nav-section-label">第1章 绪论</div>
-<a href="#c1-1" class="nav-link" data-sec="c1-1">系统·模型·仿真<span class="nav-bookmark">🔖</span></a>
-<a href="#c1-2" class="nav-link" data-sec="c1-2">分类·步骤·习题<span class="nav-bookmark">🔖</span></a>
-<div class="nav-section-label">第2章 仿真原理</div>
-<a href="#c2-1" class="nav-link" data-sec="c2-1">基本术语<span class="nav-bookmark">🔖</span></a>
-<a href="#c2-2" class="nav-link" data-sec="c2-2">四种仿真策略<span class="nav-bookmark">🔖</span></a>
-<a href="#c2-3" class="nav-link" data-sec="c2-3">★手工仿真(例2.6)<span class="nav-bookmark">🔖</span></a>
-<div class="nav-section-label">第3章 初级语言</div>
-<a href="#c3-1" class="nav-link" data-sec="c3-1">核心模块详解<span class="nav-bookmark">🔖</span></a>
-<a href="#c3-2" class="nav-link" data-sec="c3-2">TRANSFER三模式<span class="nav-bookmark">🔖</span></a>
-<a href="#c3-3" class="nav-link" data-sec="c3-3">例题精讲<span class="nav-bookmark">🔖</span></a>
-<div class="nav-section-label">第4章 中级语言</div>
-<a href="#c4-1" class="nav-link" data-sec="c4-1">SNA码<span class="nav-bookmark">🔖</span></a>
-<a href="#c4-2" class="nav-link" data-sec="c4-2">FUNCTION<span class="nav-bookmark">🔖</span></a>
-<a href="#c4-3" class="nav-link" data-sec="c4-3">TEST/GATE/SELECT<span class="nav-bookmark">🔖</span></a>
-<a href="#c4-4" class="nav-link" data-sec="c4-4">例题精讲<span class="nav-bookmark">🔖</span></a>
-<div class="nav-section-label">第5章 高级语言</div>
-<a href="#c5-1" class="nav-link" data-sec="c5-1">TABLE/TABULATE<span class="nav-bookmark">🔖</span></a>
-<a href="#c5-2" class="nav-link" data-sec="c5-2">★LOOP循环<span class="nav-bookmark">🔖</span></a>
-<a href="#c5-3" class="nav-link" data-sec="c5-3">SPLIT/ASSEMBLE/GATHER<span class="nav-bookmark">🔖</span></a>
-<a href="#c5-4" class="nav-link" data-sec="c5-4">综合例题<span class="nav-bookmark">🔖</span></a>
-<div class="nav-section-label">收尾</div>
-<a href="#fix" class="nav-link" data-sec="fix">公式勘误<span class="nav-bookmark">🔖</span></a>
-<a href="#final" class="nav-link" data-sec="final">考前清单<span class="nav-bookmark">🔖</span></a>
+<button class="nav-chapter-btn" data-goto-page="0">★ 考前必看</button>
+<a href="#exam" class="nav-link" data-sec="exam" data-page-of="0">考试题型与策略<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="1">第1章 绪论</button>
+<a href="#c1-1" class="nav-link" data-sec="c1-1" data-page-of="1">系统·模型·仿真<span class="nav-bookmark">🔖</span></a>
+<a href="#c1-2" class="nav-link" data-sec="c1-2" data-page-of="1">分类·步骤·习题<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="2">第2章 仿真原理</button>
+<a href="#c2-1" class="nav-link" data-sec="c2-1" data-page-of="2">基本术语<span class="nav-bookmark">🔖</span></a>
+<a href="#c2-2" class="nav-link" data-sec="c2-2" data-page-of="2">四种仿真策略<span class="nav-bookmark">🔖</span></a>
+<a href="#c2-3" class="nav-link" data-sec="c2-3" data-page-of="2">★手工仿真(例2.6)<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="3">第3章 初级语言</button>
+<a href="#c3-1" class="nav-link" data-sec="c3-1" data-page-of="3">核心模块详解<span class="nav-bookmark">🔖</span></a>
+<a href="#c3-2" class="nav-link" data-sec="c3-2" data-page-of="3">TRANSFER三模式<span class="nav-bookmark">🔖</span></a>
+<a href="#c3-3" class="nav-link" data-sec="c3-3" data-page-of="3">例题精讲<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="4">第4章 中级语言</button>
+<a href="#c4-1" class="nav-link" data-sec="c4-1" data-page-of="4">SNA码<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-2" class="nav-link" data-sec="c4-2" data-page-of="4">FUNCTION<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-3" class="nav-link" data-sec="c4-3" data-page-of="4">TEST/GATE/SELECT<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-4" class="nav-link" data-sec="c4-4" data-page-of="4">例题精讲<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="5">第5章 高级语言</button>
+<a href="#c5-1" class="nav-link" data-sec="c5-1" data-page-of="5">TABLE/TABULATE<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-2" class="nav-link" data-sec="c5-2" data-page-of="5">★LOOP循环<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-3" class="nav-link" data-sec="c5-3" data-page-of="5">SPLIT/ASSEMBLE/GATHER<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-4" class="nav-link" data-sec="c5-4" data-page-of="5">综合例题<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="6">收尾</button>
+<a href="#fix" class="nav-link" data-sec="fix" data-page-of="6">公式勘误<span class="nav-bookmark">🔖</span></a>
+<a href="#final" class="nav-link" data-sec="final" data-page-of="6">考前清单<span class="nav-bookmark">🔖</span></a>
 </nav>
 </aside>
 
@@ -281,7 +304,7 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <!-- ═══════════ 考前必看 ═══════════ -->
-<div class="chapter" id="exam-chapter">
+<div class="chapter" id="exam-chapter" data-page="0">
 <div class="section" id="exam" data-section-id="exam" data-section-name="考试题型与策略">
 <div class="section-header">
 <span class="section-num">★</span>
@@ -312,7 +335,7 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <!-- ═══════════ 第1章 ═══════════ -->
-<div class="chapter">
+<div class="chapter" data-page="1">
 <div class="chapter-banner">
 <div class="cb-num">CHAPTER 01</div>
 <div class="cb-title">绪论 — 概念三核心</div>
@@ -448,7 +471,7 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <!-- ═══════════ 第2章 ═══════════ -->
-<div class="chapter">
+<div class="chapter" data-page="2">
 <div class="chapter-banner">
 <div class="cb-num">CHAPTER 02</div>
 <div class="cb-title">离散事件系统建模仿真基本原理</div>
@@ -667,7 +690,7 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <!-- ═══════════ 第3章 ═══════════ -->
-<div class="chapter">
+<div class="chapter" data-page="3">
 <div class="chapter-banner">
 <div class="cb-num">CHAPTER 03</div>
 <div class="cb-title">初级GPSSWorld语言</div>
@@ -969,7 +992,7 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <!-- ═══════════ 第4章 ═══════════ -->
-<div class="chapter">
+<div class="chapter" data-page="4">
 <div class="chapter-banner">
 <div class="cb-num">CHAPTER 04</div>
 <div class="cb-title">中级GPSSWorld语言</div>
@@ -1241,7 +1264,7 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <!-- ═══════════ 第5章 ═══════════ -->
-<div class="chapter">
+<div class="chapter" data-page="5">
 <div class="chapter-banner">
 <div class="cb-num">CHAPTER 05</div>
 <div class="cb-title">高级GPSSWorld语言</div>
@@ -1442,7 +1465,7 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <!-- ═══════════ 收尾 ═══════════ -->
-<div class="chapter">
+<div class="chapter" data-page="6">
 <div class="chapter-banner">
 <div class="cb-num">收尾</div>
 <div class="cb-title">勘误 + 考前清单</div>
@@ -1490,6 +1513,16 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 <p>把课本所有例题+做过的课后习题反复多做几遍。考题基本是书上例题和课后习题改数字或换背景。复习到"看到书上的题能正确写出85%",85分稳了。保住手工仿真10分和概念简答18分不丢,写程序60分尽量多拿。</p>
 </div>
 </div>
+</div>
+
+<!-- 分页控件 -->
+<div class="pagination-bar" id="paginationBar">
+  <button class="pg-btn" id="pgPrev">← 上一章</button>
+  <div class="pg-info">
+    <strong id="pgLabel">考前必看</strong>
+    <div class="pg-dots" id="pgDots"></div>
+  </div>
+  <button class="pg-btn primary" id="pgNext">下一章 →</button>
 </div>
 
 </main>
@@ -2061,6 +2094,100 @@ async function initStorage(){
   updateStorageStatus();
 }
 initStorage();
+
+// ============ 分页系统 ============
+const PAGE_LABELS = ['考前必看','第1章 绪论','第2章 仿真原理','第3章 初级语言','第4章 中级语言','第5章 高级语言','收尾'];
+const chapters = [...document.querySelectorAll('.chapter[data-page]')];
+const totalPages = chapters.length;
+let currentPage = 0;
+
+function buildDots(){
+  const dotsEl = document.getElementById('pgDots');
+  dotsEl.innerHTML = '';
+  for(let i=0;i<totalPages;i++){
+    const d = document.createElement('button');
+    d.className = 'pg-dot' + (i===currentPage?' active':'');
+    d.title = PAGE_LABELS[i]||('第'+(i+1)+'章');
+    d.addEventListener('click',()=>goToPage(i));
+    dotsEl.appendChild(d);
+  }
+}
+
+function goToPage(n, scroll){
+  currentPage = Math.max(0, Math.min(n, totalPages-1));
+  // 显示/隐藏章节
+  chapters.forEach((ch,i)=>{
+    ch.classList.toggle('active-page', i===currentPage);
+  });
+  // 更新按钮状态
+  document.getElementById('pgPrev').disabled = currentPage===0;
+  document.getElementById('pgNext').disabled = currentPage===totalPages-1;
+  document.getElementById('pgLabel').textContent = PAGE_LABELS[currentPage]||'';
+  // 更新小圆点
+  document.querySelectorAll('.pg-dot').forEach((d,i)=>d.classList.toggle('active',i===currentPage));
+  // 更新侧边栏高亮
+  document.querySelectorAll('.nav-chapter-btn').forEach(btn=>{
+    btn.classList.toggle('active-chapter', parseInt(btn.dataset.gotoPage)===currentPage);
+  });
+  if(scroll!==false) window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('pgPrev').addEventListener('click',()=>goToPage(currentPage-1));
+document.getElementById('pgNext').addEventListener('click',()=>goToPage(currentPage+1));
+
+// 侧边栏章节按钮点击
+document.querySelectorAll('.nav-chapter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>goToPage(parseInt(btn.dataset.gotoPage)));
+});
+
+// 侧边栏 section 链接点击：先跳页再跳锚点
+document.querySelectorAll('.nav-link[data-page-of]').forEach(link=>{
+  link.addEventListener('click', e=>{
+    const p = parseInt(link.dataset.pageOf);
+    if(p !== currentPage){
+      e.preventDefault();
+      goToPage(p, false);
+      setTimeout(()=>{
+        const target = document.querySelector(link.getAttribute('href'));
+        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 50);
+    }
+  });
+});
+
+// "回到上次复习处"也要先切页
+const origResumeBtn = document.getElementById('resumeBtn');
+origResumeBtn.replaceWith(origResumeBtn.cloneNode(true));
+document.getElementById('resumeBtn').addEventListener('click',()=>{
+  if(data.lastRead){
+    const el = document.querySelector('[data-section-id="'+data.lastRead+'"]');
+    if(el){
+      const ch = el.closest('.chapter[data-page]');
+      if(ch) goToPage(parseInt(ch.dataset.page), false);
+      setTimeout(()=>{ el.scrollIntoView({behavior:'smooth',block:'start'}); flashSection(el); }, 80);
+    }
+  } else {
+    alert('还没有标记复习位置。点击任意章节的"🔖书签"按钮来记录复习进度。');
+  }
+});
+
+// dashboard 跳转也修正
+const origDash = dashboard;
+origDash.addEventListener('click', e=>{
+  const goto = e.target.dataset.goto;
+  if(goto){
+    const el = document.querySelector('[data-section-id="'+goto+'"]');
+    if(el){
+      const ch = el.closest('.chapter[data-page]');
+      if(ch) goToPage(parseInt(ch.dataset.page), false);
+      setTimeout(()=>{ dashboard.classList.remove('active'); el.scrollIntoView({behavior:'smooth'}); flashSection(el); }, 80);
+    }
+  }
+}, true);
+
+// 初始化
+buildDots();
+goToPage(0, false);
 </script>
 </body>
 </html>
