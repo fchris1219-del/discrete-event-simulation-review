@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>期末复习全集 · 离散事件系统建模仿真</title>
+<link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1a1a;--ink-light:#4a4a4a;--ink-faint:#888;
+  --paper:#faf8f4;--paper-warm:#f3f0e8;
+  --accent:#a83232;--accent-light:#c4786a;--accent-pale:#f5ebe8;
+  --rule:#d8d0c4;--gold:#c8a030;--gold-pale:#f0e8c8;
+  --green:#3a7a3a;--green-pale:#e8f0e8;--blue:#2a5a8a;--blue-pale:#e8eef5;
+  --serif:'Noto Serif SC',serif;--sans:'Noto Sans SC',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:15px;line-height:1.85}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+
+/* Sidebar */
+.sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--paper-warm);border-right:1px solid var(--rule);padding:1.5rem 0}
+.sidebar-header{padding:0 1.4rem 1.2rem;border-bottom:1px solid var(--rule);margin-bottom:.8rem}
+.sidebar-tag{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem}
+.sidebar-title{font-size:15px;font-weight:700;line-height:1.4}
+.nav-section-label{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);padding:0 1.4rem;margin-bottom:.3rem;margin-top:.8rem}
+.nav-link{display:flex;align-items:center;justify-content:space-between;padding:.32rem 1.4rem;font-family:var(--sans);font-size:12.5px;color:var(--ink-light);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.4}
+.nav-link:hover,.nav-link.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-pale)}
+.nav-link .nav-bookmark{font-size:11px;opacity:0;transition:opacity .15s}
+.nav-link.has-bookmark .nav-bookmark{opacity:1}
+
+/* Progress tools in sidebar */
+.tool-panel{margin:1rem 1.4rem;padding:1rem;background:white;border:1px solid var(--rule);border-radius:3px}
+.tool-panel h4{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.6rem}
+.tool-btn{display:block;width:100%;text-align:left;padding:.4rem .6rem;margin-bottom:.3rem;font-family:var(--sans);font-size:12px;color:var(--ink-light);background:var(--paper-warm);border:1px solid var(--rule);cursor:pointer;border-radius:2px;transition:all .15s}
+.tool-btn:hover{background:var(--accent-pale);color:var(--accent);border-color:var(--accent-light)}
+.tool-btn.active{background:var(--accent);color:white;border-color:var(--accent)}
+.progress-bar-wrap{margin-top:.6rem}
+.progress-bar{height:6px;background:var(--paper-warm);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);transition:width .3s;width:0%}
+.progress-text{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:.3rem;text-align:right}
+
+/* Main */
+.main{padding:2.5rem 4rem 6rem;max-width:980px}
+.page-header{margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:2px solid var(--accent)}
+.phase-badge{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;background:var(--accent);color:white;padding:.25rem .75rem;margin-bottom:1rem}
+.page-title{font-size:2.2rem;font-weight:700;line-height:1.3;margin-bottom:.8rem}
+.page-subtitle{font-size:14px;color:var(--ink-faint);font-family:var(--sans);font-weight:300;line-height:1.6}
+
+/* Chapter / Section */
+.chapter{margin-bottom:0;scroll-margin-top:1rem;display:none}
+.chapter.active-page{display:block}
+.chapter-banner{background:linear-gradient(135deg,#2a1818,#3a2424);color:white;padding:1.8rem 2rem;margin-bottom:2.5rem;border-radius:4px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.chapter-banner .cb-num{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--gold-pale);margin-bottom:.5rem}
+.chapter-banner .cb-title{font-size:1.75rem;font-weight:700;margin-bottom:.5rem;line-height:1.25}
+.chapter-banner .cb-meta{font-size:13px;color:#c8b8a8;font-family:var(--sans)}
+.section{margin-bottom:3.5rem;scroll-margin-top:1rem;position:relative;padding-bottom:2rem;border-bottom:1px dashed var(--rule)}
+.section:last-child{border-bottom:none}
+.section-header{display:flex;align-items:center;gap:.9rem;margin-bottom:1.4rem;padding-bottom:.7rem;border-bottom:2px solid var(--rule);position:relative}
+.section-num{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:700;flex-shrink:0;background:var(--accent-pale);padding:.2rem .55rem;border-radius:3px}
+.section-title{font-size:1.5rem;font-weight:700;flex:1;color:var(--ink)}
+.section-tools{display:flex;gap:.4rem;align-items:center}
+.bookmark-btn,.note-btn{background:none;border:1px solid var(--rule);border-radius:3px;padding:.2rem .5rem;cursor:pointer;font-size:11px;font-family:var(--sans);color:var(--ink-faint);transition:all .15s;white-space:nowrap}
+.bookmark-btn:hover{border-color:var(--accent);color:var(--accent)}
+.bookmark-btn.active{background:var(--accent);color:white;border-color:var(--accent)}
+.bookmark-btn.problem.active{background:var(--gold);color:#2a2000;border-color:var(--gold)}
+.note-btn:hover{border-color:var(--blue);color:var(--blue)}
+.note-btn.has-note{background:var(--blue-pale);color:var(--blue);border-color:var(--blue)}
+
+.subsection{margin-bottom:2.2rem}
+.subsection-title{font-size:1.08rem;font-weight:700;margin-bottom:.8rem;display:flex;align-items:center;gap:.7rem;color:var(--ink)}
+.subsection-title::before{content:'';display:inline-block;width:5px;height:1.1rem;background:var(--accent-light);flex-shrink:0;border-radius:2px}
+
+p{margin-bottom:.8rem;color:var(--ink-light);font-size:14.5px}
+strong{color:var(--ink);font-weight:600}
+
+/* Priority badges */
+.prio{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;padding:.13rem .45rem;letter-spacing:.04em;vertical-align:middle;margin-right:.35rem}
+.prio-must{background:var(--accent);color:white}
+.prio-high{background:var(--gold);color:#3a2a00}
+.prio-mid{background:var(--blue);color:white}
+.prio-low{background:#b8b0a4;color:white}
+.tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:.18rem .5rem;background:#e8e4dc;color:var(--ink-light);letter-spacing:.04em;margin-right:.3rem;vertical-align:middle}
+.tag-exam{background:var(--accent);color:white}
+
+/* Callouts */
+.callout{padding:1rem 1.3rem;margin:1rem 0;font-size:14px}
+.callout-must{background:var(--accent-pale);border:1px solid #d4a49a;border-left:4px solid var(--accent)}
+.callout-must .cl{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;font-weight:700}
+.callout-warn{background:#fdf5e4;border:1px solid #e0c87a;border-left:4px solid var(--gold)}
+.callout-warn .cl{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#8a6a10;margin-bottom:.4rem;font-weight:700}
+.callout-tip{background:var(--green-pale);border:1px solid #a4c494;border-left:4px solid var(--green)}
+.callout-tip .cl{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:.4rem;font-weight:700}
+.callout-info{background:var(--blue-pale);border:1px solid #94b4d4;border-left:4px solid var(--blue)}
+.callout-info .cl{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:.4rem;font-weight:700}
+.callout p{margin-bottom:.4rem}.callout p:last-child{margin-bottom:0}
+
+/* Example box */
+.example{background:white;border:1px solid var(--rule);border-radius:3px;margin:1.2rem 0;overflow:hidden}
+.example-header{background:var(--ink);color:white;padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between}
+.example-header .ex-id{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--gold-pale)}
+.example-header .ex-tag{font-family:var(--sans);font-size:11px;color:#b8b8b8}
+.example-body{padding:1.1rem 1.3rem}
+.example-q{font-size:13.5px;color:var(--ink-light);background:var(--paper-warm);padding:.8rem 1rem;border-left:3px solid var(--gold);margin-bottom:1rem}
+.example-q::before{content:'题目  ';font-family:var(--mono);font-weight:700;color:#8a6a10;font-size:11px}
+
+/* Code */
+.code-block{background:#1a1a2e;color:#c8d4e4;padding:1rem 1.3rem;font-family:var(--mono);font-size:12.5px;line-height:1.8;margin:.8rem 0;overflow-x:auto;border-radius:3px}
+.code-block .ct{color:#c8946a;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.7rem;padding-bottom:.4rem;border-bottom:1px solid #2a2a4e}
+.c-kw{color:#c89a5a}.c-cm{color:#5a7a5a}.c-val{color:#e4c47a}.c-name{color:#a4d4a4}.c-label{color:#e4947a}.c-op{color:#7ab4e4}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:13px;font-family:var(--sans)}
+thead tr{background:var(--ink);color:white}
+thead th{padding:.6rem .9rem;text-align:left;font-weight:500;font-size:11.5px}
+tbody tr{border-bottom:1px solid var(--rule)}
+tbody tr:nth-child(even){background:var(--paper-warm)}
+tbody td{padding:.55rem .9rem;color:var(--ink-light);vertical-align:top;line-height:1.55;font-size:13px}
+tbody td:first-child{font-weight:600;color:var(--ink)}
+.sim-table tbody td{font-family:var(--mono);font-size:12px}
+.sim-table tbody td:first-child{color:var(--accent);font-weight:700}
+.row-a{background:#eaf5ea !important}.row-d{background:#f7eaea !important}.row-tie{background:#fdf5e4 !important}
+
+/* Module chips */
+.mod-grid{display:flex;flex-wrap:wrap;gap:.45rem;margin:.7rem 0}
+.mod-chip{font-family:var(--mono);font-size:12px;padding:.28rem .65rem;font-weight:500;border:1px solid var(--rule);background:white;color:var(--ink)}
+.mod-chip.core{background:var(--accent);color:white;border-color:var(--accent)}
+.mod-chip.imp{background:var(--gold-pale);border-color:var(--gold);color:#5a4500}
+
+/* Homework chips */
+.hw-list{display:flex;flex-wrap:wrap;gap:.45rem;margin:.7rem 0}
+.hw-chip{font-family:var(--mono);font-size:12px;background:white;border:1.5px solid var(--blue);color:var(--blue);padding:.28rem .65rem;font-weight:500}
+.hw-chip.star{background:var(--accent);border-color:var(--accent);color:white}
+/* Homework Q&A */
+.hw-item{background:white;border:1px solid var(--rule);border-radius:3px;margin-bottom:.8rem;overflow:hidden}
+.hw-item.star-item{border-color:var(--accent);border-width:1.5px}
+.hw-q{display:flex;gap:.7rem;padding:.7rem 1rem;background:var(--paper-warm);border-bottom:1px solid var(--rule)}
+.hw-q .hw-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--blue);flex-shrink:0;background:white;border:1px solid var(--blue);padding:.1rem .45rem;border-radius:2px;height:fit-content}
+.hw-item.star-item .hw-q .hw-num{color:var(--accent);border-color:var(--accent)}
+.hw-q .hw-qtext{font-size:13.5px;color:var(--ink);font-weight:500;line-height:1.6}
+.hw-a{padding:.7rem 1rem;font-size:13px;color:var(--ink-light);line-height:1.7}
+.hw-a .hw-alabel{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--green);letter-spacing:.05em;margin-right:.4rem}
+.hw-a strong{color:var(--ink)}
+.hw-a ul{list-style:none;margin:.3rem 0}
+.hw-a ul li{padding:.15rem 0;padding-left:1.1rem;position:relative}
+.hw-a ul li::before{content:'·';position:absolute;left:.3rem;color:var(--green);font-weight:700}
+
+/* Formula */
+.formula{background:white;border:1px solid var(--rule);border-left:4px solid var(--green);padding:.7rem 1.1rem;margin:.7rem 0;font-family:var(--mono);font-size:14px;color:var(--ink)}
+.formula .fl{font-family:var(--sans);font-size:12px;color:var(--ink-faint);margin-bottom:.3rem}
+.formula.wrong{border-left-color:var(--accent);background:var(--accent-pale)}
+.formula.wrong .fl{color:var(--accent)}
+
+ul.clean{list-style:none;margin:.5rem 0}
+ul.clean li{padding:.25rem 0;padding-left:1.3rem;position:relative;font-size:14px;color:var(--ink-light);line-height:1.6}
+ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accent)}
+
+.exam-banner{background:linear-gradient(135deg,#2a1a1a,#3a2424);color:white;padding:1.4rem 1.8rem;margin:1.2rem 0;border-radius:3px}
+.exam-banner h3{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--gold-pale);margin-bottom:.9rem}
+.exam-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem 2rem}
+.exam-item{display:flex;justify-content:space-between;font-size:13px;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.exam-item .ei-name{color:#d4d0c8}.exam-item .ei-score{color:var(--gold);font-family:var(--mono);font-weight:700}
+
+.divider{height:1px;background:var(--rule);margin:2rem 0}
+.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:var(--rule)}
+
+/* Note modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--paper);border-radius:6px;width:90%;max-width:520px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:1.1rem;font-weight:700}
+.modal-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--ink-faint);line-height:1}
+.modal-body{padding:1.2rem 1.5rem}
+.modal-field{margin-bottom:1rem}
+.modal-field label{display:block;font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-light);margin-bottom:.4rem}
+.modal-field input,.modal-field textarea,.modal-field select{width:100%;padding:.6rem .8rem;border:1px solid var(--rule);border-radius:3px;font-family:var(--serif);font-size:14px;background:white;color:var(--ink);resize:vertical}
+.modal-field textarea{min-height:120px}
+.modal-field input:focus,.modal-field textarea:focus,.modal-field select:focus{outline:none;border-color:var(--accent)}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--rule);display:flex;gap:.6rem;justify-content:flex-end}
+.btn{padding:.55rem 1.2rem;border-radius:3px;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent}
+.btn-primary{background:var(--accent);color:white}
+.btn-primary:hover{background:#8a2828}
+.btn-ghost{background:none;border-color:var(--rule);color:var(--ink-light)}
+.btn-ghost:hover{background:var(--paper-warm)}
+.btn-danger{background:none;border-color:var(--accent);color:var(--accent)}
+.btn-danger:hover{background:var(--accent-pale)}
+
+/* Dashboard panel */
+.dashboard{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;align-items:center;justify-content:center}
+.dashboard.active{display:flex}
+.dashboard-panel{background:var(--paper);border-radius:6px;width:92%;max-width:680px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.dash-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+.dash-header h3{font-size:1.15rem;font-weight:700}
+.dash-body{padding:1.2rem 1.5rem}
+.dash-section{margin-bottom:1.5rem}
+.dash-section h4{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.7rem;padding-bottom:.3rem;border-bottom:1px solid var(--rule)}
+.dash-item{display:flex;align-items:flex-start;gap:.7rem;padding:.7rem;margin-bottom:.5rem;background:white;border:1px solid var(--rule);border-radius:3px}
+.dash-item-icon{flex-shrink:0;width:26px;height:26px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.dash-item-icon.bm{background:var(--accent-pale);color:var(--accent)}
+.dash-item-icon.pb{background:var(--gold-pale);color:#8a6a10}
+.dash-item-icon.nt{background:var(--blue-pale);color:var(--blue)}
+.dash-item-content{flex:1;min-width:0}
+.dash-item-title{font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.dash-item-title:hover{color:var(--accent)}
+.dash-item-meta{font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-top:.2rem}
+.dash-item-note{font-size:12.5px;color:var(--ink-light);margin-top:.4rem;line-height:1.5;white-space:pre-wrap}
+.dash-item-del{flex-shrink:0;background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:14px;padding:.2rem}
+.dash-item-del:hover{color:var(--accent)}
+.dash-empty{font-size:13px;color:var(--ink-faint);font-style:italic;padding:.8rem;text-align:center}
+.dash-stat-row{display:flex;gap:1rem;margin-bottom:1.2rem}
+.dash-stat{flex:1;background:white;border:1px solid var(--rule);border-radius:3px;padding:.9rem;text-align:center}
+.dash-stat-num{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--accent)}
+.dash-stat-label{font-family:var(--sans);font-size:11px;color:var(--ink-faint);margin-top:.2rem}
+
+/* Floating action button */
+.fab{position:fixed;bottom:2rem;right:2rem;z-index:900;display:flex;flex-direction:column;gap:.6rem}
+.fab-btn{width:52px;height:52px;border-radius:50%;background:var(--accent);color:white;border:none;cursor:pointer;font-size:1.2rem;box-shadow:0 4px 16px rgba(168,50,50,.3);transition:transform .15s;display:flex;align-items:center;justify-content:center}
+.fab-btn:hover{transform:scale(1.08)}
+.fab-btn.secondary{background:var(--blue);box-shadow:0 4px 16px rgba(42,90,138,.3);width:44px;height:44px;font-size:1rem}
+.fab-badge{position:absolute;top:-4px;right:-4px;background:var(--gold);color:#2a2000;font-family:var(--mono);font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* last-read marker */
+.last-read-marker{display:inline-block;background:var(--green);color:white;font-family:var(--mono);font-size:10px;padding:.15rem .45rem;border-radius:2px;margin-left:.5rem;vertical-align:middle}
+
+/* Pagination */
+.pagination-bar{display:flex;align-items:center;justify-content:space-between;margin-top:3rem;padding:1.2rem 0;border-top:2px solid var(--rule);gap:1rem}
+.pg-btn{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;font-family:var(--sans);font-size:13px;font-weight:500;background:white;border:1.5px solid var(--rule);border-radius:4px;cursor:pointer;color:var(--ink-light);transition:all .15s;text-decoration:none}
+.pg-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-pale)}
+.pg-btn:disabled{opacity:.3;cursor:default;pointer-events:none}
+.pg-btn.primary{background:var(--accent);color:white;border-color:var(--accent)}
+.pg-btn.primary:hover{background:#8a2828;border-color:#8a2828}
+.pg-info{font-family:var(--mono);font-size:12px;color:var(--ink-faint);text-align:center;flex:1}
+.pg-info strong{color:var(--ink);font-size:13px}
+.pg-dots{display:flex;gap:.4rem;justify-content:center;margin-top:.4rem}
+.pg-dot{width:8px;height:8px;border-radius:50%;background:var(--rule);cursor:pointer;transition:all .15s;border:none;padding:0}
+.pg-dot.active{background:var(--accent);transform:scale(1.2)}
+/* Sidebar chapter nav highlight */
+.nav-chapter-btn{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;padding:.38rem 1.4rem;font-family:var(--sans);font-size:12.5px;color:var(--ink-light);background:none;border:none;border-left:2px solid transparent;cursor:pointer;transition:all .15s;line-height:1.4}
+.nav-chapter-btn:hover,.nav-chapter-btn.active-chapter{color:var(--accent);border-left-color:var(--accent);background:var(--accent-pale);font-weight:600}
+@media print{.sidebar,.fab,.section-tools,.pagination-bar{display:none}.layout{grid-template-columns:1fr}.main{padding:2rem}.chapter{display:block!important}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-header">
+<div class="sidebar-tag">期末复习全集 · 85+</div>
+<div class="sidebar-title">离散事件系统<br>建模仿真</div>
+</div>
+
+<div class="tool-panel">
+<h4>复习进度</h4>
+<button class="tool-btn" id="resumeBtn">⤷ 回到上次复习处</button>
+<div class="progress-bar-wrap">
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="progress-text" id="progressText">0 / 0 节已读</div>
+</div>
+</div>
+
+<nav>
+<button class="nav-chapter-btn" data-goto-page="0">★ 考前必看</button>
+<a href="#exam" class="nav-link" data-sec="exam" data-page-of="0">考试题型与策略<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="1">第1章 绪论</button>
+<a href="#c1-1" class="nav-link" data-sec="c1-1" data-page-of="1">系统·模型·仿真<span class="nav-bookmark">🔖</span></a>
+<a href="#c1-2" class="nav-link" data-sec="c1-2" data-page-of="1">分类·步骤·习题<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="2">第2章 仿真原理</button>
+<a href="#c2-1" class="nav-link" data-sec="c2-1" data-page-of="2">基本术语<span class="nav-bookmark">🔖</span></a>
+<a href="#c2-2" class="nav-link" data-sec="c2-2" data-page-of="2">四种仿真策略<span class="nav-bookmark">🔖</span></a>
+<a href="#c2-3" class="nav-link" data-sec="c2-3" data-page-of="2">★手工仿真(例2.6)<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="3">第3章 初级语言</button>
+<a href="#c3-1" class="nav-link" data-sec="c3-1" data-page-of="3">核心模块详解<span class="nav-bookmark">🔖</span></a>
+<a href="#c3-2" class="nav-link" data-sec="c3-2" data-page-of="3">TRANSFER三模式<span class="nav-bookmark">🔖</span></a>
+<a href="#c3-3" class="nav-link" data-sec="c3-3" data-page-of="3">例题精讲<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="4">第4章 中级语言</button>
+<a href="#c4-1" class="nav-link" data-sec="c4-1" data-page-of="4">SNA码<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-2" class="nav-link" data-sec="c4-2" data-page-of="4">FUNCTION<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-3" class="nav-link" data-sec="c4-3" data-page-of="4">TEST/GATE/SELECT<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-4" class="nav-link" data-sec="c4-4" data-page-of="4">例题精讲<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="5">第5章 高级语言</button>
+<a href="#c5-1" class="nav-link" data-sec="c5-1" data-page-of="5">TABLE/TABULATE<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-2" class="nav-link" data-sec="c5-2" data-page-of="5">★LOOP循环<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-3" class="nav-link" data-sec="c5-3" data-page-of="5">SPLIT/ASSEMBLE/GATHER<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-4" class="nav-link" data-sec="c5-4" data-page-of="5">综合例题<span class="nav-bookmark">🔖</span></a>
+
+<button class="nav-chapter-btn" data-goto-page="6">收尾</button>
+<a href="#fix" class="nav-link" data-sec="fix" data-page-of="6">公式勘误<span class="nav-bookmark">🔖</span></a>
+<a href="#final" class="nav-link" data-sec="final" data-page-of="6">考前清单<span class="nav-bookmark">🔖</span></a>
+</nav>
+</aside>
+
+<main class="main">
+<div class="page-header">
+<div class="phase-badge">期末复习全集</div>
+<h1 class="page-title">离散事件系统建模仿真<br>完整复习资料</h1>
+<p class="page-subtitle">谢毅、缪亚萍《离散事件系统建模仿真及GPSSWorld教程》· 清华大学出版社<br>
+知识点 + 全部核心例题 + 考情重点 · 内置书签 / 问题标记 / 笔记功能（数据存于本地浏览器）</p>
+</div>
+
+<!-- ═══════════ 考前必看 ═══════════ -->
+<div class="chapter" id="exam-chapter" data-page="0">
+<div class="section" id="exam" data-section-id="exam" data-section-name="考试题型与策略">
+<div class="section-header">
+<span class="section-num">★</span>
+<h2 class="section-title">考试题型与备考策略</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark" title="标记为复习位置">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem" title="标记有问题">⚠ 问题</button>
+<button class="note-btn" data-type="note" title="添加笔记">✎ 笔记</button>
+</div>
+</div>
+<p>题型每年都变，但写代码稳定占大头。某年真实题型分布供参考：</p>
+<div class="exam-banner">
+<h3>参考题型（约100分）</h3>
+<div class="exam-grid">
+<div class="exam-item"><span class="ei-name">简答题 3道</span><span class="ei-score">3×6 = 18分</span></div>
+<div class="exam-item"><span class="ei-name">手工仿真 1题</span><span class="ei-score">10分</span></div>
+<div class="exam-item"><span class="ei-name">程序改错 1题</span><span class="ei-score">6分</span></div>
+<div class="exam-item"><span class="ei-name">看程序写背景 1题</span><span class="ei-score">6分</span></div>
+<div class="exam-item"><span class="ei-name">写程序 4题</span><span class="ei-score">4×15 = 60分</span></div>
+</div>
+</div>
+<div class="callout callout-tip">
+<div class="cl">最有效的复习方法</div>
+<p>把课本所有<strong>例题</strong>和做过的<strong>课后习题</strong>反复多做几遍。考题基本就是书上例题和课后习题，无非改数据或换背景。</p>
+<p>复习效果判断：看到书上某个题能正确写出60~70%就能过；要85+，目标是写出85%以上，且手工仿真和概念题不丢分。</p>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ 第1章 ═══════════ -->
+<div class="chapter" data-page="1">
+<div class="chapter-banner">
+<div class="cb-num">CHAPTER 01</div>
+<div class="cb-title">绪论 — 概念三核心</div>
+<div class="cb-meta">整章围绕系统、模型、仿真三个概念展开 · 简答题来源 · 习题1-6,13</div>
+</div>
+
+<div class="section" id="c1-1" data-section-id="c1-1" data-section-name="系统·模型·仿真">
+<div class="section-header">
+<span class="section-num">1.1</span>
+<h2 class="section-title">系统、模型与仿真 <span class="tag tag-exam">简答必考</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+
+<div class="callout callout-must">
+<div class="cl">三个核心概念（张口能答）</div>
+<p><span class="prio prio-must">必考</span><strong>系统</strong>：由相互关联的实体组成、能完成某种功能的整体。研究三要素 = <strong>实体、属性、活动</strong>。</p>
+<p><span class="prio prio-must">必考</span><strong>模型</strong>：对系统特征和规律的准确描述、表现或抽象。三性质 = 相似性、简化性、多样性。</p>
+<p><span class="prio prio-must">必考</span><strong>仿真</strong>：利用模型模仿实际系统运行过程（"用模型做实验"）。现代指计算机仿真。</p>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">三者关系（高频简答）</h3>
+<p>三者之间存在三个活动，构成三角关系：</p>
+<div class="table-wrap"><table>
+<thead><tr><th>活动</th><th>含义</th><th>别称</th></tr></thead>
+<tbody>
+<tr><td>系统建模</td><td>观测实际系统，建立数学逻辑模型（理论模型）</td><td>一次建模</td></tr>
+<tr><td>仿真建模</td><td>将理论模型转为可在计算机运行的仿真程序</td><td>二次建模</td></tr>
+<tr><td>仿真实验</td><td>运行仿真程序，分析结果认识系统</td><td>—</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-must">
+<div class="cl">核心关系句（背下来）</div>
+<p><strong>系统是研究的对象，模型是系统的抽象（是仿真的桥梁），而试验是仿真的手段。</strong></p>
+</div>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">模型的分类（名词解释）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>分类</th><th>类型</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>按构造方式</td><td>实体模型（物理模型）</td><td>根据相似性建立的实物模型，直观但成本高</td></tr>
+<tr><td></td><td>数学模型</td><td>用文字、数学、逻辑等抽象描述，灵活经济</td></tr>
+<tr><td>按描述层次</td><td>理论模型（一次建模）</td><td>对系统的理论描述，如排队论模型</td></tr>
+<tr><td></td><td>仿真模型（二次建模）</td><td>能在计算机运行的模型，如GPSS程序</td></tr>
+</tbody>
+</table></div>
+</div>
+</div>
+
+<div class="section" id="c1-2" data-section-id="c1-2" data-section-name="分类·步骤·习题">
+<div class="section-header">
+<span class="section-num">1.2</span>
+<h2 class="section-title">仿真分类、步骤与习题</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">仿真分类（填空/选择）</h3>
+<ul class="clean">
+<li><span class="prio prio-mid">重要</span>按模型特性：连续系统仿真 / 离散事件系统仿真</li>
+<li><span class="prio prio-mid">重要</span>按时钟比例：<strong>实时仿真</strong>（=实际时钟）/ <strong>亚实时仿真</strong>（慢，离线）/ <strong>超实时仿真</strong>（快）</li>
+<li><span class="prio prio-low">了解</span>按计算机类型：模拟 / 数字 / 混合仿真</li>
+</ul>
+<div class="callout callout-info">
+<div class="cl">离散事件系统仿真的目标</div>
+<p>获得系统行为的<strong>统计性能</strong>，而不是状态变量的动态变化过程。因为含随机因素，一次仿真只是一次采样，只有统计意义才有价值。</p>
+</div>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">易混淆：模型验证 vs 模型确认</h3>
+<div class="callout callout-warn">
+<div class="cl">这两个概念要分清</div>
+<p><strong>模型验证（Verification）</strong>：验证仿真程序是否正确实现了数学逻辑模型。"程序层面"——程序有没有Bug？</p>
+<p><strong>模型确认（Validation）</strong>：确认数学逻辑模型是否正确反映了现实系统本质。"模型层面"——模型建得对不对？</p>
+</div>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">课后习题（推荐做：1.1-1.6, 1.13）</h3>
+<p style="font-size:13px;color:var(--ink-faint)">做这几题基本覆盖全章内容。题目原文 + 解答要点如下：</p>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">1.1</span><span class="hw-qtext">简述什么是系统和系统的分类。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span><strong>系统</strong>：由若干相互关联、相互作用的实体组成、能完成某种功能的有机整体。研究系统关注实体、属性、活动三方面。<strong>分类</strong>：①按状态变化——连续系统 / 离散事件系统；②按随机性——确定性系统 / 随机性系统；③按时间特性——静态系统 / 动态系统。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">1.2</span><span class="hw-qtext">简述什么是模型和模型的分类。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span><strong>模型</strong>：根据研究目的，对所研究系统的特征和规律的准确描述、表现或抽象，用于提供关于系统的有用信息。模型有相似性、简化性、多样性三个性质。<strong>分类</strong>：①按构造方式——实体模型（物理模型）/ 数学模型；②按描述层次——理论模型（一次建模）/ 仿真模型（二次建模）。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">1.3</span><span class="hw-qtext">简述什么是仿真和仿真的分类。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span><strong>仿真</strong>：利用模型来模仿实际系统的运行过程，以达到研究实际系统目的的活动（"用模型做实验"）。<strong>分类</strong>：①按模型构造方式——物理仿真 / 数学仿真（计算机仿真）/ 半实物仿真；②按系统模型特性——连续系统仿真 / 离散事件系统仿真；③按计算机类型——模拟 / 数字 / 混合仿真；④按仿真时钟与实际时钟比例——实时 / 亚实时 / 超实时仿真。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">1.4</span><span class="hw-qtext">人们在研究较为复杂的系统时，通常用哪两种研究方法？仿真属于哪种？</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span>通常用两种研究方法：<strong>解析法（数学分析法）</strong>和<strong>仿真法（实验法）</strong>。解析法通过建立数学方程直接求解；仿真法通过建立模型做实验来获得系统行为。<strong>仿真属于实验法（仿真法）</strong>——它不直接对系统操作，而是对系统的模型进行实验。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">1.5</span><span class="hw-qtext">简述什么是计算机仿真。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span>计算机仿真是以控制理论、相似原理、系统技术、信息技术、计算机技术及应用领域专业技术为基础，以计算机和各种专用物理效应设备为工具，通过建立模型对真实和设计的系统，按一定实验方案，通过数值计算方法展开系统模型进行试验来获得系统动态行为，并对结果进行分析研究、进而做出决策的一门综合性的试验性技术。简单说：用计算机和模型对系统进行实验研究。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">1.6</span><span class="hw-qtext">简述计算机仿真的三要素及联系三要素的三活动。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span><strong>三要素</strong>：系统、模型、计算机。<strong>三活动</strong>：①<strong>系统建模</strong>（联系系统和模型）——观测实际系统建立数学逻辑模型；②<strong>仿真建模</strong>（联系模型和计算机）——将理论模型转为可在计算机运行的仿真程序；③<strong>仿真实验</strong>（联系系统和计算机）——运行仿真程序分析结果认识系统。一句话：系统是研究对象，模型是仿真的桥梁，试验是仿真的手段。</div>
+</div>
+
+<div class="hw-item star-item">
+<div class="hw-q"><span class="hw-num">1.13</span><span class="hw-qtext">仿真软件可以分成哪三类？对每一类至少举出一例。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span>仿真软件分三类：<br>
+<strong>① 通用编程语言</strong>：如 C、C++、Java。灵活性最高但建模效率最低。<br>
+<strong>② 仿真编程语言</strong>：如 GPSS/H、SIMAN V、SLAM II、GPSSWorld。封装了仿真基本机制（仿真钟推进、算法实现），保持灵活性同时提高效率。<br>
+<strong>③ 仿真环境</strong>：如 Arena、Witness、Flexsim、Anylogic。图形化界面建模，效率最高但灵活性最低。<br>
+从第一类到第三类：灵活性/通用性依次降低，建模效率依次提高。GPSSWorld兼具第二、三类特点。</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ 第2章 ═══════════ -->
+<div class="chapter" data-page="2">
+<div class="chapter-banner">
+<div class="cb-num">CHAPTER 02</div>
+<div class="cb-title">离散事件系统建模仿真基本原理</div>
+<div class="cb-meta">重点2.3 · GPSSWorld用进程交互法(必考) · 手工仿真必有大题 · 习题1-6,8,9,16</div>
+</div>
+
+<div class="section" id="c2-1" data-section-id="c2-1" data-section-name="基本术语">
+<div class="section-header">
+<span class="section-num">2.1</span>
+<h2 class="section-title">基本术语 <span class="tag tag-exam">名词解释</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<p>以单人理发店为统一背景理解。</p>
+<div class="table-wrap"><table>
+<thead><tr><th>术语</th><th>定义</th><th>理发店例子</th></tr></thead>
+<tbody>
+<tr><td>实体Entity</td><td>组成系统的物理/逻辑单元。分临时实体（主动，如顾客）和永久实体（被动，如理发师、队列）</td><td>顾客/理发师/队列</td></tr>
+<tr><td>属性Attribute</td><td>实体特征描述。分静态属性（到达时间）和动态属性（忙闲状态）</td><td>理发师忙闲、队长</td></tr>
+<tr><td>状态State</td><td>某时刻所有实体动态属性的集合</td><td>(理发师忙,队长2)</td></tr>
+<tr><td>事件Event</td><td>引起状态变化的瞬间操作。分确定事件（可预知）和条件事件（取决于状态）</td><td>到达/开始服务/离开</td></tr>
+<tr><td>活动Activity</td><td>两个事件之间保持某状态的持续过程。分确定活动和条件活动</td><td>排队/理发</td></tr>
+<tr><td>进程Process</td><td>某类实体相关的若干事件及活动组成的完整生命周期</td><td>到达→排队→服务→离开</td></tr>
+<tr><td>规则Rule</td><td>描述实体逻辑关系和运行策略的约定</td><td>FIFO先来先服务</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-warn">
+<div class="cl">事件 vs 活动 的本质区别</div>
+<p><strong>事件</strong>是瞬间的（不占时间），<strong>活动</strong>是持续的（占一段时间）。活动的开始和结束都由事件引起。</p>
+</div>
+</div>
+
+<div class="section" id="c2-2" data-section-id="c2-2" data-section-name="四种仿真策略">
+<div class="section-header">
+<span class="section-num">2.2</span>
+<h2 class="section-title">四种仿真策略 <span class="tag tag-exam">PI必考</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="callout callout-must">
+<div class="cl">最重要的考点</div>
+<p><strong>GPSSWorld的仿真策略是进程交互法（PI）</strong>——考到概率极大，必须记牢，还要能说出PI特点。</p>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>策略</th><th>基本单元</th><th>时钟推进</th><th>关键点</th></tr></thead>
+<tbody>
+<tr><td>事件调度法ES</td><td>事件例程</td><td>下一最早确定事件时刻</td><td>条件事件隐含在确定事件中；效率高建模难</td></tr>
+<tr><td>活动扫描法AS</td><td>活动例程</td><td>各实体时间元最小值</td><td>反复扫描，效率低；对应ACD</td></tr>
+<tr><td>三段扫描法3PS</td><td>活动例程(B/C类)</td><td>下一最早B类例程时刻</td><td>AS的改进，兼顾ES高效和AS简单</td></tr>
+<tr><td><strong>进程交互法PI</strong></td><td>实体进程</td><td>最早无条件延迟复活点</td><td><strong>★GPSSWorld用此★</strong>，最直观，CEL+FEL两张表</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-info">
+<div class="cl">PI的两种延迟（简答可能考）</div>
+<p><strong>无条件延迟</strong>：延迟期可事先确定（如理发时间），放入未来事件表FEL。</p>
+<p><strong>条件延迟</strong>：延迟期取决于系统状态（如排队等待），放入当前事件表CEL。</p>
+</div>
+</div>
+
+<div class="section" id="c2-3" data-section-id="c2-3" data-section-name="手工仿真例2.6">
+<div class="section-header">
+<span class="section-num">2.3</span>
+<h2 class="section-title">★手工仿真（例2.6）<span class="tag tag-exam">必考大题</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 2.6</span><span class="ex-tag">事件调度法手工仿真 · 习题2.16同类型</span></div>
+<div class="example-body">
+<div class="example-q">对理发店系统采用事件调度法手工仿真。顾客到达时间间隔和理发时间的随机数列如下。解结规则：顾客到达和离开事件同时发生时，先处理离开事件。</div>
+
+<p><strong>随机数据：</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>序号</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th></tr></thead>
+<tbody>
+<tr><td>到达间隔</td><td>3</td><td>15</td><td>8</td><td>36</td><td>30</td><td>28</td><td>19</td><td>26</td><td>9</td><td>16</td><td>40</td></tr>
+<tr><td>理发时间</td><td>25</td><td>18</td><td>11</td><td>30</td><td>20</td><td>24</td><td>17</td><td>29</td><td>21</td><td>12</td><td>15</td></tr>
+</tbody>
+</table></div>
+<p style="font-size:13px">符号：A(i,t)=第i个顾客在t时刻到达；D(i,t)=第i个顾客在t时刻离开。StQ=排队队长；StS=理发师状态(0闲/1忙)。C=完成数，B=忙碌累计时间，W=等待累计时间。</p>
+
+<p><strong>完整仿真表（书中表2.2）：</strong></p>
+<div class="table-wrap"><table class="sim-table">
+<thead><tr><th>时钟</th><th>StQ</th><th>StS</th><th>事件表</th><th>处理</th><th>C</th><th>B</th><th>W</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>A(1,3)</td><td>初始化</td><td>0</td><td>0</td><td>0</td></tr>
+<tr class="row-a"><td>3</td><td>0</td><td>1</td><td>D(1,28),A(2,18)</td><td>A(1,3)：顾客1到达,闲→服务,产生A(2,18)和D(1,28)</td><td>0</td><td>0</td><td>0</td></tr>
+<tr class="row-a"><td>18</td><td>1</td><td>1</td><td>D(1,28),A(3,26)</td><td>A(2,18)：忙→排队,StQ=1,产生A(3,26)</td><td>0</td><td>0</td><td>0</td></tr>
+<tr class="row-a"><td>26</td><td>2</td><td>1</td><td>D(1,28),A(4,62)</td><td>A(3,26)：忙→排队,StQ=2,产生A(4,62)</td><td>0</td><td>23</td><td>8</td></tr>
+<tr class="row-d"><td>28</td><td>1</td><td>1</td><td>D(2,46),A(4,62)</td><td>D(1,28)：顾客1离开,C=1;StQ-1=1,服务顾客2,产生D(2,46)</td><td>1</td><td>25</td><td>12</td></tr>
+<tr class="row-d"><td>46</td><td>0</td><td>1</td><td>D(3,57),A(4,62)</td><td>D(2,46)：顾客2离开,C=2;StQ-1=0,服务顾客3,产生D(3,57)</td><td>2</td><td>43</td><td>30</td></tr>
+<tr class="row-d"><td>57</td><td>0</td><td>0</td><td>A(4,62)</td><td>D(3,57)：顾客3离开,C=3;队空→理发师置闲</td><td>3</td><td>54</td><td>30</td></tr>
+<tr class="row-a"><td>62</td><td>0</td><td>1</td><td>D(4,92),A(5,92)</td><td>A(4,62)：闲→服务,产生A(5,92)和D(4,92)</td><td>3</td><td>54</td><td>30</td></tr>
+<tr class="row-tie"><td rowspan="2">92</td><td>0</td><td>0</td><td>A(5,92)</td><td>解结：先D(4,92)顾客4离开,C=4,队空置闲</td><td>4</td><td>84</td><td>30</td></tr>
+<tr class="row-tie"><td>0</td><td>1</td><td>D(5,112),A(6,120)</td><td>后A(5,92)：闲→服务,产生A(6,120)和D(5,112)</td><td>4</td><td>84</td><td>30</td></tr>
+<tr class="row-d"><td>112</td><td>0</td><td>0</td><td>A(6,120)</td><td>D(5,112)：顾客5离开,C=5,队空置闲</td><td>5</td><td>104</td><td>30</td></tr>
+<tr class="row-a"><td>120</td><td>0</td><td>1</td><td>D(6,144),A(7,139)</td><td>A(6,120)：闲→服务,产生A(7,139)和D(6,144)</td><td>5</td><td>104</td><td>30</td></tr>
+<tr class="row-a"><td>139</td><td>1</td><td>1</td><td>D(6,144),A(8,165)</td><td>A(7,139)：忙→排队,StQ=1,产生A(8,165)</td><td>5</td><td>123</td><td>30</td></tr>
+<tr class="row-d"><td>144</td><td>0</td><td>1</td><td>D(7,161),A(8,165)</td><td>D(6,144)：顾客6离开,C=6;服务顾客7,产生D(7,161),W+=5</td><td>6</td><td>128</td><td>35</td></tr>
+</tbody>
+</table></div>
+<p style="font-size:12px;color:var(--ink-faint)">绿色=到达事件,红色=离开事件,黄色=同时刻解结处理</p>
+
+<div class="callout callout-warn">
+<div class="cl">B和W更新规则（最易错）</div>
+<p><strong>B（忙碌时间）</strong>：每次"离开"事件时,B += 本次服务时长(=结束时刻-开始时刻)。顾客1服务3→28,B+=25;顾客2服务28→46,B+=18...</p>
+<p><strong>W（等待时间）</strong>：每次顾客"开始服务"时,W += (开始时刻-到达时刻)。顾客2:18到达28服务,W+=10;顾客3:26到达46服务,W+=20;顾客7:139到达144服务,W+=5。其余顾客(1,4,5,6)到达即服务,W不变。</p>
+</div>
+
+<div class="callout callout-must">
+<div class="cl">最终统计量计算</div>
+<div class="formula"><div class="fl">理发师利用率</div>利用率 ρ = B / T_E</div>
+<div class="formula"><div class="fl">顾客平均等待时间</div>平均等待时间 = W / C</div>
+<p style="font-size:13px;margin-top:.5rem">T_E=总仿真时间。例如仿真到144时,C=6,B=128,W=35,则利用率≈128/144≈0.89,平均等待≈35/6≈5.83。</p>
+</div>
+</div>
+</div>
+
+<div class="callout callout-tip">
+<div class="cl">手工仿真满分步骤口诀</div>
+<p>① 从事件表取最早事件,推进时钟 → ② 判类型:到达就产生下个到达+判忙闲;离开就C+1、B累加+判队列 → ③ 更新StQ/StS/C/B/W → ④ 同时刻先离开后到达(解结)</p>
+</div>
+
+<div class="subsection" style="margin-top:1.8rem">
+<h3 class="subsection-title">课后习题（推荐做：2.1-2.6, 2.8, 2.9, 2.16）</h3>
+<p style="font-size:13px;color:var(--ink-faint)">题目原文 + 解答要点如下。2.16是手工仿真重点练习题，与例2.6同类型但是双理发师。</p>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">2.1</span><span class="hw-qtext">什么是实体？实体分成哪两类？试举例说明。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span><strong>实体</strong>：与研究目的有关的构成系统的各种成分，是系统边界内的对象。分两类：<br>
+<strong>① 临时实体（主动实体）</strong>：在系统中只存在一段时间，从外部到达、通过系统、最后离开或被消耗。具有主动性。例：理发店的顾客。<br>
+<strong>② 永久实体（被动实体）</strong>：永久驻留在系统中，是系统活动的必要条件。具有被动性。例：理发店的理发师、队列。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">2.2</span><span class="hw-qtext">什么是实体的属性？进行仿真建模时选取属性应考虑的原则有哪些？</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span><strong>属性</strong>：用来反映实体某些性质的描述，可用参数或状态变量表示（分静态属性和动态属性）。<strong>选取原则</strong>：<ul><li>便于排队规则的确定（如将到达时间作为属性，便于实现先来先服务）</li><li>便于实体的分类和行为的描述（如将性别作为属性，区分不同理发时间）</li><li>便于信息的统计分析（如将队长作为队列属性，便于统计平均队长）</li></ul></div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">2.3</span><span class="hw-qtext">在离散事件系统中，什么是事件、活动和进程？它们之间存在着怎样的关系？</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span><strong>事件</strong>：引起系统状态发生变化的瞬间操作（不占时间）。<strong>活动</strong>：实体在两个事件之间保持某一状态的持续过程（占一段时间）。<strong>进程</strong>：由和某类实体相关的若干事件及活动组成，描述其完整生命周期。<strong>关系</strong>：粒度由小到大为 事件 &lt; 活动 &lt; 进程。活动由两个事件界定（开始事件和结束事件），进程由若干事件和活动按时序和逻辑关系组成。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">2.4</span><span class="hw-qtext">仿真钟的推进方式有哪两种？分析比较它们的优缺点。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span>两种推进方式：<br>
+<strong>① 事件单位推进法（变步长法）</strong>：从一个事件时刻直接推进到下一事件时刻，跳过无事件的时间段。优点：效率高、精确不漏事件；缺点：设计实现较复杂。<strong>离散事件系统首选此法（GPSSWorld采用）</strong>。<br>
+<strong>② 时间单位推进法（固定步长法）</strong>：选固定步长，每步检查是否有事件发生。优点：实现简单；缺点：可能误差（同步内多事件视为同时）、步长难定。<br>
+适用：事件单位推进适合离散事件系统；时间单位推进适合周期性强的模型。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">2.5</span><span class="hw-qtext">简述进程交互法中的条件延迟和无条件延迟，并各举一例说明。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span><strong>无条件延迟</strong>：实体停留在进程某点，直到预先确定的延迟期满为止，延迟时间可事先确定。放入未来事件表FEL。例：顾客在"理发"状态，停留直到服务完成（理发时间可事先采样确定）。<br>
+<strong>条件延迟</strong>：延迟期长短与系统状态有关、不能事先确定，实体停留直到条件满足才能继续。放入当前事件表CEL。例：顾客在"排队"状态，等待直到处于队首且理发师空闲。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">2.6</span><span class="hw-qtext">常用的仿真策略/处理方式有哪几种？试分析比较。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span>四种策略：<br>
+<strong>① 事件调度法ES</strong>：基本单元是事件例程，时钟推进到下一最早确定事件，条件事件隐含在确定事件中。效率高但建模复杂。<br>
+<strong>② 活动扫描法AS</strong>：基本单元是活动例程，按时间元最小值推进，反复扫描活动条件。建模简单但效率低。<br>
+<strong>③ 三段扫描法3PS</strong>：AS的改进，活动分B类（确定）和C类（条件），兼顾ES高效和AS简单。<br>
+<strong>④ 进程交互法PI</strong>：基本单元是实体进程，用CEL/FEL两张表。最直观，<strong>GPSSWorld采用此法</strong>。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">2.8</span><span class="hw-qtext">离散事件系统仿真中，确定事件发生时间的方式有哪两种？</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span>两种方式：<br>
+<strong>① 直接方式</strong>：直接给定事件发生的时间点（确定事件的策划方式）。例：服务时间已知，直接计算出服务结束时间。<br>
+<strong>② 间接方式</strong>：给出事件发生的条件，事件在条件满足时发生（条件事件的策划方式）。例："服务开始"在队首有顾客且理发师空闲时发生。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">2.9</span><span class="hw-qtext">离散事件系统仿真中可以采用的仿真策略有哪些？试比较分析。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span>同2.6，可采用事件调度法（ES）、活动扫描法（AS）、三段扫描法（3PS）、进程交互法（PI）四种。比较见下表关键点：ES以事件为单元效率高建模难；AS以活动为单元建模简单效率低；3PS是AS的改进兼顾两者优点；PI以进程为单元最直观、是GPSSWorld的策略。</div>
+</div>
+
+<div class="hw-item star-item">
+<div class="hw-q"><span class="hw-num">2.16</span><span class="hw-qtext">★一个具有两个理发师的理发店运营过程。顾客的到达时间间隔和理发师理发时间的随机数采样如下表。服务规则和解结规则：先来先服务；当两个理发师都空时，顾客喜欢找1号理发师；到达和离开事件同时发生时，先处理离开。通过仿真估算顾客理发师的利用率、平均等待时间等。分别用事件调度法、活动扫描法和进程交互法进行手工仿真（当第6个顾客到达时仿真结束）。</span></div>
+<div class="hw-a"><span class="hw-alabel">答</span>
+<strong>随机数据：</strong>
+<div class="table-wrap"><table>
+<thead><tr><th>序号</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+<tbody>
+<tr><td>下一顾客到达间隔</td><td>5</td><td>6</td><td>8</td><td>19</td><td>12</td><td>8</td></tr>
+<tr><td>1号理发师理发时间</td><td>18</td><td>15</td><td>16</td><td>16</td><td>17</td><td>14</td></tr>
+<tr><td>2号理发师理发时间</td><td>20</td><td>16</td><td>18</td><td>20</td><td>19</td><td>16</td></tr>
+</tbody>
+</table></div>
+<p style="margin-top:.5rem"><strong>解题要点（与例2.6同类型，区别是双理发师有偏好）：</strong></p>
+<ul>
+<li>系统状态需增加：StS1（1号理发师状态）、StS2（2号理发师状态），队长StQ</li>
+<li>顾客到达时：优先找1号理发师（若1号空闲则用1号），1号忙才找2号，都忙则排队</li>
+<li>用1号理发师的服务时间表算1号的离开事件，用2号的服务时间表算2号的离开事件</li>
+<li>解结规则同例2.6：到达和离开同时发生时先处理离开</li>
+<li>统计：B1（1号忙碌时间）、B2（2号忙碌时间）分别累计；W累计等待时间，C完成数</li>
+<li>最终：1号利用率=B1/T_E，2号利用率=B2/T_E，平均等待时间=W/C</li>
+</ul>
+<p><strong>第1个顾客起步（事件调度法）：</strong>t=0初始化，安排A(1,5)。t=5顾客1到达，两理发师都空→选1号，服务时间18→产生D1(1,23)，产生A(2,11)。t=11顾客2到达，1号忙→选2号空闲，服务时间16→产生D2(2,27)，产生A(3,19)...依此类推，到第6个顾客到达时结束。三种方法（事件调度/活动扫描/进程交互）的手工仿真表格结构与例2.6一致，只是状态列和统计列要分1号、2号。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ 第3章 ═══════════ -->
+<div class="chapter" data-page="3">
+<div class="chapter-banner">
+<div class="cb-num">CHAPTER 03</div>
+<div class="cb-title">初级GPSSWorld语言</div>
+<div class="cb-meta">写程序基础,考1-2题 · 15个核心模块必须全掌握</div>
+</div>
+
+<div class="section" id="c3-1" data-section-id="c3-1" data-section-name="核心模块详解">
+<div class="section-header">
+<span class="section-num">3.1</span>
+<h2 class="section-title">核心模块详解 <span class="tag tag-exam">重中之重</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="mod-grid">
+<span class="mod-chip core">GENERATE</span><span class="mod-chip core">ADVANCE</span><span class="mod-chip core">ASSIGN</span><span class="mod-chip core">TRANSFER</span><span class="mod-chip core">PRIORITY</span><span class="mod-chip core">TERMINATE</span><span class="mod-chip core">SEIZE</span><span class="mod-chip core">RELEASE</span><span class="mod-chip core">QUEUE</span><span class="mod-chip core">DEPART</span><span class="mod-chip core">STORAGE</span><span class="mod-chip core">ENTER</span><span class="mod-chip core">LEAVE</span><span class="mod-chip core">START</span><span class="mod-chip imp">RESET</span>
+</div>
+
+<div class="callout callout-must">
+<div class="cl">GENERATE 五参数（必须背熟）</div>
+<p><span style="font-family:var(--mono)">GENERATE A,B,C,D,E</span></p>
+<p><strong>A</strong>=时间间隔均值 / <strong>B</strong>=半区间(间隔在A±B均匀分布,若B是函数则A×B) / <strong>C</strong>=第一个实体产生时刻 / <strong>D</strong>=产生实体总数限制 / <strong>E</strong>=优先级(0~127)</p>
+<p style="margin-top:.4rem">省略只能省数值不能省逗号:<span style="font-family:var(--mono)">GENERATE 7,,,,1</span>=只指定优先级1</p>
+</div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>模块</th><th>格式</th><th>功能·进入模式</th></tr></thead>
+<tbody>
+<tr><td>ADVANCE</td><td>A,B</td><td>延时A±B(服务过程)。无条件进入</td></tr>
+<tr><td>TERMINATE</td><td>A</td><td>实体消失,终止计数器减A。配合START</td></tr>
+<tr><td>SEIZE</td><td>A</td><td>占用设施A(只能1个实体)。<strong>有条件进入</strong></td></tr>
+<tr><td>RELEASE</td><td>A</td><td>释放设施A。无条件进入。必须与SEIZE成对</td></tr>
+<tr><td>QUEUE</td><td>A,B</td><td>进入队列A,队长+B(默认1)。无条件进入</td></tr>
+<tr><td>DEPART</td><td>A,B</td><td>离开队列A,队长-B(默认1)。无条件进入</td></tr>
+<tr><td>STORAGE</td><td>NAME STORAGE A</td><td>定义存储器(说明部分),容量A</td></tr>
+<tr><td>ENTER</td><td>A,B</td><td>进入存储器A占B个单位。<strong>有条件进入</strong></td></tr>
+<tr><td>LEAVE</td><td>A,B</td><td>离开存储器A释放B个单位。无条件进入</td></tr>
+<tr><td>ASSIGN</td><td>A,B,C</td><td>给参数A赋值B(可+/-累加),C为函数号</td></tr>
+<tr><td>PRIORITY</td><td>A</td><td>设置实体优先级为A</td></tr>
+<tr><td>START</td><td>A</td><td>开始仿真,终止计数器初值A</td></tr>
+</tbody>
+</table></div>
+
+<div class="callout callout-warn">
+<div class="cl">RESET = 仿真预热(必须会写)</div>
+<p>RESET清空统计数据但不清除活动实体。预热模式:</p>
+<div class="code-block"><div>       <span class="c-kw">START</span> <span class="c-val">100</span>   <span class="c-cm">; 预热运行100个</span></div>
+<div>       <span class="c-kw">RESET</span>        <span class="c-cm">; 清空统计(实体不清)</span></div>
+<div>       <span class="c-kw">START</span> <span class="c-val">1000</span>  <span class="c-cm">; 正式仿真统计</span></div></div>
+<p style="font-size:12px;color:var(--ink-faint)">区别:RESET不清实体,CLEAR清实体+时钟归零</p>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 3.2</span><span class="ex-tag">单服务台基础模板 · 标准排队</span></div>
+<div class="example-body">
+<div class="example-q">理发师JOE,顾客每16±9分钟到达,服务15±7分钟,FIFO,仿真20个顾客。</div>
+<div class="code-block">
+<div class="ct">单服务台标准写法</div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">16,9</span> <span class="c-cm">; 顾客到达</span></div>
+<div>       <span class="c-kw">QUEUE</span>    <span class="c-name">Q_BAR</span><span class="c-cm">; 排队</span></div>
+<div>       <span class="c-kw">SEIZE</span>    <span class="c-name">S_BAR</span><span class="c-cm">; 占用理发师(忙则等)</span></div>
+<div>       <span class="c-kw">DEPART</span>   <span class="c-name">Q_BAR</span><span class="c-cm">; 离队</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">15,7</span> <span class="c-cm">; 理发</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">S_BAR</span><span class="c-cm">; 释放</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span>  <span class="c-cm">; 离开</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">20</span></div>
+</div>
+<p style="font-size:13px">关键:QUEUE→SEIZE→DEPART顺序。DEPART在SEIZE之后,统计的才是真实等待时间。</p>
+</div>
+</div>
+</div>
+
+<div class="section" id="c3-2" data-section-id="c3-2" data-section-name="TRANSFER三模式">
+<div class="section-header">
+<span class="section-num">3.2</span>
+<h2 class="section-title">TRANSFER三模式 <span class="tag tag-exam">考试就这三种</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="callout callout-must">
+<div class="cl">三种必考模式</div>
+<p><strong>① 无条件转向</strong>:<span style="font-family:var(--mono)">TRANSFER ,B</span> → 无条件去标号B</p>
+<p><strong>② 概率转向</strong>:<span style="font-family:var(--mono)">TRANSFER A,B,C</span> → 以A概率去C,1-A概率去B(B省略则去下一模块)</p>
+<p><strong>③ BOTH模式</strong>:<span style="font-family:var(--mono)">TRANSFER BOTH,B,C</span> → 先试B,B进不去再试C,都进不去则停留等待</p>
+</div>
+<div class="callout callout-info">
+<div class="cl">补充:PICK模式</div>
+<p><span style="font-family:var(--mono)">TRANSFER PICK,A,B</span> → 在A到B范围内随机选一个模块。常与BOTH配合实现"随机选+若忙则换"。</p>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 3.7</span><span class="ex-tag">★BOTH模式 · 双理发师有偏好</span></div>
+<div class="example-body">
+<div class="example-q">两位理发师A、B,顾客到达间隔25±10分钟,优先选A,A忙则选B,都忙则等。服务时间35±15分钟,仿真1000个顾客,统计A、B利用率。</div>
+<div class="code-block">
+<div class="ct">BOTH模式实现优先选择</div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">25,10</span></div>
+<div>       <span class="c-kw">TRANSFER</span> <span class="c-val">BOTH,ADD_A,ADD_B</span> <span class="c-cm">; 先试A,A满试B</span></div>
+<div><span class="c-label">ADD_A</span>  <span class="c-kw">SEIZE</span>    <span class="c-name">F_A</span>  <span class="c-cm">; 占用理发师A</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">35,15</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">F_A</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span>    <span class="c-cm">; 不能缺省,否则经A的顾客还要经B</span></div>
+<div><span class="c-label">ADD_B</span>  <span class="c-kw">SEIZE</span>    <span class="c-name">F_B</span>  <span class="c-cm">; 占用理发师B</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">35,15</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">F_B</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">1000</span></div>
+</div>
+<div class="callout callout-warn">
+<div class="cl">两个关键点</div>
+<p>① BOTH模式执行:先测ADD_A的SEIZE能否进入,被拒则测ADD_B,都被拒则停留在TRANSFER等待。</p>
+<p>② ADD_A路径的TERMINATE<strong>不能缺省</strong>,否则经过理发师A的顾客还会继续进入理发师B的处理。</p>
+<p>结果:进A的550个(利用率0.757),进B的451个(利用率0.626),优先A体现出来了。</p>
+</div>
+</div>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 3.8</span><span class="ex-tag">概率+BOTH · 双理发师无偏好</span></div>
+<div class="example-body">
+<div class="example-q">同上,但顾客对理发师无偏好(都空时随机选)。</div>
+<div class="code-block">
+<div class="ct">PICK + BOTH 实现随机选择(方法2)</div>
+<div><span class="c-label">DOOR</span>   <span class="c-kw">STORAGE</span>  <span class="c-val">2</span></div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">25,10</span></div>
+<div>       <span class="c-kw">ENTER</span>    <span class="c-name">DOOR</span>  <span class="c-cm">; 有理发师空闲时通过</span></div>
+<div><span class="c-label">AGN</span>    <span class="c-kw">TRANSFER</span> <span class="c-val">PICK,ADD1,ADD2</span> <span class="c-cm">; 随机选一个</span></div>
+<div><span class="c-label">ADD1</span>   <span class="c-kw">TRANSFER</span> <span class="c-val">BOTH,INA,AGN</span> <span class="c-cm">; A忙则返回重选</span></div>
+<div><span class="c-label">ADD2</span>   <span class="c-kw">TRANSFER</span> <span class="c-val">BOTH,INB,AGN</span></div>
+<div><span class="c-label">INA</span>    <span class="c-kw">SEIZE</span>    <span class="c-name">F_A</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">35,15</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">F_A</span></div>
+<div>       <span class="c-kw">LEAVE</span>    <span class="c-name">DOOR</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span></div>
+<div><span class="c-label">INB</span>    <span class="c-kw">SEIZE</span>    <span class="c-name">F_B</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">35,15</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">F_B</span></div>
+<div>       <span class="c-kw">LEAVE</span>    <span class="c-name">DOOR</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">1000</span></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="section" id="c3-3" data-section-id="c3-3" data-section-name="第3章例题精讲">
+<div class="section-header">
+<span class="section-num">3.3</span>
+<h2 class="section-title">更多例题精讲</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 3.6</span><span class="ex-tag">串行服务 · 先洗头后理发</span></div>
+<div class="example-body">
+<div class="example-q">顾客先洗头(20±10)再理发(24±15),洗头员和理发师各一位。仿真1000个顾客。</div>
+<div class="code-block">
+<div class="ct">两阶段串行服务</div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">28,20</span></div>
+<div>       <span class="c-kw">QUEUE</span>    <span class="c-name">Q_XT</span>  <span class="c-cm">; 排队等候洗头</span></div>
+<div>       <span class="c-kw">SEIZE</span>    <span class="c-name">S_XT</span>  <span class="c-cm">; 占有洗头服务员</span></div>
+<div>       <span class="c-kw">DEPART</span>   <span class="c-name">Q_XT</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">20,10</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">S_XT</span>  <span class="c-cm">; 释放洗头服务员</span></div>
+<div>       <span class="c-kw">QUEUE</span>    <span class="c-name">Q_LF</span>  <span class="c-cm">; 排队等候理发</span></div>
+<div>       <span class="c-kw">SEIZE</span>    <span class="c-name">S_LF</span>  <span class="c-cm">; 占有理发师</span></div>
+<div>       <span class="c-kw">DEPART</span>   <span class="c-name">Q_LF</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">24,15</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">S_LF</span>  <span class="c-cm">; 释放理发师</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">1000</span></div>
+</div>
+</div>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 3.9</span><span class="ex-tag">多入口 · 两个GENERATE</span></div>
+<div class="example-body">
+<div class="example-q">理发店有南北两个入口,入口1顾客20±10分钟到达,入口2顾客30±5分钟到达。一位理发师,服务25±15分钟。仿真1000个顾客。</div>
+<div class="code-block">
+<div class="ct">两个GENERATE的处理(注意第2条TRANSFER)</div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">20,10</span>  <span class="c-cm">; 入口1</span></div>
+<div>       <span class="c-kw">TRANSFER</span> <span class="c-val">,ADD1</span>  <span class="c-cm">; 跳过第2个GENERATE!</span></div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">30,5</span>   <span class="c-cm">; 入口2</span></div>
+<div><span class="c-label">ADD1</span>   <span class="c-kw">QUEUE</span>    <span class="c-name">Q_BAR</span></div>
+<div>       <span class="c-kw">SEIZE</span>    <span class="c-name">F_BAR</span></div>
+<div>       <span class="c-kw">DEPART</span>   <span class="c-name">Q_BAR</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">35,15</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">F_BAR</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">1000</span></div>
+</div>
+<div class="callout callout-warn">
+<div class="cl">考点:多个GENERATE必须处理</div>
+<p>有2个GENERATE时,第1个产生的实体必须用TRANSFER跳过第2个GENERATE,否则活动实体会尝试进入GENERATE模块导致出错。</p>
+</div>
+</div>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 3.10</span><span class="ex-tag">概率分流 · 质量检查(废品)</span></div>
+<div class="example-body">
+<div class="example-q">机床加工零件5分钟,检查4±3分钟,约10%为废品。求生产1000个合格品需多少时间。</div>
+<div class="code-block">
+<div class="ct">概率分流(挑出废品)</div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">5</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">4,3</span></div>
+<div>       <span class="c-kw">TRANSFER</span> <span class="c-val">.1,ACC,REJ</span> <span class="c-cm">; 10%去REJ(废品),90%去ACC</span></div>
+<div><span class="c-label">ACC</span>    <span class="c-kw">TERMINATE</span> <span class="c-val">1</span>  <span class="c-cm">; 正品出口,计数-1</span></div>
+<div><span class="c-label">REJ</span>    <span class="c-kw">TERMINATE</span>     <span class="c-cm">; 废品出口,不计数</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">1000</span></div>
+</div>
+<div class="callout callout-info">
+<div class="cl">考点:用TERMINATE控制统计</div>
+<p>正品TERMINATE 1(计数减1),废品TERMINATE(不减),START 1000表示统计到1000个合格品为止。这样仿真结束时间就是生产1000个合格品的时间。</p>
+</div>
+</div>
+</div>
+
+<div class="subsection" style="margin-top:1.8rem">
+<h3 class="subsection-title">课后习题（第3章 · 全部为编程题，建议都做）</h3>
+<p style="font-size:13px;color:var(--ink-faint)">第3章习题都是写程序题，题目原文 + 解题思路如下。这些题型和例题高度相似，是写程序大题的直接来源。</p>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.1</span><span class="hw-qtext">某理发店只有一位理发师，顾客以20±8分钟速度到达，其中60%的人理发，30%的人烫发，10%的人只需剃须。理发20±5分，烫发35±15分，剃须10±5，仿真8小时，统计理发师的利用率及顾客滞留在理发店的平均时间。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>一个理发师=设施。用<strong>FUNCTION或TRANSFER概率</strong>区分三类顾客（60%/30%/10%），不同类服务时间不同。统计逗留时间用M1。框架：GENERATE 20,8 → QUEUE → SEIZE → DEPART → 按概率分三路ADVANCE（20±5/35±15/10±5）→ RELEASE → TERMINATE。仿真8小时=480分钟，用GENERATE 480定时器结束。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.2</span><span class="hw-qtext">打靶练习，目标以10±5秒出现一个，每枪的成功率为80%，问要多长时间才能打中50个目标？</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>类似例3.10概率分流。GENERATE 10,5 → TRANSFER .8,MISS,HIT（80%命中）→ HIT: TERMINATE 1（命中计数）→ MISS: TERMINATE（脱靶不计数）→ START 50。仿真结束时间就是打中50个目标的时间。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.3</span><span class="hw-qtext">一个仓库共存放2000吨货物，货物以三种规模出库：少量(10吨)、中等(20吨)、大量(50吨)，分别以10±5分、15分、30±10分的速率产生。在没有新货物入库的情况下，一个仓库能维持供货多少时间？</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>三种出库规模用三个GENERATE产生（注意多GENERATE要用TRANSFER跳过，参考例3.9）。用SAVEVALUE累计已出库吨数，TEST GE判断是否达到2000吨，达到则结束。每次出库用ASSIGN记录吨数，SAVEVALUE累加。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.4</span><span class="hw-qtext">一个零件加工过程，零件以20±5分速率到达，先由机床A加工(16±5分)，再由机床B加工(15±10分)，最后检验员检验(10±2分)，其中5%的零件不合格需重新加工。仿真40小时和生产200个合格零件，估算机床的平均利用率。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>三个串行设施（机床A、机床B、检验员），参考例3.6串行服务结构。检验后用TRANSFER .05,PASS,FAIL分流，不合格的TRANSFER回机床A重新加工（循环）。利用率从输出报告的FR码读取。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.5</span><span class="hw-qtext">汽车加油站有四台加油器，汽车以4±2分钟到达，先排队等候，加油12±5分钟，加油后司机去交费窗口排队交费(3±1分钟)。模拟150辆汽车。统计加油队列的平均队长、最大队长、加油器利用率及汽车滞留时间。要求将加油器看成存储器。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>加油器=存储器(STORAGE 4)，交费窗口=设施。两阶段服务：先ENTER加油器(ENTER/LEAVE)，再SEIZE交费窗口。QUEUE统计队长。框架：GENERATE 4,2 → QUEUE → ENTER PUMPS → DEPART → ADVANCE 12,5 → LEAVE PUMPS → QUEUE → SEIZE PAY → DEPART → ADVANCE 3,1 → RELEASE → TERMINATE。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.6</span><span class="hw-qtext">一个加工中心由4个工作站组成，零件以20±10分钟速率到达，按流程图经过各站(A→60%去B/40%去C，B→80%去D/20%去C，C→D)。各站机器数和处理时间：A(2台,30±15)、B(1台,20±10)、C(3台,70±20)、D(5台,90±30)。仿真100小时，确定哪个工作站是瓶颈。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>4个存储器（各站机器数=容量）。用TRANSFER概率实现流程分支（A后60/40分流，B后80/20分流）。瓶颈=利用率最高的站，从SR码读取。注意C站处理时间最长(70±20)且容量影响，可能是瓶颈。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.7</span><span class="hw-qtext">A、B、C是三个汽车清洗店，汽车以8±5分钟到达，服务15±6分钟，每店同时只清洗一辆。顾客喜欢A超过B，喜欢B超过C。若喜欢的店忙则选空店，否则离开；到达和离开同时发生时优先处理离开。仿真100小时估算三店利用率。若没有空店则排队等待又将如何？(提示：第二问可在第一问基础上增加一个容量为3的存储器实现)</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>三个设施按偏好顺序，用<strong>BOTH模式</strong>串联：TRANSFER BOTH,A,NEXT1；NEXT1 TRANSFER BOTH,B,NEXT2；NEXT2 TRANSFER BOTH,C,OUT。参考例3.7的BOTH模式。第二问加一个容量3的存储器(总容量=3个店)做排队控制：先ENTER存储器(满则等待)再用BOTH选店。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.8</span><span class="hw-qtext">某诊所有2个医生。普通病人以8±5分钟速率到达，急诊病人以22±10分钟速率到达。急诊病人具有优先级可优先服务，每次看病需25±15分钟，仿真处理1000位病人。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>两类病人两个GENERATE。急诊用PRIORITY设高优先级。两医生可用存储器(STORAGE 2)。框架：急诊 GENERATE 22,10 → PRIORITY 1 → ...；普通 GENERATE 8,5 → ...；都ENTER同一个医生存储器。优先级高的先获得服务。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.9</span><span class="hw-qtext">电视机商店雇修理工，三项工作优先级：当场修理最高、检修次之、翻修最低。公司电视机故障间隔40±8小时、修复10±1小时；现场修理顾客到达90±10分钟、服务15±5分钟；检修顾客到达5±1小时、服务120±30分钟。仿真50天，求修理工利用率和顾客平均延时。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>三类任务三个GENERATE，用PRIORITY设三级优先级（当场修理最高）。一个修理工=设施，三类任务都SEIZE同一设施。注意时间单位统一（都换成分钟或小时）。仿真50天换算成对应时间单位。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.10</span><span class="hw-qtext">某服装厂生产车间，1个生产组100个缝纫工，1个维修组3个维修工，105台缝纫机(5台备用)。缝纫机故障间隔180±150小时，故障后若有备用机立即替换，否则工人停工等待；故障机由3个维修工之一维修(7±4小时)，修好后作备用机。仿真3000小时，前300小时为不稳定期需删除，估算缝纫工等待维修的平均时间。(提示：缝纫机=活动实体，缝纫工和维修工=存储器)</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>较复杂综合题。缝纫机=活动实体，维修工=存储器(STORAGE 3)，备用机=存储器(STORAGE 5)。<strong>仿真预热</strong>：先START预热300小时→RESET→再仿真。缝纫机故障后ENTER备用机存储器(若有备用)，否则工人等待，再ENTER维修工存储器维修。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.11</span><span class="hw-qtext">包括转台的装配线。转台将零件送到三个工作站任一个加工，零件经120秒到第一站，若忙则经120秒进第二站，再忙则进第三站，还忙则返回第一站循环。转台只能同时容纳6个零件，满时后来零件离开系统。每50±10秒到达一个零件，每站处理120±60秒，仿真预热10个零件再仿真1000个，统计多少零件没能进入装配。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>转台=存储器(STORAGE 6)。三个工作站=三个设施。零件进转台前先GATE SNF测转台是否满，满则离开计数。在三站之间用TRANSFER BOTH循环尝试。预热用START 10→RESET→START 1000。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.12</span><span class="hw-qtext">顾客按序经过两个服务站。第一站三位服务员(335±160秒)，第二站一位服务员(110±75秒)，顾客每120±50秒到达一位。两种情况建模运行24小时统计平均逗留时间：第一，两队列空间不受限；第二，第二站队列只有一个位置，完成第一站服务的顾客发现第二站队列被占则不能离开第一站位置(阻塞)。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>第一站=存储器(STORAGE 3)，第二站=设施。第一种情况是标准两阶段串行(参考例3.6)。第二种情况涉及<strong>阻塞</strong>：第二站队列限长1，用TEST或GATE判断第二站是否可进入，不可则保持占用第一站资源（不释放第一站存储器）。逗留时间用M1。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">3.13</span><span class="hw-qtext">医院住院部有80个床位，接待普通病人和急诊病人。普通病人每4±2小时到达，急诊病人每8±4小时到达，住院152±90小时。急诊病人优先住院。建立仿真模型运行60天。初始条件：模型开始时已有14位病人，这14位病人以每隔3±2小时的速度离开医院。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>床位=存储器(STORAGE 80)。两类病人两个GENERATE，急诊用PRIORITY优先。<strong>初始条件</strong>用 GENERATE ,,0,14 在0时刻产生14个初始病人，它们以3±2小时离开。普通和急诊病人ENTER床位存储器，住院ADVANCE后LEAVE。运行60天换算成小时。</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ 第4章 ═══════════ -->
+<div class="chapter" data-page="4">
+<div class="chapter-banner">
+<div class="cb-num">CHAPTER 04</div>
+<div class="cb-title">中级GPSSWorld语言</div>
+<div class="cb-meta">SNA码+FUNCTION每年必考,考1-2题 · 中级=初级+条件控制</div>
+</div>
+
+<div class="section" id="c4-1" data-section-id="c4-1" data-section-name="SNA码">
+<div class="section-header">
+<span class="section-num">4.1</span>
+<h2 class="section-title">SNA码 <span class="tag tag-exam">每年必考</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="callout callout-must">
+<div class="cl">为什么必须掌握</div>
+<p>不弄明白SNA码,后面很多代码就看不懂。SNA码可在程序运行时动态获取系统状态。</p>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>类别</th><th>SNA码</th><th>含义</th></tr></thead>
+<tbody>
+<tr><td>模拟钟</td><td>C1 / AC1</td><td>相对时钟 / 绝对时钟</td></tr>
+<tr><td>活动实体</td><td>Pj</td><td>实体的j号参数值</td></tr>
+<tr><td></td><td>M1</td><td>实体居留时间(到达到现在)</td></tr>
+<tr><td></td><td>MPj</td><td>当前时钟-参数j(过境时间)</td></tr>
+<tr><td></td><td>PR</td><td>实体优先级</td></tr>
+<tr><td>设施</td><td>Fj</td><td>设施j状态(1忙/0闲)</td></tr>
+<tr><td></td><td>FRj</td><td>设施j利用率(×1000)</td></tr>
+<tr><td></td><td>FCj</td><td>进入设施j的实体总数</td></tr>
+<tr><td>队列</td><td>Qj</td><td>队列j当前队长</td></tr>
+<tr><td></td><td>QAj</td><td>队列j平均队长</td></tr>
+<tr><td></td><td>QTj</td><td>队列j平均等待时间</td></tr>
+<tr><td>存储器</td><td>Sj / Rj</td><td>当前占用量 / 剩余容量</td></tr>
+<tr><td></td><td>SRj</td><td>存储器j利用率(×1000)</td></tr>
+<tr><td>逻辑开关</td><td>LSj</td><td>开关j状态(开1/关0)</td></tr>
+<tr><td>保存值</td><td>Xj / X$Name</td><td>保存值的数值</td></tr>
+<tr><td>变量</td><td>Vj / V$Name</td><td>变量的值</td></tr>
+<tr><td>函数</td><td>FNj / FN$Name</td><td>函数的值</td></tr>
+<tr><td>随机数</td><td>RNj</td><td>随机数(0~999整数,作函数自变量时0~1小数)</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-warn">
+<div class="cl">FRj/SRj 单位</div>
+<p>返回利用率×1000。FRj=750表示利用率75%。</p>
+</div>
+</div>
+
+<div class="section" id="c4-2" data-section-id="c4-2" data-section-name="FUNCTION">
+<div class="section-header">
+<span class="section-num">4.2</span>
+<h2 class="section-title">FUNCTION <span class="tag tag-exam">每年必考·一定会写</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="callout callout-must">
+<div class="cl">定义格式</div>
+<p><span style="font-family:var(--mono)">NAME FUNCTION A,B</span> 然后数据行 <span style="font-family:var(--mono)">x1,y1/x2,y2/...</span></p>
+<p>A=自变量(常用RN1);B=函数形式(Dn离散型/Cn连续型,n=控制点数);数据行X从小到大,逗号分XY,斜线分各点。</p>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">① 离散值函数(Dn) — 阶梯型</h3>
+<div class="code-block">
+<div class="ct">离散值函数 · X用累计概率</div>
+<div><span class="c-name">FN_BAR</span> <span class="c-kw">FUNCTION</span> <span class="c-val">RN1,D5</span></div>
+<div><span class="c-val">0.15,3/0.4,4/0.7,5/0.9,6/1,7</span></div>
+<div><span class="c-cm">; RN1在[0,0.15)返回3;[0.15,0.4)返回4...</span></div>
+</div>
+<p style="font-size:13px">来源:观察到100位顾客,15位间隔3,25位间隔4,30位间隔5,20位间隔6,10位间隔7。累计概率0.15/0.4/0.7/0.9/1。</p>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">② 连续值函数(Cn) — 折线型</h3>
+<div class="code-block">
+<div class="ct">连续值函数 · 线性插值</div>
+<div><span class="c-name">FN_BAR</span> <span class="c-kw">FUNCTION</span> <span class="c-val">RN1,C6</span></div>
+<div><span class="c-val">0,0/0.15,3/0.4,4/0.7,5/0.9,6/1,7</span></div>
+<div><span class="c-cm">; 各点用直线相连,中间值线性插值</span></div>
+</div>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">③ 指数分布函数</h3>
+<div class="code-block">
+<div class="ct">指数分布(均值为10)</div>
+<div><span class="c-name">EXPON</span> <span class="c-kw">FUNCTION</span> <span class="c-val">RN1,C24</span></div>
+<div><span class="c-val">0,0/.1,.104/.2,.222/.3,.355/.4,.509/.5,.69</span></div>
+<div><span class="c-val">/.6,.916/.7,1.2/.75,1.38/.8,1.6/.84,1.83/.88,2.12</span></div>
+<div><span class="c-val">/.9,2.3/.92,2.52/.94,2.81/.95,2.99/.96,3.2/.97,3.5</span></div>
+<div><span class="c-val">/.98,3.9/.99,4.6/.995,5.3/.998,6.2/.999,7</span></div>
+<div><span class="c-cm">; 使用:ADVANCE 10#FN$EXPON (#是乘号)</span></div>
+</div>
+<div class="callout callout-warn">
+<div class="cl">GENERATE/ADVANCE中函数的特殊规则</div>
+<p>这两个模块中,若第2个参数是<strong>函数SNA码</strong>,则两参数关系为<strong>A×B</strong>(不是A±B)。所以指数分布用 ADVANCE 10#FN$EXPON 或 ADVANCE FN$EXPON,10。</p>
+</div>
+</div>
+</div>
+
+<div class="section" id="c4-3" data-section-id="c4-3" data-section-name="TEST/GATE/SELECT">
+<div class="section-header">
+<span class="section-num">4.3</span>
+<h2 class="section-title">TEST / GATE / SELECT <span class="tag tag-exam">执行规则要懂</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+
+<div class="callout callout-must">
+<div class="cl">TEST — 比较两个数值</div>
+<p><span style="font-family:var(--mono)">TEST O A,B,C</span></p>
+<p>O=运算符(E相等/NE不等/L小于/LE小于等于/G大于/GE大于等于);A,B=比较对象;C=不满足时去的地址。</p>
+<p><strong>执行规则</strong>:按O比较A和B,满足则通过进下一模块;不满足则去C;<strong>若C省略则实体停在上一模块等待</strong>,直到条件满足。</p>
+</div>
+
+<div class="callout callout-must">
+<div class="cl">GATE — 测试固定实体状态</div>
+<p><span style="font-family:var(--mono)">GATE O A,B</span></p>
+<p>O=状态码(U占用/NU未占用/I空闲;SF满/SNF不满/SE空/SNE非空;LS开/LR关);A=实体名;B=不满足时去的地址(省略则等待)。</p>
+<p>GATE比TEST效率高:只在状态变化时才测试。能用GATE就不用TEST。</p>
+</div>
+
+<div class="callout callout-must">
+<div class="cl">SELECT — 从多个实体选一个(六参数要懂)</div>
+<p><span style="font-family:var(--mono)">SELECT O A,B,C,D,E,F</span></p>
+<p><strong>A</strong>=存放所选实体号的参数 / <strong>B</strong>=扫描最小编号 / <strong>C</strong>=扫描最大编号 / <strong>D</strong>=比较数值 / <strong>E</strong>=实体族名(S存储器/Q队列/F设施) / <strong>F</strong>=找不到时的去处</p>
+<p><strong>三种模式</strong>:</p>
+<p>关系模式(O=E/NE/G/GE/L/LE):选第一个满足关系的</p>
+<p>极值模式(O=MAX/MIN):选最大/最小,D和F省略</p>
+<p>逻辑模式(O=FNV/FV/SE/SF/LS/LR等):选满足逻辑条件的,D和E省略</p>
+</div>
+<div class="code-block">
+<div class="ct">SELECT 示例</div>
+<div><span class="c-kw">SELECT</span> <span class="c-val">MIN 1,1,4,,Q</span>  <span class="c-cm">; 1~4号队列选最短的,号码存入参数1</span></div>
+<div><span class="c-kw">SELECT</span> <span class="c-val">E 2,1,3,0,F</span>   <span class="c-cm">; 1~3号设施找状态=0(闲)的,号存参数2,全忙则参数2置0</span></div>
+<div><span class="c-kw">SELECT</span> <span class="c-val">NU 1,2,5</span>      <span class="c-cm">; 2~5号设施找空闲的,最小号存参数1</span></div>
+</div>
+</div>
+
+<div class="section" id="c4-4" data-section-id="c4-4" data-section-name="第4章例题精讲">
+<div class="section-header">
+<span class="section-num">4.4</span>
+<h2 class="section-title">例题精讲</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 4.3</span><span class="ex-tag">条件结束 · GATE+LOGIC+TEST</span></div>
+<div class="example-body">
+<div class="example-q">理发店营业8小时(480分钟),停业前进入的顾客必须服务完才关门。求理发师关门时间。</div>
+<div class="code-block">
+<div class="ct">逻辑开关控制营业 + TEST判断结束</div>
+<div>       <span class="c-kw">INITIAL</span>  <span class="c-val">LS1</span>   <span class="c-cm">; 初始化逻辑开关1为打开(营业)</span></div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">16,9</span></div>
+<div>       <span class="c-kw">GATE</span> <span class="c-val">LS</span>   <span class="c-val">1,OUT</span> <span class="c-cm">; 开关开则进,关则去OUT</span></div>
+<div><span class="c-label">ADD_JR</span> <span class="c-kw">QUEUE</span>    <span class="c-name">Q_BAR</span></div>
+<div>       <span class="c-kw">SEIZE</span>    <span class="c-name">F_BAR</span></div>
+<div>       <span class="c-kw">DEPART</span>   <span class="c-name">Q_BAR</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">15,7</span></div>
+<div><span class="c-label">ADD_DONE</span> <span class="c-kw">RELEASE</span> <span class="c-name">F_BAR</span></div>
+<div>       <span class="c-kw">TERMINATE</span></div>
+<div><span class="c-label">OUT</span>    <span class="c-kw">TERMINATE</span>     <span class="c-cm">; 停业后到达的顾客离开</span></div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">480</span>   <span class="c-cm">; 营业8小时定时器</span></div>
+<div>       <span class="c-kw">LOGIC R</span> <span class="c-val">1</span>     <span class="c-cm">; 8小时到,关开关</span></div>
+<div>       <span class="c-kw">TEST E</span> <span class="c-val">N$ADD_JR,N$ADD_DONE</span> <span class="c-cm">; 进入=完成?</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span>  <span class="c-cm">; 都完成则结束仿真</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">1</span></div>
+</div>
+<div class="callout callout-info">
+<div class="cl">考点:条件控制法</div>
+<p>用N$ADD_JR(进入服务的顾客数)和N$ADD_DONE(完成服务的顾客数)是否相等,判断停业后是否所有顾客都服务完。结果:480分钟停业,545.702分钟才关门。这是第三种控制仿真结束的方法(条件控制法)。</p>
+</div>
+</div>
+</div>
+
+<div class="example">
+<div class="example-header"><span class="ex-id">例 4.7</span><span class="ex-tag">★综合大题 · 超市购物(多技术综合)</span></div>
+<div class="example-body">
+<div class="example-q">超市,顾客30±10秒到达,50个篮子(无篮则离开)。三巷道:巷1进入概率60%滞留5~7分选3~5件,巷2概率55%滞留8~12分选2~4件,巷3概率50%滞留3~7分选0~4件。购物后选最短队列付款,付款时间=件数×6秒。仿真8小时。</div>
+<div class="code-block">
+<div class="ct">综合应用:STORAGE+BOTH+TRANSFER概率+TEST+VARIABLE+参数累加</div>
+<div><span class="c-label">S_GWL</span>  <span class="c-kw">STORAGE</span>  <span class="c-val">50</span>   <span class="c-cm">; 50个篮子</span></div>
+<div><span class="c-label">V_FK</span>   <span class="c-kw">VARIABLE</span> <span class="c-val">P1#6</span> <span class="c-cm">; 付款时间=件数×6</span></div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">30,10</span></div>
+<div>       <span class="c-kw">ASSIGN</span>   <span class="c-val">1,0</span>   <span class="c-cm">; 参数1存购物件数,初始0</span></div>
+<div>       <span class="c-kw">TRANSFER</span> <span class="c-val">BOTH,,ADD_BYE</span> <span class="c-cm">; 没篮子则离开</span></div>
+<div>       <span class="c-kw">ENTER</span>    <span class="c-name">S_GWL</span><span class="c-cm">; 取篮子</span></div>
+<div>       <span class="c-kw">TRANSFER</span> <span class="c-val">0.4,,ADD_TD2</span> <span class="c-cm">; 巷1: 60%进(0.4不进)</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">6,1</span></div>
+<div>       <span class="c-kw">ASSIGN</span>   <span class="c-val">1+,(3+RN1@3)</span> <span class="c-cm">; 累加3~5件</span></div>
+<div><span class="c-label">ADD_TD2</span> <span class="c-kw">TRANSFER</span> <span class="c-val">0.45,,ADD_TD3</span> <span class="c-cm">; 巷2: 55%进</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">10,2</span></div>
+<div>       <span class="c-kw">ASSIGN</span>   <span class="c-val">1+,(2+RN2@3)</span> <span class="c-cm">; 累加2~4件</span></div>
+<div><span class="c-label">ADD_TD3</span> <span class="c-kw">TRANSFER</span> <span class="c-val">0.5,,ADD_FK</span> <span class="c-cm">; 巷3: 50%进</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">5,2</span></div>
+<div>       <span class="c-kw">ASSIGN</span>   <span class="c-val">1+,(RN3@5)</span> <span class="c-cm">; 累加0~4件</span></div>
+<div><span class="c-label">ADD_FK</span> <span class="c-kw">TEST GE</span> <span class="c-val">P1,1,ADD_LV</span> <span class="c-cm">; 没买东西则放回篮子离开</span></div>
+<div>       <span class="c-kw">TEST L</span> <span class="c-val">Q1,Q2,ADD_Q2</span> <span class="c-cm">; 选短队列</span></div>
+<div>       <span class="c-kw">ASSIGN</span>   <span class="c-val">2,1</span>  <span class="c-cm">; 队列/设施号存参数2</span></div>
+<div>       <span class="c-kw">TRANSFER</span> <span class="c-val">,ADD_Q</span></div>
+<div><span class="c-label">ADD_Q2</span> <span class="c-kw">ASSIGN</span>   <span class="c-val">2,2</span></div>
+<div><span class="c-label">ADD_Q</span>  <span class="c-kw">QUEUE</span>    <span class="c-name">P2</span>   <span class="c-cm">; 按参数2排队</span></div>
+<div>       <span class="c-kw">SEIZE</span>    <span class="c-name">P2</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">V$V_FK</span> <span class="c-cm">; 付款时间</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-name">P2</span></div>
+<div>       <span class="c-kw">DEPART</span>   <span class="c-name">P2</span></div>
+<div><span class="c-label">ADD_LV</span> <span class="c-kw">LEAVE</span>    <span class="c-name">S_GWL</span><span class="c-cm">; 放回篮子</span></div>
+<div><span class="c-label">ADD_BYE</span> <span class="c-kw">TERMINATE</span></div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">3600</span> <span class="c-cm">; 运行8小时(单位秒)需配合,这里简化</span></div>
+</div>
+<div class="callout callout-warn">
+<div class="cl">这道题综合考点(高频综合题模板)</div>
+<p>① 篮子=存储器,BOTH模式判断有无篮子;② 每巷道TRANSFER概率进入;③ 购物件数用参数累加(@是整除取随机数);④ 选最短队列用TEST L比较;⑤ 付款时间用VARIABLE定义=件数×6;⑥ 用参数2存队列号实现动态选队列。</p>
+</div>
+</div>
+</div>
+
+<div class="subsection" style="margin-top:1.8rem">
+<h3 class="subsection-title">课后习题（第4章 · 综合编程题）</h3>
+<p style="font-size:13px;color:var(--ink-faint)">第4章习题综合运用SNA码、FUNCTION、TEST/GATE/SELECT。题目原文 + 解题思路如下。</p>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">4.1</span><span class="hw-qtext">一库存系统采用定量订购法管理，再订货点(最低订货点)为120，每次订货500，货物延迟5±2天到达。期初库存为700。日需求量服从均值为50的指数分布(取整数)。试对该系统仿真100天，求平均日库存量。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>用<strong>SAVEVALUE</strong>记录库存量(期初700)。每天产生需求(指数分布FUNCTION)，库存减需求。<strong>TEST</strong>判断库存是否≤120(再订货点)，是则订货(延迟5±2天后库存+500)。用QTABLE或TABLE统计日库存分布。需求取整用@运算。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">4.2</span><span class="hw-qtext">纺织工厂三道工序生产马海毛纱：减压器框架(5个,38±12分)、细纱机(40个,320±120分)、线圈框架(8个,64±24分)。原材料到达速率每12分钟。各工序间初始压缩材料100单位、纱材料50单位，成品纱50单位。完成材料用200单位货柜来装，每16小时调运一次。仿真800小时，确定三种机器使用率，找出压缩材料、纱材料、成品纱平均库存。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>三个存储器(各工序机器数=容量)串联。用SAVEVALUE记录三种半成品库存。货柜调运用GENERATE定时器(每16小时)。机器使用率从SR码读取。半成品库存用QTABLE统计。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">4.3</span><span class="hw-qtext">加油站供三个级别燃油(家庭取暖、轻工业、运输用)，每级别有对应油泵。订单燃油数量3000~5000加仑均匀分布，每次增加10加仑。站点最多容纳12辆车。汽车到达间隔18分钟(指数分布)，仿真5天。加油时间由油泵效率(三种油每1000加仑需6/5/7分钟)、订单大小、开始时已容纳车辆数(每辆额外30秒)、2分钟准备安装时间决定。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>站点容量=存储器(STORAGE 12)。三种油用TRANSFER概率或FUNCTION分流到不同油泵。加油时间用<strong>VARIABLE</strong>计算(订单量×效率系数 + 已有车数×30秒 + 120秒准备)。订单大小用VARIABLE随机生成。指数分布到达用FUNCTION。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">4.4</span><span class="hw-qtext">银行有4位职员，每个职员台前可独立排队，顾客选较短的队排队。有4类业务(频率0.4/0.1/0.2/0.3，服务时间120±60/400±150/600±200/200±120秒)。顾客到达间隔服从指数分布(均值150秒)，统计4个柜台职员利用率。预热1小时，再仿真8小时。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>4个独立队列+4个设施(参考独立队列模式)。用<strong>SELECT MIN</strong>选最短队列(SELECT MIN 1,1,4,,Q)。业务类型用FUNCTION(频率分布D4)，服务时间按类型用FUNCTION确定。到达用指数分布FUNCTION。<strong>预热</strong>:START预热1小时→RESET→START 8小时。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">4.5</span><span class="hw-qtext">儿童游乐中心宇宙飞船场，每次容纳30位儿童，每场运行15分钟。入场口一道门，儿童到达时若飞船运行则排队，运行结束门自动开。每当进入30名或门打开后5分钟则自动关闭，飞船开始运行。早8点营业，门是打开的，迎接第一批儿童，两位儿童相继到达平均40秒(指数分布)。仿真一天8小时，统计飞船共运营几场。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>用<strong>逻辑开关LOGIC</strong>控制门的开关(LS=开/LR=关)。儿童用<strong>GATE LS</strong>测试门是否开。飞船容量30用计数器，满30或开门5分钟则LOGIC R关门。运营场数用SAVEVALUE计数。涉及GATHER/ASSEMBLE思想(等30个或定时)。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">4.6</span><span class="hw-qtext">顾客乘车去超市购物。停车场容纳650辆，没车位则离开。从停车场到超市60秒。选购5~100件商品(均匀)。≤10件用购物篮(70个)，&gt;10件用购物车(650辆)，没车没篮则等。消费时间取决于数量(每件10秒)。18个付款台(1号特快，2~18普通)。&gt;10件选17个普通台最短的，≤10件可选特快或普通(特快队长&gt;普通最短2.5倍时选普通)。付款时间每件2秒外加25/30/35秒(三种付款方式概率相同)。仿真营业12小时。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>超市综合大题，类似例4.7但更复杂。停车场/购物篮/购物车都=存储器。用BOTH判断资源、TEST比较队列(含2.5倍判断)、SELECT MIN选最短台、VARIABLE算付款时间、参数累加件数。付款方式用TRANSFER三概率。</div>
+</div>
+
+<div class="hw-item star-item">
+<div class="hw-q"><span class="hw-num">4.7</span><span class="hw-qtext">港口三泊位(1/2/3)。泊位1容纳2艘小船或1艘中船；泊位2、3容纳1大船或2中船或4小船。船到达间隔26小时(指数)。小中大船比例5:3:2。中小船不去排队大船等待的泊位。优先级大船&gt;中船&gt;小船。大船进出2/3号泊位需涨潮(低水位持续3小时,高水位10小时)。卸货时间(指数)小/中/大=15/30/45小时,装货(均匀)24±6/36±10/56±12。仿真500天，统计各型船在泊位时间和三泊位利用率。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>港口综合题(对应正文港口模型)。三泊位用存储器，按容量(小船按1、中船按2、大船按4计算占用量)。船型用FUNCTION分流(比例5:3:2)。优先级用PRIORITY。水位用逻辑开关+定时器控制(GATE LS判断涨潮)。各型船时间用QTABLE统计。综合用到FUNCTION+PRIORITY+GATE+多资源ENTER。</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ 第5章 ═══════════ -->
+<div class="chapter" data-page="5">
+<div class="chapter-banner">
+<div class="cb-num">CHAPTER 05</div>
+<div class="cb-title">高级GPSSWorld语言</div>
+<div class="cb-meta">考1题 · LOOP高频必会 · 高级=中级+数据统计</div>
+</div>
+
+<div class="section" id="c5-1" data-section-id="c5-1" data-section-name="TABLE/TABULATE">
+<div class="section-header">
+<span class="section-num">5.1</span>
+<h2 class="section-title">TABLE / TABULATE</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="callout callout-must">
+<div class="cl">TABLE定义 + TABULATE采样</div>
+<p><span style="font-family:var(--mono)">NAME TABLE A,B,C,D</span> → A=统计项(如M1居留时间) B=首段上界 C=段宽 D=段数</p>
+<p><span style="font-family:var(--mono)">TABULATE A,B</span> → A=表格名,实体经过时记录统计值</p>
+</div>
+<div class="example">
+<div class="example-header"><span class="ex-id">例 5.1</span><span class="ex-tag">表格统计逗留时间</span></div>
+<div class="example-body">
+<div class="example-q">单理发店(同例3.2),统计顾客逗留时间分布。仿真200个顾客。</div>
+<div class="code-block">
+<div class="ct">TABLE统计M1(居留时间)</div>
+<div><span class="c-label">T_BAR</span>  <span class="c-kw">TABLE</span>    <span class="c-val">M1,5,10,10</span> <span class="c-cm">; 统计M1,首段上界5,段宽10,共10段</span></div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">16,9</span></div>
+<div>       <span class="c-kw">SEIZE</span>    <span class="c-val">1</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">15,7</span></div>
+<div>       <span class="c-kw">RELEASE</span>  <span class="c-val">1</span></div>
+<div>       <span class="c-kw">TABULATE</span> <span class="c-name">T_BAR</span> <span class="c-cm">; 服务完后统计逗留时间</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">200</span></div>
+</div>
+<div class="callout callout-warn">
+<div class="cl">TABULATE位置很重要</div>
+<p>放在RELEASE之后统计的M1是完整逗留时间(到达到离开)。若放在SEIZE之后ADVANCE之前,统计的是排队等待时间。位置不同结果不同。</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="section" id="c5-2" data-section-id="c5-2" data-section-name="LOOP循环">
+<div class="section-header">
+<span class="section-num">5.2</span>
+<h2 class="section-title">★LOOP循环 <span class="tag tag-exam">高频必会</span></h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="callout callout-must">
+<div class="cl">LOOP A,B 执行规则</div>
+<p><span style="font-family:var(--mono)">LOOP A,B</span> → 参数A的值<strong>先减1</strong>,然后判断:若&gt;0则跳到标号B;若≤0则继续向下执行。</p>
+<p>A=控制循环次数的参数号(必须已存在且为正);B=循环体起始模块标号。</p>
+</div>
+<div class="example">
+<div class="example-header"><span class="ex-id">书中例子</span><span class="ex-tag">LOOP基础用法</span></div>
+<div class="example-body">
+<div class="code-block">
+<div class="ct">累加5次</div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">10</span></div>
+<div>       <span class="c-kw">ASSIGN</span>   <span class="c-val">1,5</span>   <span class="c-cm">; 参数1=循环次数5</span></div>
+<div><span class="c-label">LP</span>     <span class="c-kw">SAVEVALUE</span> <span class="c-val">1+,P1</span> <span class="c-cm">; 保存值1 += 参数1</span></div>
+<div>       <span class="c-kw">LOOP</span>     <span class="c-val">1,LP</span>  <span class="c-cm">; 参数1减1,>0回LP(注意A用"1"不是"P1")</span></div>
+<div>       <span class="c-kw">TERMINATE</span> <span class="c-val">1</span></div>
+<div>       <span class="c-kw">START</span>    <span class="c-val">1</span></div>
+</div>
+<div class="callout callout-info">
+<div class="cl">结果分析</div>
+<p>SAVEVALUE执行5次:第1次P1=5加5,第2次P1=4加4...因为LOOP每次让P1减1。最终保存值=5+4+3+2+1=15。</p>
+<p><strong>易错</strong>:LOOP的A参数写"1"(参数号)不是"P1"(参数值)。</p>
+</div>
+</div>
+</div>
+</div>
+
+<div class="section" id="c5-3" data-section-id="c5-3" data-section-name="SPLIT/ASSEMBLE/GATHER">
+<div class="section-header">
+<span class="section-num">5.3</span>
+<h2 class="section-title">SPLIT / ASSEMBLE / GATHER / MATCH</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>模块</th><th>格式</th><th>功能</th></tr></thead>
+<tbody>
+<tr><td>SPLIT</td><td>A,B,C</td><td>复制A个子体,转去标号B;母体继续。母子体共享装配编号A1</td></tr>
+<tr><td>ASSEMBLE</td><td>A</td><td>等A个<strong>相同装配号</strong>实体到齐,<strong>合并为1个</strong>(消耗其余A-1个)</td></tr>
+<tr><td>GATHER</td><td>A</td><td>等A个实体到齐,<strong>全部放行</strong>(都不消耗,不要求装配号相同)</td></tr>
+<tr><td>MATCH</td><td>LABEL</td><td>两进程同步点,配对实体互等</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-warn">
+<div class="cl">★ASSEMBLE vs GATHER(必考区分点)</div>
+<p><strong>ASSEMBLE A</strong>:A个相同装配编号实体到齐,合并为1个继续,其余被<strong>消除</strong>。(消耗实体)</p>
+<p><strong>GATHER A</strong>:A个实体到齐,<strong>全部</strong>继续,都不消除,不要求装配编号相同。(纯同步,不消耗)</p>
+</div>
+<div class="callout callout-info">
+<div class="cl">SPLIT+ASSEMBLE典型场景</div>
+<p>顾客到达后同时进行多个并行服务(如洗头+修指甲),全部完成后再付款。SPLIT复制子体走不同服务路径,ASSEMBLE等所有子体完成后合并。</p>
+</div>
+</div>
+
+<div class="section" id="c5-4" data-section-id="c5-4" data-section-name="综合例题">
+<div class="section-header">
+<span class="section-num">5.4</span>
+<h2 class="section-title">综合例题</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="example">
+<div class="example-header"><span class="ex-id">例 5.x</span><span class="ex-tag">★港口模型 · 高级综合</span></div>
+<div class="example-body">
+<div class="example-q">港口有新旧两种船,新船在第一卸货区(2泊位)卸货1±0.1天,旧船在第二卸货区(6泊位)卸货1.5±0.2天。需拖轮(3只)就位/离位。统计船等待泊位时间分布,仿真100条船离港。</div>
+<div class="code-block">
+<div class="ct">FUNCTION+QTABLE+GATE+TEST+多资源ENTER</div>
+<div><span class="c-label">FN_1</span>   <span class="c-kw">FUNCTION</span> <span class="c-val">RN1,C8</span> <span class="c-cm">; 船到达间隔</span></div>
+<div><span class="c-val">0,125/0.1,175/0.22,225/0.4,275/0.55,325/0.78,375/0.9,425/1,475</span></div>
+<div><span class="c-label">S_Berth1</span> <span class="c-kw">STORAGE</span> <span class="c-val">2</span> <span class="c-cm">; 第一卸货区2泊位</span></div>
+<div><span class="c-label">S_Berth2</span> <span class="c-kw">STORAGE</span> <span class="c-val">6</span> <span class="c-cm">; 第二卸货区6泊位</span></div>
+<div><span class="c-label">S_Tow</span>  <span class="c-kw">STORAGE</span>  <span class="c-val">3</span> <span class="c-cm">; 3只拖轮</span></div>
+<div><span class="c-label">T_NEWSHIP</span> <span class="c-kw">QTABLE</span> <span class="c-val">Q_BERTH1,0,100,20</span> <span class="c-cm">; 统计新船等待</span></div>
+<div><span class="c-label">T_OLDSHIP</span> <span class="c-kw">QTABLE</span> <span class="c-val">Q_BERTH2,0,100,20</span></div>
+<div>       <span class="c-kw">GENERATE</span> <span class="c-val">FN$FN_1</span> <span class="c-cm">; 按函数产生船</span></div>
+<div>       <span class="c-kw">TRANSFER</span> <span class="c-val">0.7,,ADD_OLD</span> <span class="c-cm">; 区分新旧船</span></div>
+<div>       <span class="c-kw">QUEUE</span>    <span class="c-name">Q_BERTH1</span></div>
+<div>       <span class="c-kw">GATE SNF</span> <span class="c-val">S_BERTH1</span> <span class="c-cm">; 测第一区有空泊位</span></div>
+<div>       <span class="c-kw">DEPART</span>   <span class="c-name">Q_BERTH1</span></div>
+<div>       <span class="c-kw">TEST GE</span> <span class="c-val">R$S_TOW,2</span> <span class="c-cm">; 有空泊位再测有空拖轮</span></div>
+<div>       <span class="c-kw">ENTER</span>    <span class="c-name">S_BERTH1</span> <span class="c-cm">; 占泊位</span></div>
+<div>       <span class="c-kw">ENTER</span>    <span class="c-name">S_TOW,2</span> <span class="c-cm">; 占2只拖轮就位</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">30</span>   <span class="c-cm">; 拖船就位时间</span></div>
+<div>       <span class="c-kw">LEAVE</span>    <span class="c-name">S_TOW,2</span> <span class="c-cm">; 腾出拖轮</span></div>
+<div>       <span class="c-kw">ADVANCE</span>  <span class="c-val">1440,144</span> <span class="c-cm">; 卸货</span></div>
+<div>       <span class="c-cm">; ...离位拖船、LEAVE泊位、TERMINATE...</span></div>
+</div>
+<div class="callout callout-info">
+<div class="cl">综合考点</div>
+<p>这道题把FUNCTION(到达间隔)、QTABLE(队列统计)、GATE SNF(测存储器不满)、TEST GE(测拖轮余量)、多个ENTER/LEAVE(泊位+拖轮双资源)全用上了,是高级综合题的典型。</p>
+</div>
+</div>
+
+<div class="subsection" style="margin-top:1.8rem">
+<h3 class="subsection-title">课后习题（第5章 · 高级综合题）</h3>
+<p style="font-size:13px;color:var(--ink-faint)">第5章习题综合运用TABLE统计、SPLIT/ASSEMBLE复制装配、LOOP等。题目原文 + 解题思路如下。</p>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">5.1</span><span class="hw-qtext">一理发店3位理发师、2位烫发师。男顾客6±3分钟到达找理发师理发(15±5分)，然后到柜台付8元；女顾客8±3分钟到达，20%理发(20±5分)，80%烫发(30±5分)，付费理发10元烫发50元，付款时间2±1分。模拟100天(每天8小时)，用表格统计每天收入分布。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>理发师/烫发师=存储器(STORAGE 3/2)。男女顾客两个GENERATE。女顾客用TRANSFER .2分流理发/烫发。用<strong>SAVEVALUE</strong>累计每天收入(理发10/烫发50等)，每天结束用<strong>TABLE+TABULATE</strong>统计收入，然后清零。柜台付费=设施。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">5.2</span><span class="hw-qtext">零售商店每天销售15±10件货物，最低订货点120件，每次订货150件，货物延迟6~10天到达(分布见表)。库存容量300，期初库存150。仿真100天，统计每天的缺货等待时间分布和库存分布。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>用SAVEVALUE管理库存。每天GENERATE产生销售需求(15±10)，库存减。TEST判断库存≤120则订货(延迟用FUNCTION6~10天，到货后库存+150)。缺货时记录等待时间，用TABLE统计缺货等待和库存分布。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">5.3</span><span class="hw-qtext">库存控制系统，工厂仓库向工厂订货，经销站向工厂仓库订货。提前期：工厂到工厂仓库4周，工厂仓库到经销站1周。通过经济订购批量和订货点控制。各点初始库存、订货点、批量、每周需求和标准差见表(需求服从正态分布)。仿真75周。统计3个经销站和工厂仓库库存分布、每月实际销售分布、判断是否符合8年一次缺货政策。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>多级库存系统。每个仓库用一组SAVEVALUE管理库存。需求用正态分布(可用多个RN求和近似或FUNCTION)。订货延迟用ADVANCE模拟提前期。多级订货关系用逻辑判断(经销站缺货向工厂仓库订，工厂仓库向工厂订)。用TABLE统计各级库存分布。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">5.4</span><span class="hw-qtext">某工厂生产一件机器，由3个部件组成，分别由3个车间生产。部件生产完送检验部试装，不合格退回重新加工(返工件高优先级)，合格则装配。订单到达每40±10小时一份，3部件生产时间20±5/15±5/25±10小时，装配25±10小时。3种部件返工概率及时间见表(0.85无须返工/0.04返1/0.08返2/0.03返3)。仿真完成1000份订单。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>典型<strong>SPLIT+ASSEMBLE</strong>题。订单到达后SPLIT复制3个子体(代表3个部件)走不同车间生产。每个部件生产后检验，用FUNCTION判断返工(返工用TRANSFER回车间+PRIORITY高优先级)。三部件都完成后<strong>ASSEMBLE 3</strong>合并，再装配。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">5.5</span><span class="hw-qtext">制造商根据订单生产离心抽水机。订单平均5小时(指数)到达。订单到达复制两份：原始订单送仓库准备组装发动机(200±100分)，第一份送采购部订抽水机(180±120分)，第二份送车间生产底盘(80±20分)。三个实体都准备好后先测试(50±10分)，所有3个完成后试装配(60分)，然后抽水机涂料(100±30)、发动机涂料(120±30)、底盘镀锌(120±30)，最后组装(150±30)。仿真500份订单，统计处理一份订单的时间分布。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>SPLIT复制2份(共3个实体:原始+2子体)走三条路径。三路径都完成后用<strong>ASSEMBLE 3</strong>(或先MATCH同步)。组装前的"所有3个完成"用GATHER或ASSEMBLE。后续串行工序。用TABLE统计订单处理时间(M1)。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">5.6</span><span class="hw-qtext">运河系统连接两条通航水道，同时只能一艘船通过。第一艘向某方向的驳船通过闸口58分钟，随后同向船46分钟。水闸操作员策略：先一艘向上游再允许一艘向下游。有人建议先6艘向上游再允许6艘向下游。两方向船到达均值120分钟(指数)。仿真两种策略10天，统计两方向船通过闸口时间分布。能否设置更好策略？</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>运河=单设施(同时只一艘)。两方向船两个GENERATE。第一种策略用逻辑开关交替放行。第二种用<strong>计数器+LOOP/GATHER</strong>实现"放6艘"批量控制。第一艘58分钟、后续46分钟用TEST或参数判断是否首艘。用TABLE统计两方向通过时间。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">5.7</span><span class="hw-qtext">铸造厂20个员工处理订单，订单均值1小时(指数)到达。每订单含6~24个组件(均匀)，8种组件出现概率独立(概率和质量见表)。铸造时间=每组件每千克2分钟外加15分钟固定准备。每份订单一员工独立完成。订单调度采用最早到期优先(EDD)。订单到期时间=总铸造时间+流动时间(40~160小时均匀)。仿真600小时，统计到期内完成订单数及延迟时间分布。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>员工=存储器(STORAGE 20)。订单组件数用VARIABLE(6+RN@19)。8种组件用FUNCTION确定质量。铸造时间用VARIABLE计算(质量×2+15)。EDD调度用<strong>LINK/UNLINK用户链</strong>按到期时间排序。到期时间存参数。用TABLE统计延迟分布。</div>
+</div>
+
+<div class="hw-item">
+<div class="hw-q"><span class="hw-num">5.8</span><span class="hw-qtext">货物转运站。大货车从工厂运货卸在固定仓位，经分拣后由小货车运往客户。转运站2个卸货仓位、4个装货仓位，每仓位停一辆。10名工人装卸，装卸一车需2名工人。大小货车先到停车场再经通道(分两半,左出右进,只容两辆小车并行,大车占两通道,大车优先级高于小车,出车优先级高于进车)。大车40分钟、小车20分钟指数到达，装货60±10、卸货70±15，大车过通道8±2、小车6±2分钟。预热6小时再仿真1000小时，统计装货区/卸货区/装卸工利用率和大小车滞留时间分布。</span></div>
+<div class="hw-a"><span class="hw-alabel">思路</span>最复杂综合题。卸货位/装货位=存储器(2/4)，装卸工=存储器(10,每次占2)，通道用存储器+优先级控制。大小车两个GENERATE，大车PRIORITY高。<strong>预热</strong>:START预热6小时→RESET→仿真1000小时。用QTABLE统计大小车滞留时间。综合用到多资源、优先级、预热、统计表格。</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════ 收尾 ═══════════ -->
+<div class="chapter" data-page="6">
+<div class="chapter-banner">
+<div class="cb-num">收尾</div>
+<div class="cb-title">勘误 + 考前清单</div>
+</div>
+
+<div class="section" id="fix" data-section-id="fix" data-section-name="公式勘误">
+<div class="section-header">
+<span class="section-num">⚠</span>
+<h2 class="section-title">公式勘误</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="formula wrong"><div class="fl">❌ 错误写法(请忽略)</div>平均队长 L_q = W / T_E</div>
+<p>之前文档里"L_q = W/T_E"是错的。正确的Little定律是 L=λW,但W这里是累计等待时间不是平均值,不能直接除T_E。手工仿真能直接算的就两个:</p>
+<div class="formula"><div class="fl">✓ 理发师利用率</div>利用率 ρ = B / T_E</div>
+<div class="formula"><div class="fl">✓ 顾客平均等待时间</div>平均等待时间 = W / C</div>
+</div>
+
+<div class="section" id="final" data-section-id="final" data-section-name="考前清单">
+<div class="section-header">
+<span class="section-num">✓</span>
+<h2 class="section-title">考前最终清单</h2>
+<div class="section-tools">
+<button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
+<button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
+<button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>板块</th><th>必须做到</th></tr></thead>
+<tbody>
+<tr><td>概念简答(18分)</td><td>系统/模型/仿真三概念 + 四种策略 + PI是GPSSWorld策略,张口能答</td></tr>
+<tr><td>手工仿真(10分)</td><td>例2.6和习题2.16不看答案独立完成,算出利用率和平均等待时间</td></tr>
+<tr><td>初级模块</td><td>15个核心模块;GENERATE五参数;TRANSFER三模式(含BOTH);RESET预热</td></tr>
+<tr><td>中级语言</td><td>SNA码看懂代码;FUNCTION三种会写;TEST/GATE/SELECT执行规则</td></tr>
+<tr><td>高级语言</td><td>LOOP会写;ASSEMBLE/GATHER区分;TABLE/TABULATE</td></tr>
+<tr><td>写程序(60分)</td><td>例3.6/3.7/3.9/3.10、例4.3/4.7、例5.1、港口模型反复练</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-tip">
+<div class="cl">备考心法</div>
+<p>把课本所有例题+做过的课后习题反复多做几遍。考题基本是书上例题和课后习题改数字或换背景。复习到"看到书上的题能正确写出85%",85分稳了。保住手工仿真10分和概念简答18分不丢,写程序60分尽量多拿。</p>
+</div>
+</div>
+</div>
+
+<!-- 分页控件 -->
+<div class="pagination-bar" id="paginationBar">
+  <button class="pg-btn" id="pgPrev">← 上一章</button>
+  <div class="pg-info">
+    <strong id="pgLabel">考前必看</strong>
+    <div class="pg-dots" id="pgDots"></div>
+  </div>
+  <button class="pg-btn primary" id="pgNext">下一章 →</button>
+</div>
+
+</main>
+</div>
+
+<!-- Floating action buttons -->
+<div class="fab">
+<button class="fab-btn secondary" id="notesBtn" title="查看所有笔记和标记">📋<span class="fab-badge" id="fabBadge" style="display:none">0</span></button>
+<button class="fab-btn" id="dashBtn" title="复习面板">📊</button>
+</div>
+
+<!-- Note modal -->
+<div class="modal-overlay" id="noteModal">
+<div class="modal">
+<div class="modal-header">
+<h3 id="noteModalTitle">添加笔记</h3>
+<button class="modal-close" id="noteClose">×</button>
+</div>
+<div class="modal-body">
+<div class="modal-field">
+<label>所在章节 / 知识点</label>
+<input type="text" id="noteSection" readonly>
+</div>
+<div class="modal-field">
+<label>笔记标题(可选)</label>
+<input type="text" id="noteTitle" placeholder="例:这个TRANSFER模式还没搞懂">
+</div>
+<div class="modal-field">
+<label>笔记内容</label>
+<textarea id="noteContent" placeholder="写下你的疑问、心得、易错点..."></textarea>
+</div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-danger" id="noteDelete" style="display:none">删除</button>
+<button class="btn btn-ghost" id="noteCancel">取消</button>
+<button class="btn btn-primary" id="noteSave">保存</button>
+</div>
+</div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+<div class="dashboard-panel">
+<div class="dash-header">
+<h3>📊 复习面板</h3>
+<button class="modal-close" id="dashClose">×</button>
+</div>
+<div class="dash-body">
+<div class="dash-stat-row">
+<div class="dash-stat"><div class="dash-stat-num" id="statBookmark">0</div><div class="dash-stat-label">书签</div></div>
+<div class="dash-stat"><div class="dash-stat-num" id="statProblem">0</div><div class="dash-stat-label">问题标记</div></div>
+<div class="dash-stat"><div class="dash-stat-num" id="statNote">0</div><div class="dash-stat-label">笔记</div></div>
+</div>
+<div class="dash-section">
+<h4>⚠ 重点问题(需要重点攻克)</h4>
+<div id="dashProblems"></div>
+</div>
+<div class="dash-section">
+<h4>🔖 书签</h4>
+<div id="dashBookmarks"></div>
+</div>
+<div class="dash-section">
+<h4>📝 笔记</h4>
+<div id="dashNotes"></div>
+</div>
+<div class="dash-section">
+<h4>存储位置</h4>
+<div id="storageStatus" style="font-size:12.5px;color:var(--ink-light);background:white;border:1px solid var(--rule);border-radius:3px;padding:.7rem .9rem;margin-bottom:.7rem;line-height:1.6">检测中…</div>
+<div id="fileControls" style="display:none;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem">
+<button class="btn btn-primary" id="bindFile">选择 / 新建存档文件</button>
+<button class="btn btn-ghost" id="reconnectFile" style="display:none">重新连接上次的文件</button>
+<button class="btn btn-ghost" id="unbindFile" style="display:none">解除绑定</button>
+</div>
+</div>
+<div class="dash-section">
+<h4>手动备份</h4>
+<button class="btn btn-ghost" id="exportData" style="margin-right:.5rem">导出 JSON 备份</button>
+<button class="btn btn-ghost" id="importData" style="margin-right:.5rem">导入 JSON 备份</button>
+<input type="file" id="importFileInput" accept="application/json,.json" style="display:none">
+<button class="btn btn-danger" id="clearAll">清空全部</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+// ============ 存储层：文件优先，localStorage 兜底 ============
+const STORAGE_KEY = 'des_review_data_v1';
+const EMPTY = ()=>({bookmarks:{},problems:{},notes:{},lastRead:null});
+
+// 文件句柄状态
+let fileHandle = null;          // File System Access API 句柄
+let fileMode = false;           // 当前是否使用文件存储
+let writeTimer = null;          // 防抖写文件
+const FSA_SUPPORTED = (typeof window.showSaveFilePicker === 'function' && typeof window.showOpenFilePicker === 'function');
+
+// ---- 用 IndexedDB 记住上次选的文件句柄（句柄无法存 localStorage）----
+function idbGet(key){
+  return new Promise((res)=>{
+    try{
+      const r = indexedDB.open('des_review_fs', 1);
+      r.onupgradeneeded = ()=>{ r.result.createObjectStore('handles'); };
+      r.onsuccess = ()=>{
+        const db = r.result;
+        try{
+          const tx = db.transaction('handles','readonly');
+          const g = tx.objectStore('handles').get(key);
+          g.onsuccess = ()=>res(g.result||null);
+          g.onerror = ()=>res(null);
+        }catch(e){ res(null); }
+      };
+      r.onerror = ()=>res(null);
+    }catch(e){ res(null); }
+  });
+}
+function idbSet(key,val){
+  return new Promise((res)=>{
+    try{
+      const r = indexedDB.open('des_review_fs', 1);
+      r.onupgradeneeded = ()=>{ r.result.createObjectStore('handles'); };
+      r.onsuccess = ()=>{
+        const db = r.result;
+        try{
+          const tx = db.transaction('handles','readwrite');
+          tx.objectStore('handles').put(val, key);
+          tx.oncomplete = ()=>res(true);
+          tx.onerror = ()=>res(false);
+        }catch(e){ res(false); }
+      };
+      r.onerror = ()=>res(false);
+    }catch(e){ res(false); }
+  });
+}
+function idbDel(key){
+  return new Promise((res)=>{
+    try{
+      const r = indexedDB.open('des_review_fs', 1);
+      r.onupgradeneeded = ()=>{ r.result.createObjectStore('handles'); };
+      r.onsuccess = ()=>{
+        const db = r.result;
+        try{
+          const tx = db.transaction('handles','readwrite');
+          tx.objectStore('handles').delete(key);
+          tx.oncomplete = ()=>res(true);
+          tx.onerror = ()=>res(false);
+        }catch(e){ res(false); }
+      };
+      r.onerror = ()=>res(false);
+    }catch(e){ res(false); }
+  });
+}
+
+// ---- localStorage 读写 ----
+function lsLoad(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || EMPTY(); }
+  catch(e){ return EMPTY(); }
+}
+function lsSave(d){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }catch(e){} }
+
+// ---- 数据校验：判断 JSON 结构对不对 ----
+function isValidData(o){
+  return o && typeof o==='object'
+    && typeof o.bookmarks==='object' && o.bookmarks!==null
+    && typeof o.problems==='object' && o.problems!==null
+    && typeof o.notes==='object' && o.notes!==null;
+}
+function normalize(o){
+  const e = EMPTY();
+  if(!o||typeof o!=='object') return e;
+  return {
+    bookmarks: (o.bookmarks&&typeof o.bookmarks==='object')?o.bookmarks:{},
+    problems: (o.problems&&typeof o.problems==='object')?o.problems:{},
+    notes: (o.notes&&typeof o.notes==='object')?o.notes:{},
+    lastRead: o.lastRead||null
+  };
+}
+
+// ---- 文件读写 ----
+async function readFromHandle(h){
+  const f = await h.getFile();
+  const text = await f.text();
+  if(!text.trim()) return EMPTY();
+  const parsed = JSON.parse(text);
+  return normalize(parsed);
+}
+async function writeToHandle(h, d){
+  const w = await h.createWritable();
+  await w.write(JSON.stringify(d, null, 2));
+  await w.close();
+}
+async function verifyPermission(h, readWrite){
+  const opts = { mode: readWrite ? 'readwrite' : 'read' };
+  if((await h.queryPermission(opts)) === 'granted') return true;
+  if((await h.requestPermission(opts)) === 'granted') return true;
+  return false;
+}
+
+// ---- 统一保存接口（带防抖，文件模式实时写回）----
+let data = lsLoad();
+function saveData(d){
+  // 始终同步一份到 localStorage 作为安全副本
+  lsSave(d);
+  if(fileMode && fileHandle){
+    clearTimeout(writeTimer);
+    writeTimer = setTimeout(async ()=>{
+      try{ await writeToHandle(fileHandle, d); updateStorageStatus(); }
+      catch(e){ console.warn('写文件失败，已退回本地副本', e); }
+    }, 400);
+  }
+}
+function loadData(){ return data; } // 兼容旧调用
+
+// 获取所有section信息
+function getSections(){
+  return [...document.querySelectorAll('[data-section-id]')].map(el=>({
+    id: el.dataset.sectionId,
+    name: el.dataset.sectionName,
+    el: el
+  }));
+}
+
+// ============ 渲染状态 ============
+function renderState(){
+  getSections().forEach(sec=>{
+    const bmBtn = sec.el.querySelector('[data-type="bookmark"]');
+    const pbBtn = sec.el.querySelector('[data-type="problem"]');
+    const ntBtn = sec.el.querySelector('[data-type="note"]');
+    if(bmBtn) bmBtn.classList.toggle('active', !!data.bookmarks[sec.id]);
+    if(pbBtn) pbBtn.classList.toggle('active', !!data.problems[sec.id]);
+    if(ntBtn) ntBtn.classList.toggle('has-note', !!data.notes[sec.id]);
+  });
+  // nav bookmarks
+  document.querySelectorAll('.nav-link').forEach(link=>{
+    const sec = link.dataset.sec;
+    link.classList.toggle('has-bookmark', !!data.bookmarks[sec] || !!data.problems[sec]);
+  });
+  // progress (based on lastRead position among sections)
+  updateProgress();
+  updateFabBadge();
+}
+
+function updateProgress(){
+  const secs = getSections();
+  const total = secs.length;
+  let readCount = 0;
+  if(data.lastRead){
+    const idx = secs.findIndex(s=>s.id===data.lastRead);
+    readCount = idx>=0 ? idx+1 : 0;
+  }
+  const pct = total? Math.round(readCount/total*100):0;
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressText').textContent = readCount+' / '+total+' 节';
+}
+
+function updateFabBadge(){
+  const count = Object.keys(data.problems).length;
+  const badge = document.getElementById('fabBadge');
+  if(count>0){ badge.style.display='flex'; badge.textContent=count; }
+  else badge.style.display='none';
+}
+
+// ============ 书签 / 问题标记 ============
+document.querySelectorAll('.bookmark-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const sec = btn.closest('[data-section-id]');
+    const id = sec.dataset.sectionId;
+    const name = sec.dataset.sectionName;
+    const type = btn.dataset.type;
+    if(type==='bookmark'){
+      if(data.bookmarks[id]) delete data.bookmarks[id];
+      else { data.bookmarks[id]={name, time:Date.now()}; data.lastRead=id; }
+    } else if(type==='problem'){
+      if(data.problems[id]) delete data.problems[id];
+      else data.problems[id]={name, time:Date.now()};
+    }
+    saveData(data); renderState();
+  });
+});
+
+// ============ 笔记 ============
+let currentNoteSection = null;
+const noteModal = document.getElementById('noteModal');
+document.querySelectorAll('.note-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const sec = btn.closest('[data-section-id]');
+    currentNoteSection = {id:sec.dataset.sectionId, name:sec.dataset.sectionName};
+    openNoteModal();
+  });
+});
+function openNoteModal(){
+  document.getElementById('noteSection').value = currentNoteSection.name;
+  const existing = data.notes[currentNoteSection.id];
+  document.getElementById('noteTitle').value = existing? existing.title||'' : '';
+  document.getElementById('noteContent').value = existing? existing.content||'' : '';
+  document.getElementById('noteModalTitle').textContent = existing? '编辑笔记' : '添加笔记';
+  document.getElementById('noteDelete').style.display = existing? 'inline-block':'none';
+  noteModal.classList.add('active');
+}
+function closeNoteModal(){ noteModal.classList.remove('active'); }
+document.getElementById('noteClose').addEventListener('click', closeNoteModal);
+document.getElementById('noteCancel').addEventListener('click', closeNoteModal);
+noteModal.addEventListener('click', e=>{ if(e.target===noteModal) closeNoteModal(); });
+document.getElementById('noteSave').addEventListener('click', ()=>{
+  const content = document.getElementById('noteContent').value.trim();
+  const title = document.getElementById('noteTitle').value.trim();
+  if(!content){ closeNoteModal(); return; }
+  data.notes[currentNoteSection.id] = {name:currentNoteSection.name, title, content, time:Date.now()};
+  saveData(data); renderState(); closeNoteModal();
+});
+document.getElementById('noteDelete').addEventListener('click', ()=>{
+  delete data.notes[currentNoteSection.id];
+  saveData(data); renderState(); closeNoteModal();
+});
+
+// ============ 回到上次复习处 ============
+document.getElementById('resumeBtn').addEventListener('click', ()=>{
+  if(data.lastRead){
+    const el = document.querySelector('[data-section-id="'+data.lastRead+'"]');
+    if(el){ el.scrollIntoView({behavior:'smooth', block:'start'}); flashSection(el); }
+  } else {
+    alert('还没有标记复习位置。点击任意章节的"🔖书签"按钮来记录复习进度。');
+  }
+});
+function flashSection(el){
+  el.style.transition='background .3s';
+  el.style.background='#fff8e0';
+  setTimeout(()=>{ el.style.background=''; }, 1200);
+}
+
+// 滚动时记录lastRead
+let scrollTimer;
+window.addEventListener('scroll', ()=>{
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(()=>{
+    const secs = getSections();
+    let current = null;
+    secs.forEach(s=>{ if(window.scrollY >= s.el.offsetTop-120) current=s.id; });
+    if(current){ data.lastRead=current; saveData(data); updateProgress(); }
+  }, 300);
+});
+
+// ============ 复习面板 ============
+const dashboard = document.getElementById('dashboard');
+document.getElementById('dashBtn').addEventListener('click', openDash);
+document.getElementById('notesBtn').addEventListener('click', openDash);
+document.getElementById('dashClose').addEventListener('click', ()=>dashboard.classList.remove('active'));
+dashboard.addEventListener('click', e=>{ if(e.target===dashboard) dashboard.classList.remove('active'); });
+
+function openDash(){
+  document.getElementById('statBookmark').textContent = Object.keys(data.bookmarks).length;
+  document.getElementById('statProblem').textContent = Object.keys(data.problems).length;
+  document.getElementById('statNote').textContent = Object.keys(data.notes).length;
+  renderDashList('dashProblems', data.problems, 'pb', '⚠', '暂无问题标记');
+  renderDashList('dashBookmarks', data.bookmarks, 'bm', '🔖', '暂无书签');
+  renderNotesList();
+  dashboard.classList.add('active');
+}
+function renderDashList(containerId, obj, iconClass, icon, emptyText){
+  const c = document.getElementById(containerId);
+  const keys = Object.keys(obj).sort((a,b)=>obj[b].time-obj[a].time);
+  if(keys.length===0){ c.innerHTML='<div class="dash-empty">'+emptyText+'</div>'; return; }
+  c.innerHTML = keys.map(id=>{
+    const item = obj[id];
+    return '<div class="dash-item"><div class="dash-item-icon '+iconClass+'">'+icon+'</div>'+
+      '<div class="dash-item-content"><div class="dash-item-title" data-goto="'+id+'">'+item.name+'</div>'+
+      '<div class="dash-item-meta">'+new Date(item.time).toLocaleString('zh-CN')+'</div></div>'+
+      '<button class="dash-item-del" data-del="'+(iconClass==='pb'?'problem':'bookmark')+'" data-id="'+id+'">🗑</button></div>';
+  }).join('');
+}
+function renderNotesList(){
+  const c = document.getElementById('dashNotes');
+  const keys = Object.keys(data.notes).sort((a,b)=>data.notes[b].time-data.notes[a].time);
+  if(keys.length===0){ c.innerHTML='<div class="dash-empty">暂无笔记</div>'; return; }
+  c.innerHTML = keys.map(id=>{
+    const n = data.notes[id];
+    return '<div class="dash-item"><div class="dash-item-icon nt">📝</div>'+
+      '<div class="dash-item-content"><div class="dash-item-title" data-goto="'+id+'">'+
+      (n.title? n.title : n.name)+'</div>'+
+      '<div class="dash-item-meta">'+n.name+' · '+new Date(n.time).toLocaleString('zh-CN')+'</div>'+
+      '<div class="dash-item-note">'+escapeHtml(n.content)+'</div></div>'+
+      '<button class="dash-item-del" data-del="note" data-id="'+id+'">🗑</button></div>';
+  }).join('');
+}
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// dashboard interactions
+dashboard.addEventListener('click', e=>{
+  const goto = e.target.dataset.goto;
+  if(goto){
+    const el = document.querySelector('[data-section-id="'+goto+'"]');
+    if(el){ dashboard.classList.remove('active'); el.scrollIntoView({behavior:'smooth'}); flashSection(el); }
+  }
+  const delType = e.target.dataset.del;
+  if(delType){
+    const id = e.target.dataset.id;
+    if(delType==='problem') delete data.problems[id];
+    else if(delType==='bookmark') delete data.bookmarks[id];
+    else if(delType==='note') delete data.notes[id];
+    saveData(data); renderState(); openDash();
+  }
+});
+
+// 导出 / 导入 / 清空
+document.getElementById('exportData').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='离散事件复习记录.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+// 导入备份
+document.getElementById('importData').addEventListener('click', ()=>{
+  document.getElementById('importFileInput').click();
+});
+document.getElementById('importFileInput').addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const parsed = JSON.parse(reader.result);
+      if(!isValidData(parsed)){ alert('文件格式不对，不是有效的复习记录。'); return; }
+      const incoming = normalize(parsed);
+      const bCount = Object.keys(incoming.bookmarks).length;
+      const pCount = Object.keys(incoming.problems).length;
+      const nCount = Object.keys(incoming.notes).length;
+      if(confirm('读取到 '+bCount+' 个书签、'+pCount+' 个问题标记、'+nCount+' 条笔记。\n\n确定[合并]导入吗？（同位置以导入的为准，现有其他记录保留）\n取消则改为[覆盖]——清空现有后再导入。')){
+        data = mergeData(data, incoming);
+      } else {
+        if(confirm('确定要用导入的数据[覆盖]当前全部记录吗？')) data = incoming;
+        else return;
+      }
+      saveData(data); renderState(); openDash();
+      alert('导入完成。');
+    }catch(err){ alert('解析失败：文件不是有效的 JSON。'); }
+  };
+  reader.readAsText(file);
+  e.target.value=''; // 允许重复选同一文件
+});
+function mergeData(base, inc){
+  const out = normalize(base);
+  ['bookmarks','problems','notes'].forEach(k=>{
+    Object.keys(inc[k]).forEach(id=>{ out[k][id] = inc[k][id]; });
+  });
+  out.lastRead = inc.lastRead || out.lastRead;
+  return out;
+}
+document.getElementById('clearAll').addEventListener('click', ()=>{
+  if(confirm('确定清空所有书签、问题标记和笔记吗?此操作不可恢复。')){
+    data = EMPTY();
+    saveData(data); renderState(); openDash();
+  }
+});
+
+// ============ 文件存储绑定 ============
+function updateStorageStatus(){
+  const el = document.getElementById('storageStatus');
+  const controls = document.getElementById('fileControls');
+  const bindBtn = document.getElementById('bindFile');
+  const reconnectBtn = document.getElementById('reconnectFile');
+  const unbindBtn = document.getElementById('unbindFile');
+  if(!FSA_SUPPORTED){
+    el.innerHTML = '⚠ 当前浏览器不支持「绑定本地文件」（Safari、手机浏览器通常不支持）。<br>记录保存在<strong>本浏览器内部</strong>，换浏览器/设备看不到。请用下方「导出 / 导入 JSON 备份」在设备间迁移。';
+    controls.style.display = 'none';
+    return;
+  }
+  controls.style.display = 'flex';
+  if(fileMode && fileHandle){
+    el.innerHTML = '✅ 已绑定本地文件：<strong>'+ (fileHandle.name||'存档文件') +'</strong><br>每次改动会自动写回这个文件。带着它就能在支持的浏览器间同步。';
+    bindBtn.textContent = '更换存档文件';
+    reconnectBtn.style.display = 'none';
+    unbindBtn.style.display = 'inline-block';
+  } else {
+    el.innerHTML = '记录当前保存在<strong>本浏览器内部</strong>。<br>可以「选择 / 新建存档文件」把它落到一个你自己保管的本地文件，之后自动读写。';
+    bindBtn.textContent = '选择 / 新建存档文件';
+    unbindBtn.style.display = 'none';
+    // 若 IndexedDB 里有上次的句柄，显示「重新连接」
+    idbGet('handle').then(h=>{ reconnectBtn.style.display = h ? 'inline-block' : 'none'; });
+  }
+}
+
+// 选择 / 新建存档文件
+document.getElementById('bindFile').addEventListener('click', async ()=>{
+  try{
+    const handle = await window.showSaveFilePicker({
+      suggestedName: '离散事件复习记录.json',
+      types: [{ description:'JSON 存档', accept:{'application/json':['.json']} }]
+    });
+    if(!(await verifyPermission(handle, true))){ alert('没有获得写入权限。'); return; }
+    // 读取该文件已有内容（若是已存在的文件）
+    let fileData = EMPTY();
+    try{ fileData = await readFromHandle(handle); }catch(e){ fileData = EMPTY(); }
+    // 合并策略：文件有内容则询问
+    const fileHasData = Object.keys(fileData.bookmarks).length||Object.keys(fileData.problems).length||Object.keys(fileData.notes).length;
+    const localHasData = Object.keys(data.bookmarks).length||Object.keys(data.problems).length||Object.keys(data.notes).length;
+    if(fileHasData && localHasData){
+      if(confirm('这个文件里已有记录，当前浏览器里也有记录。\n\n确定[合并]两边吗？\n取消则用[文件里的]为准（丢弃当前浏览器里的）。')){
+        data = mergeData(fileData, data);
+      } else {
+        data = fileData;
+      }
+    } else if(fileHasData){
+      data = fileData;
+    } // 否则用当前 data 写入文件
+    fileHandle = handle;
+    fileMode = true;
+    await idbSet('handle', handle);
+    await writeToHandle(fileHandle, data);
+    saveData(data); renderState(); updateStorageStatus(); openDash();
+    alert('已绑定文件，之后改动会自动写回。');
+  }catch(e){
+    if(e.name!=='AbortError') alert('绑定失败：'+e.message);
+  }
+});
+
+// 重新连接上次的文件
+document.getElementById('reconnectFile').addEventListener('click', async ()=>{
+  try{
+    const handle = await idbGet('handle');
+    if(!handle){ alert('没有找到上次绑定的文件记录。'); return; }
+    if(!(await verifyPermission(handle, true))){ alert('没有获得该文件的访问权限。'); return; }
+    const fileData = await readFromHandle(handle);
+    fileHandle = handle;
+    fileMode = true;
+    // 重新连接时以文件内容为准（文件是权威存档）
+    data = fileData;
+    saveData(data); renderState(); updateStorageStatus(); openDash();
+    alert('已重新连接：'+(handle.name||'存档文件'));
+  }catch(e){
+    alert('重新连接失败：'+e.message);
+  }
+});
+
+// 解除绑定
+document.getElementById('unbindFile').addEventListener('click', async ()=>{
+  if(!confirm('解除绑定后，记录将只保存在本浏览器内部（已写入文件的内容仍保留在文件里）。确定？')) return;
+  fileHandle = null; fileMode = false;
+  await idbDel('handle');
+  updateStorageStatus(); openDash();
+});
+
+// nav active state
+const navLinks=document.querySelectorAll('.nav-link');
+function navActive(){
+  const secs=getSections();
+  let c='';
+  secs.forEach(s=>{ if(window.scrollY>=s.el.offsetTop-120) c=s.id; });
+  navLinks.forEach(l=>{ l.classList.remove('active'); if(l.dataset.sec===c) l.classList.add('active'); });
+}
+window.addEventListener('scroll', navActive);
+
+// ============ 启动：尝试自动连回上次的文件 ============
+async function initStorage(){
+  if(FSA_SUPPORTED){
+    const handle = await idbGet('handle');
+    if(handle){
+      // 已有权限则静默读取；否则保持本地数据，等用户点「重新连接」授权
+      try{
+        const opts = {mode:'readwrite'};
+        if((await handle.queryPermission(opts))==='granted'){
+          const fileData = await readFromHandle(handle);
+          fileHandle = handle; fileMode = true; data = fileData;
+        }
+      }catch(e){ /* 文件可能被移动/删除，忽略，用本地数据 */ }
+    }
+  }
+  renderState();
+  navActive();
+  updateStorageStatus();
+}
+initStorage();
+
+// ============ 分页系统 ============
+const PAGE_LABELS = ['考前必看','第1章 绪论','第2章 仿真原理','第3章 初级语言','第4章 中级语言','第5章 高级语言','收尾'];
+const chapters = [...document.querySelectorAll('.chapter[data-page]')];
+const totalPages = chapters.length;
+let currentPage = 0;
+
+function buildDots(){
+  const dotsEl = document.getElementById('pgDots');
+  dotsEl.innerHTML = '';
+  for(let i=0;i<totalPages;i++){
+    const d = document.createElement('button');
+    d.className = 'pg-dot' + (i===currentPage?' active':'');
+    d.title = PAGE_LABELS[i]||('第'+(i+1)+'章');
+    d.addEventListener('click',()=>goToPage(i));
+    dotsEl.appendChild(d);
+  }
+}
+
+function goToPage(n, scroll){
+  currentPage = Math.max(0, Math.min(n, totalPages-1));
+  // 显示/隐藏章节
+  chapters.forEach((ch,i)=>{
+    ch.classList.toggle('active-page', i===currentPage);
+  });
+  // 更新按钮状态
+  document.getElementById('pgPrev').disabled = currentPage===0;
+  document.getElementById('pgNext').disabled = currentPage===totalPages-1;
+  document.getElementById('pgLabel').textContent = PAGE_LABELS[currentPage]||'';
+  // 更新小圆点
+  document.querySelectorAll('.pg-dot').forEach((d,i)=>d.classList.toggle('active',i===currentPage));
+  // 更新侧边栏高亮
+  document.querySelectorAll('.nav-chapter-btn').forEach(btn=>{
+    btn.classList.toggle('active-chapter', parseInt(btn.dataset.gotoPage)===currentPage);
+  });
+  if(scroll!==false) window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('pgPrev').addEventListener('click',()=>goToPage(currentPage-1));
+document.getElementById('pgNext').addEventListener('click',()=>goToPage(currentPage+1));
+
+// 侧边栏章节按钮点击
+document.querySelectorAll('.nav-chapter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>goToPage(parseInt(btn.dataset.gotoPage)));
+});
+
+// 侧边栏 section 链接点击：先跳页再跳锚点
+document.querySelectorAll('.nav-link[data-page-of]').forEach(link=>{
+  link.addEventListener('click', e=>{
+    const p = parseInt(link.dataset.pageOf);
+    if(p !== currentPage){
+      e.preventDefault();
+      goToPage(p, false);
+      setTimeout(()=>{
+        const target = document.querySelector(link.getAttribute('href'));
+        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 50);
+    }
+  });
+});
+
+// "回到上次复习处"也要先切页
+const origResumeBtn = document.getElementById('resumeBtn');
+origResumeBtn.replaceWith(origResumeBtn.cloneNode(true));
+document.getElementById('resumeBtn').addEventListener('click',()=>{
+  if(data.lastRead){
+    const el = document.querySelector('[data-section-id="'+data.lastRead+'"]');
+    if(el){
+      const ch = el.closest('.chapter[data-page]');
+      if(ch) goToPage(parseInt(ch.dataset.page), false);
+      setTimeout(()=>{ el.scrollIntoView({behavior:'smooth',block:'start'}); flashSection(el); }, 80);
+    }
+  } else {
+    alert('还没有标记复习位置。点击任意章节的"🔖书签"按钮来记录复习进度。');
+  }
+});
+
+// dashboard 跳转也修正
+const origDash = dashboard;
+origDash.addEventListener('click', e=>{
+  const goto = e.target.dataset.goto;
+  if(goto){
+    const el = document.querySelector('[data-section-id="'+goto+'"]');
+    if(el){
+      const ch = el.closest('.chapter[data-page]');
+      if(ch) goToPage(parseInt(ch.dataset.page), false);
+      setTimeout(()=>{ dashboard.classList.remove('active'); el.scrollIntoView({behavior:'smooth'}); flashSection(el); }, 80);
+    }
+  }
+}, true);
+
+// 初始化
+buildDots();
+goToPage(0, false);
+</script>
+</body>
+</html>
