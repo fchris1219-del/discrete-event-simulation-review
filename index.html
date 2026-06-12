@@ -224,6 +224,58 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 /* last-read marker */
 .last-read-marker{display:inline-block;background:var(--green);color:white;font-family:var(--mono);font-size:10px;padding:.15rem .45rem;border-radius:2px;margin-left:.5rem;vertical-align:middle}
 
+/* Step list */
+.step-list{margin:1rem 0}
+.step{display:flex;gap:1.1rem;margin-bottom:1rem;align-items:flex-start}
+.step-num{flex-shrink:0;width:28px;height:28px;background:var(--accent);color:white;font-family:var(--mono);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:3px;border-radius:2px}
+.step-content{flex:1}
+.step-title{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:.3rem}
+.step-body{font-size:13.5px;color:var(--ink-light);line-height:1.7}
+
+/* Definition card */
+.def-card{background:white;border:1px solid var(--rule);border-left:4px solid var(--accent);padding:1.1rem 1.4rem;margin-bottom:1.1rem;border-radius:0 3px 3px 0}
+.def-term{font-family:var(--sans);font-weight:700;font-size:14px;color:var(--accent);margin-bottom:.4rem;display:flex;align-items:center;gap:.6rem}
+.def-en{font-family:var(--mono);font-size:11px;color:var(--ink-faint);font-weight:400}
+.def-body{font-size:14px;color:var(--ink-light);line-height:1.75;margin-bottom:.4rem}
+.def-body:last-child{margin-bottom:0}
+.def-example{background:var(--gold-pale);padding:.5rem .9rem;font-size:13px;color:var(--ink-light);border-left:2px solid var(--gold);margin-top:.6rem}
+.def-example::before{content:'例：';font-weight:600;color:#7a5a10}
+.def-note{background:var(--blue-pale);padding:.5rem .9rem;font-size:13px;color:var(--blue);border-left:2px solid var(--blue);margin-top:.6rem}
+.def-note::before{content:'注：';font-weight:600}
+
+/* Strategy cards */
+.strategy-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.3rem 0}
+.strategy-card{border:1px solid var(--rule);background:white;overflow:hidden;border-radius:3px}
+.strategy-card-header{padding:.75rem 1.1rem;font-family:var(--sans);font-weight:700;font-size:13px;color:white}
+.strategy-card-body{padding:.9rem 1.1rem;font-size:13px;color:var(--ink-light);line-height:1.7}
+.strategy-card-body strong{font-size:12px;color:var(--ink);display:block;margin-top:.4rem;margin-bottom:.15rem}
+.strategy-card-body ul{list-style:none}
+.strategy-card-body li{padding:.15rem 0;padding-left:1rem;position:relative}
+.strategy-card-body li::before{content:'·';position:absolute;left:.1rem;font-weight:900}
+.card-es .strategy-card-header{background:#7a3a2a}.card-es .strategy-card-body li::before{color:#7a3a2a}
+.card-as .strategy-card-header{background:#2a5a3a}.card-as .strategy-card-body li::before{color:#2a5a3a}
+.card-tp .strategy-card-header{background:#5a3a7a}.card-tp .strategy-card-body li::before{color:#5a3a7a}
+.card-pi .strategy-card-header{background:var(--blue)}.card-pi .strategy-card-body li::before{color:var(--blue)}
+
+/* Algo box */
+.algo-box{background:#1a1a2e;color:#c8d4e4;padding:1.2rem 1.5rem;font-family:var(--mono);font-size:12.5px;line-height:1.9;margin:.9rem 0;border-radius:3px;overflow-x:auto}
+.algo-box .algo-title{color:#7ab4e4;font-size:11px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid #2a3a4a}
+.algo-comment{color:#5a8a5a}.algo-keyword{color:#e4b47a}.algo-step{color:#7ab4e4}
+.algo-i1{display:block;padding-left:1.5rem}.algo-i2{display:block;padding-left:3rem}
+
+/* Two-col */
+.two-col-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.col-block{background:white;border:1px solid var(--rule);padding:1rem 1.1rem;border-radius:3px}
+.col-block h5{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule)}
+.col-block ul{list-style:none;font-size:13px;color:var(--ink-light)}
+.col-block li{padding:.2rem 0;padding-left:1rem;position:relative}
+.col-block li::before{content:'·';position:absolute;left:.2rem;color:var(--accent);font-weight:700}
+
+/* Compare table colored cells */
+.es-cell{background:#f5ebe8}.as-cell{background:#e8f0ea}.tp-cell{background:#ede8f5}.pi-cell{background:#e8eef5}
+table.compare-full thead tr{background:#1a2a3a}
+table.compare-full td:first-child{background:var(--paper-warm);white-space:nowrap;font-size:12px}
+
 /* Pagination */
 .pagination-bar{display:flex;align-items:center;justify-content:space-between;margin-top:3rem;padding:1.2rem 0;border-top:2px solid var(--rule);gap:1rem}
 .pg-btn{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;font-family:var(--sans);font-size:13px;font-weight:500;background:white;border:1.5px solid var(--rule);border-radius:4px;cursor:pointer;color:var(--ink-light);transition:all .15s;text-decoration:none}
@@ -403,24 +455,96 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 
 <div class="subsection">
-<h3 class="subsection-title">仿真分类（填空/选择）</h3>
-<ul class="clean">
-<li><span class="prio prio-mid">重要</span>按模型特性：连续系统仿真 / 离散事件系统仿真</li>
-<li><span class="prio prio-mid">重要</span>按时钟比例：<strong>实时仿真</strong>（=实际时钟）/ <strong>亚实时仿真</strong>（慢，离线）/ <strong>超实时仿真</strong>（快）</li>
-<li><span class="prio prio-low">了解</span>按计算机类型：模拟 / 数字 / 混合仿真</li>
-</ul>
-<div class="callout callout-info">
-<div class="cl">离散事件系统仿真的目标</div>
-<p>获得系统行为的<strong>统计性能</strong>，而不是状态变量的动态变化过程。因为含随机因素，一次仿真只是一次采样，只有统计意义才有价值。</p>
+<h3 class="subsection-title">仿真分类——四个维度（填空/选择高频）</h3>
+<p style="font-size:13px;color:var(--ink-faint)">从四个维度分类，每个维度都可能出现在填空或选择题中。</p>
+
+<p><strong>① 按模型的构造方式</strong></p>
+<div class="two-col-grid" style="margin-bottom:1rem">
+<div class="col-block">
+<div class="col-block-title">物理仿真</div>
+<ul><li>在实体模型（物理模型）上进行实验</li><li>计算机问世前的主要形式，又称"模拟"</li><li>优点直观形象，缺点成本高</li></ul>
 </div>
+<div class="col-block">
+<div class="col-block-title">数学仿真（计算机仿真）</div>
+<ul><li>在数学模型上进行实验，通过计算机程序实现</li><li>灵活、经济、可重复，今天说的仿真通常指此</li></ul>
+</div>
+</div>
+<p style="font-size:13px;color:var(--ink-faint);margin-bottom:.8rem">还有<strong>半实物仿真</strong>：数学模型与物理模型结合，复杂部分用数学模型，关键部分用实物。</p>
+
+<p><strong>② 按系统模型特性</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>类型</th><th>特征</th><th>描述工具</th><th>仿真目标</th></tr></thead>
+<tbody>
+<tr><td><strong>连续系统仿真</strong></td><td>状态变量连续变化</td><td>微分方程、差分方程</td><td>获得状态变量的动态变化过程</td></tr>
+<tr><td><strong>离散事件系统仿真</strong></td><td>状态只在离散时刻跳跃变化，具有随机性</td><td>概率分布、排队论、ACD</td><td>获得系统行为的<strong>统计性能</strong></td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-info">
+<div class="cl">离散事件系统仿真目标（重要）</div>
+<p>目标是获得系统行为的<strong>统计性能</strong>，而不是状态变量的动态变化过程。因为含随机因素，一次仿真只是一次采样，只有统计意义才有参考价值。</p>
+</div>
+
+<p><strong>③ 按仿真计算机类型</strong></p>
+<div class="table-wrap"><table>
+<thead><tr><th>类型</th><th>特征</th><th>现状</th></tr></thead>
+<tbody>
+<tr><td><strong>模拟计算机仿真</strong></td><td>使用模拟计算机，本质上是并行仿真</td><td>已逐步被淘汰</td></tr>
+<tr><td><strong>数字计算机仿真</strong></td><td>将数学模型用程序实现</td><td>当今主流</td></tr>
+<tr><td><strong>数字模拟混合仿真</strong></td><td>结合两者优点</td><td>已被全数字仿真取代</td></tr>
+</tbody>
+</table></div>
+
+<p><strong>④ 按仿真时钟与实际时钟的比例关系</strong> <span class="tag tag-exam">选择题</span></p>
+<div class="table-wrap"><table>
+<thead><tr><th>类型</th><th>关系</th><th>特征</th><th>应用场景</th></tr></thead>
+<tbody>
+<tr><td><strong>实时仿真</strong></td><td>仿真时钟 = 实际时钟</td><td>仿真速度与实际系统相同</td><td>飞行训练模拟器；在线仿真</td></tr>
+<tr><td><strong>亚实时仿真</strong></td><td>仿真时钟 &lt; 实际时钟（慢）</td><td>仿真速度慢于实际系统</td><td>大多数系统的离线研究与分析；又称离线仿真</td></tr>
+<tr><td><strong>超实时仿真</strong></td><td>仿真时钟 &gt; 实际时钟（快）</td><td>仿真速度快于实际系统</td><td>大气环流、交通系统等需压缩时间的仿真</td></tr>
+</tbody>
+</table></div>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">仿真的十个基本步骤（简答题）</h3>
+<p style="font-size:13px;color:var(--ink-faint)">完成计算机仿真需要经过3个大活动（系统建模、仿真建模、仿真实验），细化为10个步骤：</p>
+<ol class="step-list">
+<li class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">问题描述与系统定义</div><div class="step-body">明确仿真目的和任务，正确定义系统边界、组成和环境，确定目标函数。这一步最关键，直接影响仿真质量。</div></div></li>
+<li class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">建立系统模型</div><div class="step-body">分析系统各组成部分的状态变化和参数关系，建立系统的数学逻辑模型（理论模型，即一次建模）。</div></div></li>
+<li class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">收集和整理数据资料</div><div class="step-body">收集随机变量的分布函数及参数，以及各组成部分相互关系的定性资料。数据正确性直接影响仿真输出。</div></div></li>
+<li class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">建立仿真模型，设计程序</div><div class="step-body">将理论模型转变为仿真程序（二次建模）。同时进行<strong>模型验证（Verification）</strong>：考察程序是否正确反映了数学逻辑模型。</div></div></li>
+<li class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">调试程序，确认模型</div><div class="step-body">运行调试性仿真，进行<strong>模型确认（Validation）</strong>：检验数学逻辑模型是否正确反映了现实系统的本质。</div></div></li>
+<li class="step"><div class="step-num">6</div><div class="step-content"><div class="step-title">实验设计</div><div class="step-body">设定不同可控变量与参数组合、系统初始条件、仿真运行长度、随机样本大小和独立仿真运行次数等。</div></div></li>
+<li class="step"><div class="step-num">7</div><div class="step-content"><div class="step-title">计算机仿真运行</div><div class="step-body">根据实验设计运行仿真，获取仿真输出数据，详细记录每次仿真的输入参数和输出结果。</div></div></li>
+<li class="step"><div class="step-num">8</div><div class="step-content"><div class="step-title">仿真结果分析</div><div class="step-body">计算样本均值、均方差、置信区间等统计指标；进行灵敏度分析；依据目标函数选择较优方案。</div></div></li>
+<li class="step"><div class="step-num">9</div><div class="step-content"><div class="step-title">建立文档</div><div class="step-body">将经过验证确认的系统模型、仿真程序以及输入输出资料和分析结论建立文档，供后续参考和改进。</div></div></li>
+<li class="step"><div class="step-num">10</div><div class="step-content"><div class="step-title">实施仿真决策</div><div class="step-body">将仿真辅助作出的管理决策付诸实施。</div></div></li>
+</ol>
 </div>
 
 <div class="subsection">
 <h3 class="subsection-title">易混淆：模型验证 vs 模型确认</h3>
 <div class="callout callout-warn">
-<div class="cl">这两个概念要分清</div>
-<p><strong>模型验证（Verification）</strong>：验证仿真程序是否正确实现了数学逻辑模型。"程序层面"——程序有没有Bug？</p>
-<p><strong>模型确认（Validation）</strong>：确认数学逻辑模型是否正确反映了现实系统本质。"模型层面"——模型建得对不对？</p>
+<div class="cl">这两个概念要分清——出现在步骤4和步骤5</div>
+<p><strong>模型验证（Verification）</strong>：验证仿真程序是否正确实现了数学逻辑模型。"程序层面"——程序有没有Bug？（步骤4完成）</p>
+<p><strong>模型确认（Validation）</strong>：确认数学逻辑模型是否正确反映了现实系统本质。"模型层面"——模型建得对不对？（步骤5完成）</p>
+<p style="font-size:12px;color:var(--ink-faint)">Validation是比Verification更高层次的确认，两者在仿真步骤中发生在不同阶段。</p>
+</div>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">仿真软件的三类分类（1.13考点）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>类别</th><th>代表软件</th><th>特点</th><th>灵活性</th><th>建模效率</th></tr></thead>
+<tbody>
+<tr><td><strong>第一类</strong> 通用编程语言</td><td>C、C++、Java</td><td>对开发者要求高，仿真机制需自行实现</td><td>最高</td><td>最低</td></tr>
+<tr><td><strong>第二类</strong> 仿真编程语言</td><td>GPSS/H、SIMAN V、SLAM II、<strong>GPSSWorld</strong></td><td>封装了仿真基本机制（仿真钟推进、算法实现），保持灵活性和通用性</td><td>较高</td><td>中等</td></tr>
+<tr><td><strong>第三类</strong> 仿真环境</td><td>Arena、Witness、Flexsim、Anylogic</td><td>图形化用户界面，图形化建模</td><td>较低</td><td>最高</td></tr>
+</tbody>
+</table></div>
+<div class="callout callout-info">
+<div class="cl">GPSSWorld的定位</div>
+<p>GPSSWorld<strong>同时具备第二类和第三类</strong>的特点：保留GPSS语言的通用性和灵活性（第二类），同时适应图形化、集成化趋势（第三类）。从第一类到第三类：灵活性依次降低，建模效率依次提高。</p>
 </div>
 </div>
 
@@ -488,23 +612,99 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 <button class="note-btn" data-type="note">✎ 笔记</button>
 </div>
 </div>
-<p>以单人理发店为统一背景理解。</p>
+<p style="font-size:13px;color:var(--ink-faint)">以单人理发店系统（例2.1）为统一背景理解所有术语。这是整本书最基础的例子，考试也经常用它出题。</p>
+<div class="callout callout-info">
+<div class="cl">背景系统说明</div>
+<p><strong>单人理发店系统</strong>：只有一位理发师，顾客以一定速率到达。若理发师有空则立刻理发，否则排队等待。理发完成后离开。性能指标：理发师利用率、顾客平均等待时间、最大排队长度等。</p>
+</div>
+
+<div class="def-card">
+<div class="def-term">实体 <span class="def-en">Entity</span></div>
+<div class="def-body">与研究目的有关的构成系统的各种成分，是系统边界内的对象。实体可以是物理的也可以是逻辑的。<strong>系统内包含哪些实体（系统的边界）通常与研究目的密切相关</strong>。</div>
+<div class="def-example">理发店中：理发师、顾客、顾客队列都是实体</div>
+</div>
 <div class="table-wrap"><table>
-<thead><tr><th>术语</th><th>定义</th><th>理发店例子</th></tr></thead>
+<thead><tr><th></th><th>临时实体（主动实体）</th><th>永久实体（被动实体）</th></tr></thead>
 <tbody>
-<tr><td>实体Entity</td><td>组成系统的物理/逻辑单元。分临时实体（主动，如顾客）和永久实体（被动，如理发师、队列）</td><td>顾客/理发师/队列</td></tr>
-<tr><td>属性Attribute</td><td>实体特征描述。分静态属性（到达时间）和动态属性（忙闲状态）</td><td>理发师忙闲、队长</td></tr>
-<tr><td>状态State</td><td>某时刻所有实体动态属性的集合</td><td>(理发师忙,队长2)</td></tr>
-<tr><td>事件Event</td><td>引起状态变化的瞬间操作。分确定事件（可预知）和条件事件（取决于状态）</td><td>到达/开始服务/离开</td></tr>
-<tr><td>活动Activity</td><td>两个事件之间保持某状态的持续过程。分确定活动和条件活动</td><td>排队/理发</td></tr>
-<tr><td>进程Process</td><td>某类实体相关的若干事件及活动组成的完整生命周期</td><td>到达→排队→服务→离开</td></tr>
-<tr><td>规则Rule</td><td>描述实体逻辑关系和运行策略的约定</td><td>FIFO先来先服务</td></tr>
+<tr><td>定义</td><td>在系统中只存在一段时间的实体。从系统外部到达，通过系统，最后离开或被消耗</td><td>永久驻留在系统中的实体，只要系统处于活动状态就存在</td></tr>
+<tr><td>主动性</td><td><strong>具有主动性</strong>——其行为能引起系统中其他实体的行为/属性/状态的变化</td><td><strong>具有被动性</strong>——只有在主动实体的作用下才能改变</td></tr>
+<tr><td>理发店例子</td><td>顾客（到达→排队→被服务→离开）</td><td>理发师、顾客队列</td></tr>
+<tr><td>GPSSWorld对应</td><td>活动实体（Transaction）</td><td>设施（Facility）、存储器（Storage）、队列（Queue）等</td></tr>
 </tbody>
 </table></div>
+
+<div class="def-card">
+<div class="def-term">属性 <span class="def-en">Attribute</span></div>
+<div class="def-body">实体由它的属性来描述。属性用来反映实体的某些性质，可以用参数或状态变量加以描述。</div>
+<div class="def-example">顾客的属性：到达时间、性别；理发师的属性：忙闲状态；队列的属性：队列长度</div>
+</div>
+<div class="two-col-grid">
+<div class="col-block">
+<div class="col-block-title">静态属性</div>
+<p>值一旦确定后不再随时间变化。例：顾客的到达时间、性别（进入系统后固定）</p>
+</div>
+<div class="col-block">
+<div class="col-block-title">动态属性</div>
+<p>随时间不断变化。例：理发师的忙闲状态、队列的长度</p>
+</div>
+</div>
+<div class="def-note" style="margin-bottom:1rem">属性选取三原则：①便于排队规则的确定（如到达时间→FIFO）；②便于实体的分类和行为描述（如性别→不同服务时间）；③便于信息的统计分析（如队长→平均等待队长统计）</div>
+
+<div class="def-card">
+<div class="def-term">状态 <span class="def-en">State</span></div>
+<div class="def-body"><strong>系统状态</strong>：在某一确定时间，系统中所有实体的状态（动态属性）的集合。<strong>实体状态</strong>：对实体活动特征状况或性态的划分，表征量为状态变量。</div>
+<div class="def-example">理发店某时刻状态：StQ(t)=2, StS(t)=1，意味着此时队列中有2人等待，理发师正在服务</div>
+</div>
+
+<div class="def-card">
+<div class="def-term">事件 <span class="def-en">Event</span></div>
+<div class="def-body">引起系统状态发生变化的<strong>瞬间操作或行为</strong>。注意：<strong>事件是瞬间发生的，不占时间</strong>，这与"活动"不同。系统的运行可以看作是由事件驱动的。</div>
+<div class="def-example">理发店中的三类事件：①"顾客到达"②"开始服务"（条件事件）③"顾客离开/服务完成"</div>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>确定事件（Bound Event）</th><th>条件事件（Conditional Event）</th></tr></thead>
+<tbody>
+<tr><td>定义</td><td>发生时间可以事先确定的事件</td><td>发生时间依赖于系统状态而不能事先确定的事件</td></tr>
+<tr><td>理发店例子</td><td>"顾客到达"——可提前计算下一到达时间；"顾客离开"——开始服务后可确定完成时间</td><td>"开始服务"——只有顾客在队首且理发师空闲时才发生，时间不确定</td></tr>
+<tr><td>ES中处理</td><td>直接建立事件例程</td><td>隐含在确定事件例程中，不单独建立例程</td></tr>
+</tbody>
+</table></div>
+
+<div class="def-card">
+<div class="def-term">活动 <span class="def-en">Activity</span></div>
+<div class="def-body">实体在两个事件之间保持某一状态的<strong>持续过程</strong>（占一段时间）。活动的开始和结束都由事件引起。</div>
+<div class="def-example">理发店中：顾客"排队等待"是活动（条件活动，时长不确定）；"理发"是活动（确定活动，时长由采样确定）</div>
+</div>
 <div class="callout callout-warn">
 <div class="cl">事件 vs 活动 的本质区别</div>
-<p><strong>事件</strong>是瞬间的（不占时间），<strong>活动</strong>是持续的（占一段时间）。活动的开始和结束都由事件引起。</p>
+<p><strong>事件</strong>是瞬间的（不占时间），<strong>活动</strong>是持续的（占一段时间）。活动的开始事件发生，活动开始；活动的结束事件发生，活动结束。</p>
 </div>
+
+<div class="def-card">
+<div class="def-term">进程 <span class="def-en">Process</span></div>
+<div class="def-body">由与某类实体相关的若干事件及活动组成，描述该类实体完整生命周期（从产生到消亡）的有序集合。进程 = 若干活动 + 若干事件的时序组合。</div>
+<div class="def-example">顾客的进程：到达事件→排队活动→开始服务事件→理发活动→离开事件</div>
+<div class="def-note">粒度由小到大：事件 &lt; 活动 &lt; 进程。活动由两个事件界定，进程由若干事件和活动按时序和逻辑关系组成。</div>
+</div>
+
+<div class="def-card">
+<div class="def-term">规则 <span class="def-en">Rule</span></div>
+<div class="def-body">描述实体之间逻辑关系和运行策略的约定。规则决定了系统的行为方式。</div>
+<div class="def-example">理发店规则：FIFO先来先服务；优先服务等待时间最长的顾客；多理发师时顾客喜欢找1号师</div>
+</div>
+
+<div class="table-wrap" style="margin-top:1.2rem"><table>
+<thead><tr><th>术语</th><th>一句话定义</th><th>是否占时间</th><th>理发店例子</th></tr></thead>
+<tbody>
+<tr><td>实体Entity</td><td>组成系统的物理/逻辑单元</td><td>—</td><td>顾客/理发师/队列</td></tr>
+<tr><td>属性Attribute</td><td>实体特征的描述参数</td><td>—</td><td>理发师忙闲、队长</td></tr>
+<tr><td>状态State</td><td>某时刻所有实体动态属性的集合</td><td>—</td><td>(StS=1, StQ=2)</td></tr>
+<tr><td>事件Event</td><td>引起状态变化的瞬间操作</td><td>❌ 不占</td><td>到达/开始服务/离开</td></tr>
+<tr><td>活动Activity</td><td>两事件间保持某状态的持续过程</td><td>✅ 占一段</td><td>排队/理发</td></tr>
+<tr><td>进程Process</td><td>某类实体的完整生命周期</td><td>✅ 含若干活动</td><td>到达→排队→服务→离开</td></tr>
+<tr><td>规则Rule</td><td>描述实体逻辑关系和运行策略</td><td>—</td><td>FIFO先来先服务</td></tr>
+</tbody>
+</table></div>
 </div>
 
 <div class="section" id="c2-2" data-section-id="c2-2" data-section-name="四种仿真策略">
@@ -519,21 +719,140 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 </div>
 <div class="callout callout-must">
 <div class="cl">最重要的考点</div>
-<p><strong>GPSSWorld的仿真策略是进程交互法（PI）</strong>——考到概率极大，必须记牢，还要能说出PI特点。</p>
+<p><strong>GPSSWorld的仿真策略是进程交互法（PI）</strong>——考到概率极大，必须记牢，还要能说出PI特点与其他三种策略的区别。</p>
 </div>
-<div class="table-wrap"><table>
-<thead><tr><th>策略</th><th>基本单元</th><th>时钟推进</th><th>关键点</th></tr></thead>
+
+<div class="strategy-grid">
+<div class="strategy-card card-es">
+<div class="strategy-card-header">事件调度法（Event Scheduling，ES）</div>
+<div class="strategy-card-body">
+<p><strong>基本模型单元：</strong>事件例程（每类确定事件对应一个处理例程）</p>
+<p><strong>时钟推进：</strong>推进到事件表中下一最早确定事件发生时刻</p>
+<p><strong>条件事件处理：</strong>不单独建立例程，<strong>隐含在相关确定事件例程中</strong></p>
+<p><strong>特点：</strong>效率高、时钟精确，但每个事件例程建模复杂（需嵌入条件判断逻辑），工作量大，建模不直观</p>
+<p><strong>代表语言：</strong>GASP、SIMSCRIPT</p>
+</div>
+</div>
+<div class="strategy-card card-as">
+<div class="strategy-card-header">活动扫描法（Activity Scanning，AS）</div>
+<div class="strategy-card-body">
+<p><strong>基本模型单元：</strong>活动例程（确定活动和条件活动各建一个例程）</p>
+<p><strong>时钟推进：</strong>各主动实体<strong>时间元 T(i)（实体仿真钟）</strong>中的最小值</p>
+<p><strong>条件事件处理：</strong>建立独立的条件活动例程，通过<strong>反复扫描</strong>执行（扫描到测试条件为True时执行）</p>
+<p><strong>特点：</strong>各活动例程独立、建模简单，对应ACD；但反复扫描效率低，做大量无用功</p>
+<p><strong>代表语言：</strong>CSL（1962年 Buxton & Laski 提出）</p>
+</div>
+</div>
+<div class="strategy-card card-tp">
+<div class="strategy-card-header">三段扫描法（Three-Phase Scanning，3PS）</div>
+<div class="strategy-card-body">
+<p><strong>基本模型单元：</strong>活动例程，分<strong>B类（确定/Bound）</strong>和<strong>C类（条件/Conditional）</strong>两类</p>
+<p><strong>时钟推进：</strong>推进到下一最早<strong>B类例程</strong>调用时刻（A段）</p>
+<p><strong>三段执行：</strong>A段时间推进→B段执行到时B类例程→C段扫描条件C类例程</p>
+<p><strong>特点：</strong>3PS是AS的改进，<strong>兼有ES的高效时钟推进和AS的简单建模</strong>。B类不需扫描，只有C类扫描。</p>
+<p><strong>改进来源：</strong>Tocher（1963年）</p>
+</div>
+</div>
+<div class="strategy-card card-pi">
+<div class="strategy-card-header">进程交互法（Process Interaction，PI）★GPSSWorld★</div>
+<div class="strategy-card-body">
+<p><strong>基本模型单元：</strong>实体进程例程（描述实体完整生命周期）</p>
+<p><strong>时钟推进：</strong>推进到FEL中最早的<strong>无条件延迟复活点</strong>时刻</p>
+<p><strong>两种延迟：</strong>无条件延迟（可预知，放FEL）/ 条件延迟（取决状态，放CEL）</p>
+<p><strong>两张事件表：</strong>当前事件表（CEL：复活点≤当前时钟）/ 未来事件表（FEL：复活点>当前时钟）</p>
+<p><strong>特点：</strong>建模最直观（进程对应实体真实生命周期），但实现最复杂，通常需要仿真语言支持</p>
+<p><strong>代表语言：</strong>GPSS、SIMULA、<strong>GPSSWorld</strong></p>
+</div>
+</div>
+</div>
+
+<div class="subsection" style="margin-top:1.5rem">
+<h3 class="subsection-title">四种策略算法伪代码</h3>
+
+<div class="algo-box">
+<div class="algo-title">事件调度法（ES）· 实现算法</div>
+<div>① <span class="algo-comment">// 仿真初始化</span></div>
+<div class="algo-i1">置仿真开始/结束时间；初始化事件表，设置初始事件；<span class="algo-comment">// 如第1个顾客到达</span></div>
+<div class="algo-i1">系统状态初始化；<span class="algo-comment">// StQ=0, StS=0</span></div>
+<div class="algo-i1">置仿真时钟 = 仿真开始时间；</div>
+<br>
+<div>② <span class="algo-comment">// 操作事件表（主循环）</span></div>
+<div class="algo-i1">取出事件表中发生时间最早的事件，设类型为 i；</div>
+<div class="algo-i1">将仿真时钟推进到该事件的发生时间；</div>
+<div class="algo-i1"><span class="algo-keyword">IF</span> 仿真时钟 &gt; 结束时间 <span class="algo-keyword">THEN</span> 转到④</div>
+<br>
+<div>③ <span class="algo-comment">// 事件处理</span></div>
+<div class="algo-i1"><span class="algo-keyword">CASE</span> 事件类型 i</div>
+<div class="algo-i2">i=1：执行"顾客到达"事件处理例程；</div>
+<div class="algo-i2">i=2：执行"服务完毕/顾客离开"事件处理例程；</div>
+<div class="algo-i1"><span class="algo-keyword">ENDCASE</span></div>
+<div class="algo-i1">转到②；</div>
+<br>
+<div>④ <span class="algo-comment">// 仿真结束</span></div>
+<div class="algo-i1">输出统计结果。</div>
+</div>
+<div class="callout callout-warn" style="margin-top:.5rem">
+<div class="cl">ES中条件事件的处理方式</div>
+<p>在"顾客到达"例程中检查"理发师是否空闲"，若空闲则直接开始服务；在"顾客离开"例程中检查"队列是否非空"，若非空则立刻为下一个顾客开始服务。<strong>条件事件不单独建例程</strong>。</p>
+</div>
+
+<div class="algo-box" style="margin-top:1rem">
+<div class="algo-title">三段扫描法（3PS）· 三段算法结构</div>
+<div>① <span class="algo-comment">// 初始化</span></div>
+<div class="algo-i1">置初始B类活动例程及其调用时间；状态初始化；</div>
+<br>
+<div>② <span class="algo-keyword">A段</span> <span class="algo-comment">// 时间扫描</span></div>
+<div class="algo-i1">仿真时钟推进到下一最早B类例程调用时刻；</div>
+<div class="algo-i1"><span class="algo-keyword">IF</span> 仿真时钟 &gt; 结束时间 <span class="algo-keyword">THEN</span> 转到⑥</div>
+<br>
+<div>③ <span class="algo-keyword">B段</span> <span class="algo-comment">// B类例程调用</span></div>
+<div class="algo-i1">确定在当前时钟下能调用的B类活动程序，按优先顺序执行；</div>
+<br>
+<div>④ <span class="algo-keyword">C段</span> <span class="algo-comment">// C类例程扫描</span></div>
+<div class="algo-i1"><span class="algo-keyword">FOR</span> j = 1 TO n</div>
+<div class="algo-i2"><span class="algo-keyword">IF</span> 活动例程 A_j 的测试条件 D[j] = True <span class="algo-keyword">THEN</span></div>
+<div class="algo-i2">&nbsp;&nbsp;执行 A_j；退出当前循环，重新从头扫描C类</div>
+<div class="algo-i1"><span class="algo-keyword">ENDFOR</span></div>
+<br>
+<div>⑤ 转到②；　⑥ 仿真结束。</div>
+</div>
+</div>
+
+<div class="subsection" style="margin-top:1.5rem">
+<h3 class="subsection-title">四种策略综合对比表 <span class="tag tag-exam">必背</span></h3>
+<div class="table-wrap"><table class="compare-full">
+<thead><tr><th>对比维度</th><th class="es-cell">事件调度法 ES</th><th class="as-cell">活动扫描法 AS</th><th class="tp-cell">三段扫描法 3PS</th><th class="pi-cell">进程交互法 PI</th></tr></thead>
 <tbody>
-<tr><td>事件调度法ES</td><td>事件例程</td><td>下一最早确定事件时刻</td><td>条件事件隐含在确定事件中；效率高建模难</td></tr>
-<tr><td>活动扫描法AS</td><td>活动例程</td><td>各实体时间元最小值</td><td>反复扫描，效率低；对应ACD</td></tr>
-<tr><td>三段扫描法3PS</td><td>活动例程(B/C类)</td><td>下一最早B类例程时刻</td><td>AS的改进，兼顾ES高效和AS简单</td></tr>
-<tr><td><strong>进程交互法PI</strong></td><td>实体进程</td><td>最早无条件延迟复活点</td><td><strong>★GPSSWorld用此★</strong>，最直观，CEL+FEL两张表</td></tr>
+<tr><td>基本模型单元</td><td class="es-cell">事件例程</td><td class="as-cell">活动例程</td><td class="tp-cell">活动例程（B/C两类）</td><td class="pi-cell">实体进程例程</td></tr>
+<tr><td>时钟推进方式</td><td class="es-cell">下一最早<strong>确定事件</strong>发生时刻</td><td class="as-cell">各主动实体<strong>时间元最小值</strong></td><td class="tp-cell">下一最早<strong>B类例程</strong>调用时刻</td><td class="pi-cell">FEL中最早<strong>无条件延迟复活点</strong></td></tr>
+<tr><td>条件事件处理</td><td class="es-cell">隐含在确定事件例程中，<strong>不单独建模</strong></td><td class="as-cell">建立独立条件活动例程，<strong>反复扫描执行</strong></td><td class="tp-cell">建立C类例程，<strong>扫描执行</strong>（B类不扫描）</td><td class="pi-cell">处理在进程中，通过<strong>条件延迟</strong>在复活点等待</td></tr>
+<tr><td>单元例程复杂度</td><td class="es-cell">复杂（需嵌入条件判断）</td><td class="as-cell">简单（条件/确定独立）</td><td class="tp-cell">简单（同AS）</td><td class="pi-cell">中等（按生命周期顺序写）</td></tr>
+<tr><td>执行效率</td><td class="es-cell">高（只处理确定事件）</td><td class="as-cell">低（反复扫描）</td><td class="tp-cell"><strong>最高</strong>（兼顾两者）</td><td class="pi-cell">较高</td></tr>
+<tr><td>程序控制结构</td><td class="es-cell">较清晰简单</td><td class="as-cell">较复杂</td><td class="tp-cell">较复杂</td><td class="pi-cell">最复杂（需语言支持）</td></tr>
+<tr><td>建模直观性</td><td class="es-cell">较差（条件逻辑隐含）</td><td class="as-cell">好（对应ACD图）</td><td class="tp-cell">好（同AS）</td><td class="pi-cell"><strong>最直观</strong>（对应实体生命周期）</td></tr>
+<tr><td>对应建模工具</td><td class="es-cell">实体流图</td><td class="as-cell">活动周期图（ACD）</td><td class="tp-cell">活动周期图（ACD）</td><td class="pi-cell">进程图</td></tr>
+<tr><td>代表仿真语言</td><td class="es-cell">GASP、SIMSCRIPT</td><td class="as-cell">CSL</td><td class="tp-cell">—（改进的AS语言）</td><td class="pi-cell"><strong>GPSS、SIMULA、GPSSWorld</strong></td></tr>
 </tbody>
 </table></div>
+</div>
+
+<div class="subsection" style="margin-top:1rem">
+<h3 class="subsection-title">PI的CEL/FEL机制详解</h3>
+<div class="two-col-grid">
+<div class="col-block">
+<div class="col-block-title">当前事件表（CEL）</div>
+<ul><li>复活点时间 ≤ 当前仿真时钟的实体</li><li>即"现在有资格执行"的实体</li><li>包含正在处理但条件尚未满足的实体（条件延迟）</li><li>扫描CEL，推进可推进的进程</li></ul>
+</div>
+<div class="col-block">
+<div class="col-block-title">未来事件表（FEL）</div>
+<ul><li>复活点时间 &gt; 当前仿真时钟的实体</li><li>即"将来某确定时刻才能继续"的实体（无条件延迟）</li><li>每次从FEL取最早复活时间，推进仿真钟</li></ul>
+</div>
+</div>
 <div class="callout callout-info">
 <div class="cl">PI的两种延迟（简答可能考）</div>
-<p><strong>无条件延迟</strong>：延迟期可事先确定（如理发时间），放入未来事件表FEL。</p>
-<p><strong>条件延迟</strong>：延迟期取决于系统状态（如排队等待），放入当前事件表CEL。</p>
+<p><strong>无条件延迟</strong>：延迟期可事先确定（如理发时间），实体放入未来事件表FEL等待。例：顾客在"理发"状态，停留直到服务完成。</p>
+<p><strong>条件延迟</strong>：延迟期取决于系统状态，不能事先确定，实体放入当前事件表CEL等待。例：顾客在"排队"状态，等待直到处于队首且理发师空闲。</p>
+</div>
 </div>
 </div>
 
@@ -545,6 +864,42 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 <button class="bookmark-btn" data-type="bookmark">🔖 书签</button>
 <button class="bookmark-btn problem" data-type="problem">⚠ 问题</button>
 <button class="note-btn" data-type="note">✎ 笔记</button>
+</div>
+</div>
+
+<div class="subsection">
+<h3 class="subsection-title">手工仿真的执行步骤（事件调度法）</h3>
+<p style="font-size:13px;color:var(--ink-faint)">手工仿真表的每一步都在模拟事件调度法的执行过程。掌握这4步，就能独立填写任何手工仿真表。</p>
+<ol class="step-list">
+<li class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">从事件表中找最早事件</div><div class="step-body">将事件表中发生时间最小的事件取出，将仿真时钟推进到该时刻。若有多个事件同时发生（同一时刻），按解结规则处理。</div></div></li>
+<li class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">判断事件类型，执行对应逻辑</div><div class="step-body"><strong>若是到达事件 A(i,t)：</strong>①产生下一顾客到达事件（t+到达间隔，插入事件表）；②判断理发师状态——空闲则开始服务（产生离开事件，StS=1），忙则排队（StQ+1）。<br><strong>若是离开事件 D(i,t)：</strong>①C+1，B加上本次服务时长；②判断队列——非空则继续服务下一人（StQ-1，产生新离开事件，W+=等待时长），队列空则理发师置闲（StS=0）。</div></div></li>
+<li class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">更新系统状态和统计计数器</div><div class="step-body">更新 StQ(t) 和 StS(t)，更新 C、B、W。注意 W 只在顾客开始接受服务时更新（W += 开始服务时刻 − 到达时刻）。</div></div></li>
+<li class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">维护事件表，进入下一步</div><div class="step-body">删除已处理的事件，把新产生的事件按时间先后插入事件表，准备下一轮循环。</div></div></li>
+</ol>
+
+<div class="callout callout-warn">
+<div class="cl">解结规则（同时事件的处理顺序）——必须记住</div>
+<p>当同一时刻有多个事件同时发生时，需要规定处理顺序，这称为解结规则。书中（例2.6）的解结规则：<strong>当顾客到达事件和顾客离开事件同时发生时，先处理"离开"事件，再处理"到达"事件。</strong></p>
+<p style="font-size:12px;color:var(--ink-faint)">原因：先处理离开可以让理发师先空出来，刚到达的顾客可能直接开始服务，更符合实际。不同题目的解结规则可能不同，注意看题目说明。</p>
+</div>
+
+<div class="two-col-grid" style="margin-top:1rem">
+<div class="col-block">
+<div class="col-block-title">顾客到达事件例程</div>
+<ul>
+<li>产生下一个顾客到达事件（插入事件表）</li>
+<li>IF 理发师空闲：置理发师"忙"（StS=1）；产生服务时间；安排服务结束事件</li>
+<li>ELSE（理发师忙）：排队（StQ+1）</li>
+</ul>
+</div>
+<div class="col-block">
+<div class="col-block-title">服务完毕/顾客离开事件例程</div>
+<ul>
+<li>顾客完成数 C+1</li>
+<li>IF 队列非空（StQ &gt; 0）：StQ-1；产生服务时间；安排下一顾客服务结束事件；W += 该顾客等待时长</li>
+<li>ELSE（队列为空）：置理发师"闲"（StS=0）</li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -603,6 +958,22 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 <div class="callout callout-tip">
 <div class="cl">手工仿真满分步骤口诀</div>
 <p>① 从事件表取最早事件,推进时钟 → ② 判类型:到达就产生下个到达+判忙闲;离开就C+1、B累加+判队列 → ③ 更新StQ/StS/C/B/W → ④ 同时刻先离开后到达(解结)</p>
+</div>
+
+<div class="subsection" style="margin-top:1.5rem">
+<h3 class="subsection-title">手工仿真中的常见错误与陷阱</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>错误类型</th><th>错误描述</th><th>正确做法</th></tr></thead>
+<tbody>
+<tr><td>W更新时机错误</td><td>把W的更新放在顾客"到达"时，而不是"开始服务"时</td><td>W只在顾客开始服务时更新：W += 开始服务时刻 − 到达时刻</td></tr>
+<tr><td>B更新方式错误</td><td>每次时钟推进都尝试更新B，导致重复计算</td><td>B只在"服务完毕/顾客离开"事件处理时更新一次：B += 本次服务时长</td></tr>
+<tr><td>忽略解结规则</td><td>同时刻到达和离开事件，随意决定处理顺序</td><td>严格按题目给定的解结规则。无特别说明时通常先处理离开再处理到达</td></tr>
+<tr><td>事件表维护错误</td><td>处理完事件后忘记删除已处理事件，或产生的新事件没加入</td><td>每次处理完一个事件：①删除该事件 ②把新产生的事件加入事件表</td></tr>
+<tr><td>StQ计算错误</td><td>把正在接受服务的顾客也算进队长</td><td>StQ只计算排队等待的人数，不包含正在服务的顾客。StS=1时理发师正在服务1人，这1人不在StQ里</td></tr>
+<tr><td>产生事件时间错误</td><td>产生到达事件时用绝对时间而不是相对间隔；或服务结束时间算错</td><td>下一到达时间 = 当前时刻 + 到达间隔；服务结束时间 = 服务开始时刻 + 服务时长</td></tr>
+<tr><td>策略混淆</td><td>考试问"哪种策略是GPSSWorld的基础"时答错</td><td>GPSSWorld使用<strong>进程交互法（PI）</strong></td></tr>
+</tbody>
+</table></div>
 </div>
 
 <div class="subsection" style="margin-top:1.8rem">
