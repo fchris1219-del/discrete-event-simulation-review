@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>期末复习全集 · 离散事件系统建模仿真</title>
+<title>离散事件系统建模仿真 · 复习全集</title>
 <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+
 :root{
   --ink:#1a1a1a;--ink-light:#4a4a4a;--ink-faint:#888;
   --paper:#faf8f4;--paper-warm:#f3f0e8;
-  --accent:#a83232;--accent-light:#c4786a;--accent-pale:#f5ebe8;
+  --accent:#c75b39;--accent-light:#e0926f;--accent-pale:#fbeee6;
   --rule:#d8d0c4;--gold:#c8a030;--gold-pale:#f0e8c8;
   --green:#3a7a3a;--green-pale:#e8f0e8;--blue:#2a5a8a;--blue-pale:#e8eef5;
   --serif:'Noto Serif SC',serif;--sans:'Noto Sans SC',sans-serif;--mono:'JetBrains Mono',monospace;
@@ -181,7 +182,7 @@ ul.clean li::before{content:'▸';position:absolute;left:.2rem;color:var(--accen
 .modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--rule);display:flex;gap:.6rem;justify-content:flex-end}
 .btn{padding:.55rem 1.2rem;border-radius:3px;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent}
 .btn-primary{background:var(--accent);color:white}
-.btn-primary:hover{background:#8a2828}
+.btn-primary:hover{background:#a8472a}
 .btn-ghost{background:none;border-color:var(--rule);color:var(--ink-light)}
 .btn-ghost:hover{background:var(--paper-warm)}
 .btn-danger{background:none;border-color:var(--accent);color:var(--accent)}
@@ -282,7 +283,7 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 .pg-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-pale)}
 .pg-btn:disabled{opacity:.3;cursor:default;pointer-events:none}
 .pg-btn.primary{background:var(--accent);color:white;border-color:var(--accent)}
-.pg-btn.primary:hover{background:#8a2828;border-color:#8a2828}
+.pg-btn.primary:hover{background:#a8472a;border-color:#a8472a}
 .pg-info{font-family:var(--mono);font-size:12px;color:var(--ink-faint);text-align:center;flex:1}
 .pg-info strong{color:var(--ink);font-size:13px}
 .pg-dots{display:flex;gap:.4rem;justify-content:center;margin-top:.4rem}
@@ -292,16 +293,458 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 .nav-chapter-btn{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;padding:.38rem 1.4rem;font-family:var(--sans);font-size:12.5px;color:var(--ink-light);background:none;border:none;border-left:2px solid transparent;cursor:pointer;transition:all .15s;line-height:1.4}
 .nav-chapter-btn:hover,.nav-chapter-btn.active-chapter{color:var(--accent);border-left-color:var(--accent);background:var(--accent-pale);font-weight:600}
 @media print{.sidebar,.fab,.section-tools,.pagination-bar{display:none}.layout{grid-template-columns:1fr}.main{padding:2rem}.chapter{display:block!important}}
+
+
+
+/* ===== Breadcrumb navigation ===== */
+.bc-bar{position:fixed;top:0;left:0;right:0;z-index:300;background:#fff;border-bottom:2px solid var(--accent);box-shadow:0 1px 6px rgba(0,0,0,.06);}
+.bc-inner{display:flex;align-items:center;gap:0;padding:0 1.4rem;height:50px;overflow-x:auto;white-space:nowrap;max-width:1400px;margin:0 auto;}
+.bc-root{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink-faint);text-transform:uppercase;flex-shrink:0;font-weight:700;}
+.bc-sep{color:var(--rule);margin:0 .55rem;font-size:15px;flex-shrink:0;}
+.bc-tabs{display:flex;gap:4px;flex-shrink:0;}
+.bc-tab{padding:.3rem .9rem;font-family:var(--sans);font-size:13px;font-weight:500;border:1.5px solid var(--rule);border-radius:5px;cursor:pointer;color:var(--ink-light);background:white;transition:all .15s;white-space:nowrap;}
+.bc-tab:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-pale);}
+.bc-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
+.bc-sec-name{font-family:var(--sans);font-size:12.5px;color:var(--ink-faint);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1;}
+
+/* ===== Layout under fixed breadcrumb ===== */
+.layout{padding-top:50px;}
+.sidebar{top:50px;height:calc(100vh - 50px);}
+
+/* ===== TOC panes ===== */
+.toc-pane{display:none;}.toc-pane.active{display:block;}
+
+/* ===== Main area & file panels ===== */
+.main-area{min-width:0;}
+.file-panel{display:none;padding:2.5rem 4rem 6rem;max-width:1000px;margin:0 auto;}
+.file-panel.active{display:block;}
+
+/* Panel 0 keeps the original chapter system but all chapters always visible */
+.file-panel[data-panel="0"] .chapter{display:block!important;margin-bottom:2.5rem;}
+.file-panel[data-panel="0"] .pagination-bar{display:none!important;}
+
+/* ===== Score badge (panel 2) ===== */
+.score-badge{position:fixed;bottom:5.4rem;right:6.2rem;background:var(--accent);color:#fff;padding:5px 14px;border-radius:20px;font-size:13px;font-family:var(--mono);z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18);display:none;}
+.score-badge.visible{display:block;}
+
+/* ===== Panel headers ===== */
+.panel-header{margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:2px solid var(--accent);}
+.panel-header .ph-tag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;background:var(--accent);color:white;padding:.25rem .75rem;margin-bottom:1rem;border-radius:2px;}
+.panel-header h1{font-size:2rem;font-weight:700;margin-bottom:.6rem;color:var(--ink);line-height:1.3;}
+.panel-header p{font-size:14px;color:var(--ink-faint);font-family:var(--sans);margin:0;}
+
+
+/* ===== Unify panel padding (beats scoped body rules) ===== */
+.file-panel{padding:2.5rem 4rem 6rem!important;max-width:1040px!important;margin:0 auto!important;}
+@media(max-width:768px){.file-panel{padding:1.5rem 1.1rem 4rem!important;}}
+
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr!important;}
+  .sidebar{display:none;}
+  .file-panel{padding:1.5rem 1.1rem 4rem;}
+  .bc-inner{padding:0 .8rem;}
+  .bc-sec-name,.bc-root{display:none;}
+  .score-badge{right:1rem;bottom:5rem;}
+}
+
+
+/* ===== Panel 1 (语法速查手册) scoped ===== */
+#panel-1{
+    --bg: #faf6f0;
+    --bg-card: #fff8f0;
+    --text: #2c2418;
+    --text-secondary: #6b5d4f;
+    --accent: #c75b39;
+    --accent-light: #e8a88a;
+    --border: #d9cdb8;
+    --code-bg: #2b2520;
+    --code-text: #e8dfd4;
+    --highlight: #fff3cd;
+    --tag-bg: #f0e6d6;
+    --section-num: #a0826d;
+  }
+#panel-1 *{ margin: 0; padding: 0; box-sizing: border-box; }
+#panel-1{
+    font-family: 'Noto Serif SC', 'Songti SC', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.85;
+    font-size: 15px;
+    padding: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+#panel-1 /* Header */
+  .header{
+    text-align: center;
+    padding: 50px 20px 40px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 40px;
+  }
+#panel-1 .header h1{
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+#panel-1 .header .subtitle{
+    font-size: 14px;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+  }
+#panel-1 /* TOC */
+  .toc{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px 30px;
+    margin-bottom: 40px;
+  }
+#panel-1 .toc h2{
+    font-size: 16px;
+    color: var(--accent);
+    margin-bottom: 14px;
+    letter-spacing: 2px;
+  }
+#panel-1 .toc a{
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    padding: 4px 0;
+    font-size: 14px;
+    border-bottom: 1px dotted var(--border);
+    transition: color 0.2s;
+  }
+#panel-1 .toc a:hover{ color: var(--accent); }
+#panel-1 .toc a .num{ color: var(--section-num); margin-right: 8px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+#panel-1 /* Sections */
+  .section{
+    margin-bottom: 48px;
+    page-break-inside: avoid;
+  }
+#panel-1 .section-title{
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+#panel-1 .section-title .num{
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 500;
+  }
+#panel-1 h3{
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 28px 0 12px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+  }
+#panel-1 h4{
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 20px 0 8px;
+  }
+#panel-1 p{ margin-bottom: 12px; }
+#panel-1 /* Code blocks */
+  .code-block{
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 12px 0 16px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+#panel-1 code{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--tag-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+#panel-1 /* Syntax format boxes */
+  .syntax{
+    background: var(--highlight);
+    border: 1px solid #e0d4a8;
+    border-radius: 5px;
+    padding: 12px 18px;
+    margin: 12px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+#panel-1 /* Parameter description */
+  .params{
+    margin: 8px 0 16px 16px;
+    font-size: 14px;
+  }
+#panel-1 .params dt{
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 500;
+    margin-top: 6px;
+  }
+#panel-1 .params dd{
+    margin-left: 20px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+#panel-1 /* Tables */
+  table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 20px;
+    font-size: 13.5px;
+  }
+#panel-1 th{
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+#panel-1 td{
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+#panel-1 tr:nth-child(even){ background: rgba(0,0,0,0.02); }
+#panel-1 td:first-child{
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+#panel-1 /* Tips */
+  .tip{
+    background: #f0e8d8;
+    border-left: 3px solid var(--accent);
+    padding: 10px 16px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    border-radius: 0 5px 5px 0;
+  }
+#panel-1 .tip strong{ color: var(--accent); }
+#panel-1 /* Block card */
+  .block-card{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+#panel-1 .block-card .block-name{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+#panel-1 .block-card .block-desc{
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+#panel-1 .block-card .entry-mode{
+    font-size: 13px;
+    color: var(--section-num);
+    margin-top: 8px;
+  }
+#panel-1 /* Responsive */
+  @media (max-width: 640px){
+    body { padding: 12px; font-size: 14px; }
+    .header h1 { font-size: 24px; }
+    .section-title { font-size: 18px; }
+    .code-block { font-size: 12px; padding: 12px; }
+    table { font-size: 12px; }
+  }
+#panel-1 /* Bookmark styling */
+  .bookmark-btn{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+#panel-1 .bookmark-btn:hover{ background: #b04a2a; }
+
+/* ===== Panel 2 (三小时速成) scoped ===== */
+#panel-2{--bg:#faf6f0;--card:#fff8f0;--text:#2c2418;--sub:#6b5d4f;--accent:#c75b39;--border:#d9cdb8;--code-bg:#2b2520;--code-text:#e8dfd4;--hi:#fff3cd;--tag:#f0e6d6;--green:#2d7a4f;--green-bg:#e8f5e9;--red:#b33a2a;--red-bg:#fdecea;}
+#panel-2 *{margin:0;padding:0;box-sizing:border-box;}
+#panel-2{font-family:'Noto Serif SC','Songti SC',serif;background:var(--bg);color:var(--text);line-height:1.85;font-size:15px;padding:20px;max-width:960px;margin:0 auto;}
+#panel-2 .header{text-align:center;padding:40px 20px 30px;border-bottom:2px solid var(--accent);margin-bottom:36px;}
+#panel-2 .header h1{font-size:28px;font-weight:700;letter-spacing:3px;margin-bottom:6px;}
+#panel-2 .header .sub{font-size:13px;color:var(--sub);letter-spacing:1px;}
+#panel-2 .hour{margin:40px 0 20px;padding:10px 16px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;letter-spacing:2px;border-radius:6px;}
+#panel-2 .prog{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:28px;}
+#panel-2 .prog-title{font-size:18px;font-weight:700;color:var(--accent);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+#panel-2 .prog-title .num{background:var(--accent);color:#fff;font-size:12px;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;}
+#panel-2 .prog-desc{font-size:14px;color:var(--sub);margin-bottom:16px;}
+#panel-2 h3{font-size:15px;font-weight:700;color:var(--accent);margin:20px 0 8px;padding-left:10px;border-left:3px solid var(--accent);}
+#panel-2 .theory{font-size:14px;margin-bottom:14px;}
+#panel-2 .syntax{background:var(--hi);border:1px solid #e0d4a8;border-radius:5px;padding:10px 14px;margin:8px 0 12px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;}
+#panel-2 .code{background:var(--code-bg);color:var(--code-text);font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;padding:14px 16px;border-radius:6px;margin:10px 0 14px;overflow-x:auto;white-space:pre;}
+#panel-2 .ann{font-size:13px;color:var(--sub);margin:6px 0 12px;}
+#panel-2 .ann strong{color:var(--text);}
+#panel-2 .tip{background:#f0e8d8;border-left:3px solid var(--accent);padding:8px 14px;margin:12px 0;font-size:13px;color:var(--sub);border-radius:0 5px 5px 0;}
+#panel-2 .tip b{color:var(--accent);}
+#panel-2 .exercise{background:#fdf5ee;border:1px dashed var(--accent);border-radius:6px;padding:16px 18px;margin:16px 0;}
+#panel-2 .exercise-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:8px;}
+#panel-2 .exercise p{font-size:14px;margin-bottom:6px;}
+#panel-2 .write-area{background:#fff;border:1px solid var(--border);border-radius:6px;min-height:120px;padding:12px;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:13px;width:100%;resize:vertical;}
+#panel-2 details{margin:12px 0;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+#panel-2 summary{padding:10px 14px;cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);background:var(--tag);user-select:none;}
+#panel-2 summary:hover{background:#e8dcc8;}
+#panel-2 details[open] summary{border-bottom:1px solid var(--border);}
+#panel-2 details .answer{padding:14px 16px;font-size:14px;}
+#panel-2 details .answer .code{margin:8px 0;}
+#panel-2 .score-row{display:flex;gap:8px;align-items:center;margin:10px 0;font-size:13px;}
+#panel-2 .score-btn{padding:4px 14px;border-radius:4px;border:1px solid var(--border);cursor:pointer;font-size:13px;font-family:'Noto Serif SC',serif;}
+#panel-2 .score-btn.correct{background:var(--green-bg);color:var(--green);border-color:var(--green);}
+#panel-2 .score-btn.wrong{background:var(--red-bg);color:var(--red);border-color:var(--red);}
+#panel-2 .score-display{position:fixed;top:16px;right:16px;background:var(--accent);color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;font-family:'JetBrains Mono',monospace;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+#panel-2 .back-top{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+#panel-2 code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--tag);padding:1px 4px;border-radius:3px;color:var(--accent);}
+#panel-2 .key-table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px;}
+#panel-2 .key-table th{background:var(--accent);color:#fff;padding:6px 10px;text-align:left;font-size:12px;}
+#panel-2 .key-table td{padding:6px 10px;border-bottom:1px solid var(--border);}
+#panel-2 .key-table td:first-child{font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:500;white-space:nowrap;}
+@media(max-width:640px){#panel-2{padding:10px;font-size:14px;}
+#panel-2 .header h1{font-size:22px;}
+#panel-2 .code{font-size:11.5px;padding:10px;}}
+#panel-2 /* ===== GPSS 三列代码编辑器 ===== */
+.gpss-editor{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:12px 0;}
+#panel-2 .gpss-drag-handle{display:flex;align-items:center;justify-content:center;width:18px;flex-shrink:0;cursor:grab;color:#c4b5a5;font-size:14px;user-select:none;padding:0 2px;}
+#panel-2 .gpss-drag-handle:active{cursor:grabbing;}
+#panel-2 .gpss-row.dragging, #panel-2 .gpss-sep-row.dragging{opacity:.35;}
+#panel-2 .gpss-row.drag-over, #panel-2 .gpss-sep-row.drag-over{border-top:2px solid var(--accent);}
+#panel-2 .gpss-editor-head{display:grid;grid-template-columns:18px 90px 130px 1fr 160px 28px;gap:0;background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.5px;}
+#panel-2 .gpss-editor-head span{padding:5px 7px;border-right:1px solid rgba(255,255,255,.2);}
+#panel-2 .gpss-editor-head span:first-child{border-right:none;padding:0;}
+#panel-2 .gpss-editor-head span:last-child{border-right:none;}
+#panel-2 .gpss-rows{display:flex;flex-direction:column;}
+#panel-2 .gpss-row{display:grid;grid-template-columns:18px 90px 130px 1fr 160px 28px;gap:0;border-bottom:1px solid #f0e8de;align-items:stretch;}
+#panel-2 .gpss-row:last-child{border-bottom:none;}
+#panel-2 .gpss-row:nth-child(even){background:#fdf8f4;}
+#panel-2 .gpss-row input{border:none;outline:none;background:transparent;font-family:'JetBrains Mono',monospace;font-size:12.5px;padding:5px 7px;width:100%;color:var(--text);border-right:1px solid #f0e8de;}
+#panel-2 .gpss-row input:last-of-type{border-right:none;}
+#panel-2 .gpss-row input::placeholder{color:#c4b5a5;font-size:11.5px;}
+#panel-2 .gpss-row input:focus{background:rgba(199,91,57,.06);}
+#panel-2 .gpss-col-label input{color:#7a3e20;font-weight:600;}
+#panel-2 .gpss-col-block input{color:#1a5c8f;font-weight:600;text-transform:uppercase;}
+#panel-2 .gpss-col-ops input{color:var(--text);}
+#panel-2 .gpss-col-cmt input{color:#888;font-style:italic;}
+#panel-2 .gpss-col-cmt input::placeholder{color:#d0c0b0;}
+#panel-2 .gpss-row-del{display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:#c4b5a5;font-size:14px;padding:0;line-height:1;transition:color .15s;}
+#panel-2 .gpss-row-del:hover{color:var(--red);}
+#panel-2 .gpss-toolbar{display:flex;gap:8px;padding:8px 10px;background:#faf4ee;border-top:1px solid var(--border);flex-wrap:wrap;align-items:center;}
+#panel-2 .gpss-btn{padding:3px 12px;border-radius:4px;border:1px solid var(--border);cursor:pointer;font-size:12px;font-family:'Noto Serif SC',serif;background:#fff;color:var(--sub);transition:all .15s;}
+#panel-2 .gpss-btn:hover{border-color:var(--accent);color:var(--accent);}
+#panel-2 .gpss-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+#panel-2 .gpss-btn.primary:hover{background:#b04e30;}
+#panel-2 .gpss-btn.copied{background:var(--green);border-color:var(--green);color:#fff;}
+#panel-2 .gpss-preview-wrap{border-top:1px solid var(--border);display:none;}
+#panel-2 .gpss-preview-wrap.open{display:block;}
+#panel-2 .gpss-preview-title{font-size:11px;color:var(--sub);padding:5px 12px 0;font-family:'JetBrains Mono',monospace;background:var(--code-bg);}
+#panel-2 .gpss-preview{background:var(--code-bg);color:var(--code-text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.65;padding:8px 12px 12px;margin:0;overflow-x:auto;white-space:pre;}
+#panel-2 .gpss-sep-row{display:grid;grid-template-columns:18px 90px 130px 1fr 160px 28px;background:#fdf0e8;border-bottom:1px solid #f0e8de;}
+#panel-2 .gpss-sep-row input{border:none;outline:none;background:transparent;font-family:'JetBrains Mono',monospace;font-size:12px;padding:4px 7px;color:#9a6040;font-style:italic;grid-column:1/-1;border-right:none;}
+#panel-2 .gpss-sep-row input::placeholder{color:#c4b5a5;}
+@media(max-width:640px){#panel-2 .gpss-editor-head, #panel-2 .gpss-row, #panel-2 .gpss-sep-row{grid-template-columns:18px 60px 100px 1fr 0px 24px;}
+#panel-2 .gpss-col-cmt{display:none;}
+#panel-2 .gpss-editor-head span:nth-child(4){display:none;}}
+
+/* ===== Panel 3 (老师原题) scoped ===== */
+#panel-3{--bg:#faf6f0;--card:#fff8f0;--text:#2c2418;--sub:#6b5d4f;--accent:#c75b39;--border:#d9cdb8;--code-bg:#2b2520;--code-text:#e8dfd4;--hi:#fff3cd;--tag:#f0e6d6;--green:#2d7a4f;--green-bg:#e8f5e9;--blue:#2a5d8f;--blue-bg:#e3f0fa;}
+#panel-3 *{margin:0;padding:0;box-sizing:border-box;}
+#panel-3{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);line-height:1.85;font-size:15px;padding:20px;max-width:960px;margin:0 auto;}
+#panel-3 .header{text-align:center;padding:36px 20px 28px;border-bottom:2px solid var(--accent);margin-bottom:30px;}
+#panel-3 .header h1{font-size:26px;font-weight:700;letter-spacing:3px;margin-bottom:6px;}
+#panel-3 .header .sub{font-size:13px;color:var(--sub);}
+#panel-3 .level-tag{display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:600;margin-right:6px;}
+#panel-3 .lv-low{background:var(--green-bg);color:var(--green);}
+#panel-3 .lv-mid{background:var(--blue-bg);color:var(--blue);}
+#panel-3 .lv-high{background:#fdecea;color:#b33a2a;}
+#panel-3 .prob{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:24px;}
+#panel-3 .prob-title{font-size:17px;font-weight:700;color:var(--accent);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+#panel-3 .prob-desc{font-size:14px;color:var(--sub);margin-bottom:10px;}
+#panel-3 h2{font-size:18px;font-weight:700;color:var(--accent);margin:32px 0 16px;padding:8px 14px;background:var(--accent);color:#fff;border-radius:6px;letter-spacing:2px;}
+#panel-3 h3{font-size:15px;font-weight:700;color:var(--accent);margin:18px 0 8px;padding-left:10px;border-left:3px solid var(--accent);}
+#panel-3 h4{font-size:14px;font-weight:600;margin:14px 0 6px;}
+#panel-3 p{margin-bottom:8px;font-size:14px;}
+#panel-3 .code{background:var(--code-bg);color:var(--code-text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.75;padding:14px 16px;border-radius:6px;margin:10px 0 14px;overflow-x:auto;white-space:pre;}
+#panel-3 .tip{background:#f0e8d8;border-left:3px solid var(--accent);padding:8px 14px;margin:12px 0;font-size:13px;color:var(--sub);border-radius:0 5px 5px 0;}
+#panel-3 .tip b{color:var(--accent);}
+#panel-3 code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--tag);padding:1px 4px;border-radius:3px;color:var(--accent);}
+#panel-3 table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px;}
+#panel-3 th{background:var(--accent);color:#fff;padding:6px 10px;text-align:left;font-size:12px;}
+#panel-3 td{padding:6px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+#panel-3 details{margin:12px 0;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+#panel-3 summary{padding:10px 14px;cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);background:var(--tag);}
+#panel-3 details[open] summary{border-bottom:1px solid var(--border);}
+#panel-3 details .answer{padding:14px 16px;}
+#panel-3 .exercise{background:#fdf5ee;border:1px dashed var(--accent);border-radius:6px;padding:14px 16px;margin:14px 0;}
+#panel-3 .exercise-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:6px;}
+#panel-3 .write-area{background:#fff;border:1px solid var(--border);border-radius:6px;min-height:120px;padding:12px;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:12px;width:100%;resize:vertical;}
+#panel-3 .kp-list{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+#panel-3 .kp{background:var(--tag);padding:2px 8px;border-radius:4px;font-size:12px;color:var(--sub);}
+#panel-3 .back-top{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+@media(max-width:640px){#panel-3{padding:10px;font-size:14px;}
+#panel-3 .code{font-size:11px;}}
 </style>
 </head>
 <body>
+
+<header class="bc-bar">
+  <div class="bc-inner">
+    <span class="bc-root">GPSS 复习</span>
+    <span class="bc-sep">›</span>
+    <nav class="bc-tabs">
+      <button class="bc-tab active" data-panel="0">复习总纲</button>
+      <button class="bc-tab" data-panel="1">语法速查手册</button>
+      <button class="bc-tab" data-panel="2">GPSS 三小时速成</button>
+      <button class="bc-tab" data-panel="3">老师原题全解</button>
+    </nav>
+    <span class="bc-sep" id="bcSep2" style="display:none">›</span>
+    <span class="bc-sec-name" id="bcSection"></span>
+  </div>
+</header>
+
 <div class="layout">
-<aside class="sidebar">
+<aside class="sidebar" id="mainSidebar">
+
+<!-- TOC 0: 复习总纲 -->
+<div class="toc-pane active" id="toc-0">
 <div class="sidebar-header">
-<div class="sidebar-tag">期末复习全集 · 85+</div>
+<div class="sidebar-tag">复习总纲</div>
 <div class="sidebar-title">离散事件系统<br>建模仿真</div>
 </div>
-
 <div class="tool-panel">
 <h4>复习进度</h4>
 <button class="tool-btn" id="resumeBtn">⤷ 回到上次复习处</button>
@@ -310,51 +753,120 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 <div class="progress-text" id="progressText">0 / 0 节已读</div>
 </div>
 </div>
-
-<nav>
-<button class="nav-chapter-btn" data-goto-page="0">★ 考前必看</button>
-<a href="#exam" class="nav-link" data-sec="exam" data-page-of="0">考试题型与策略<span class="nav-bookmark">🔖</span></a>
-
-<button class="nav-chapter-btn" data-goto-page="1">第1章 绪论</button>
-<a href="#c1-1" class="nav-link" data-sec="c1-1" data-page-of="1">系统·模型·仿真<span class="nav-bookmark">🔖</span></a>
-<a href="#c1-2" class="nav-link" data-sec="c1-2" data-page-of="1">分类·步骤·习题<span class="nav-bookmark">🔖</span></a>
-
-<button class="nav-chapter-btn" data-goto-page="2">第2章 仿真原理</button>
-<a href="#c2-1" class="nav-link" data-sec="c2-1" data-page-of="2">基本术语<span class="nav-bookmark">🔖</span></a>
-<a href="#c2-2" class="nav-link" data-sec="c2-2" data-page-of="2">四种仿真策略<span class="nav-bookmark">🔖</span></a>
-<a href="#c2-3" class="nav-link" data-sec="c2-3" data-page-of="2">★手工仿真(例2.6)<span class="nav-bookmark">🔖</span></a>
-
-<button class="nav-chapter-btn" data-goto-page="3">第3章 初级语言</button>
-<a href="#c3-1" class="nav-link" data-sec="c3-1" data-page-of="3">核心模块详解<span class="nav-bookmark">🔖</span></a>
-<a href="#c3-2" class="nav-link" data-sec="c3-2" data-page-of="3">TRANSFER三模式<span class="nav-bookmark">🔖</span></a>
-<a href="#c3-3" class="nav-link" data-sec="c3-3" data-page-of="3">例题精讲<span class="nav-bookmark">🔖</span></a>
-
-<button class="nav-chapter-btn" data-goto-page="4">第4章 中级语言</button>
-<a href="#c4-1" class="nav-link" data-sec="c4-1" data-page-of="4">SNA码<span class="nav-bookmark">🔖</span></a>
-<a href="#c4-2" class="nav-link" data-sec="c4-2" data-page-of="4">FUNCTION<span class="nav-bookmark">🔖</span></a>
-<a href="#c4-3" class="nav-link" data-sec="c4-3" data-page-of="4">TEST/GATE/SELECT<span class="nav-bookmark">🔖</span></a>
-<a href="#c4-4" class="nav-link" data-sec="c4-4" data-page-of="4">例题精讲<span class="nav-bookmark">🔖</span></a>
-
-<button class="nav-chapter-btn" data-goto-page="5">第5章 高级语言</button>
-<a href="#c5-1" class="nav-link" data-sec="c5-1" data-page-of="5">TABLE/TABULATE<span class="nav-bookmark">🔖</span></a>
-<a href="#c5-2" class="nav-link" data-sec="c5-2" data-page-of="5">★LOOP循环<span class="nav-bookmark">🔖</span></a>
-<a href="#c5-3" class="nav-link" data-sec="c5-3" data-page-of="5">SPLIT/ASSEMBLE/GATHER<span class="nav-bookmark">🔖</span></a>
-<a href="#c5-4" class="nav-link" data-sec="c5-4" data-page-of="5">综合例题<span class="nav-bookmark">🔖</span></a>
-
-<button class="nav-chapter-btn" data-goto-page="6">收尾</button>
-<a href="#fix" class="nav-link" data-sec="fix" data-page-of="6">公式勘误<span class="nav-bookmark">🔖</span></a>
-<a href="#final" class="nav-link" data-sec="final" data-page-of="6">考前清单<span class="nav-bookmark">🔖</span></a>
+<nav id="nav-0">
+<a href="#exam" class="nav-link" data-sec="exam">考试题型与策略<span class="nav-bookmark">🔖</span></a>
+<div class="nav-section-label">第1章 绪论</div>
+<a href="#c1-1" class="nav-link" data-sec="c1-1">系统·模型·仿真<span class="nav-bookmark">🔖</span></a>
+<a href="#c1-2" class="nav-link" data-sec="c1-2">分类·步骤·习题<span class="nav-bookmark">🔖</span></a>
+<div class="nav-section-label">第2章 仿真原理</div>
+<a href="#c2-1" class="nav-link" data-sec="c2-1">基本术语<span class="nav-bookmark">🔖</span></a>
+<a href="#c2-2" class="nav-link" data-sec="c2-2">四种仿真策略<span class="nav-bookmark">🔖</span></a>
+<a href="#c2-3" class="nav-link" data-sec="c2-3">★手工仿真(例2.6)<span class="nav-bookmark">🔖</span></a>
+<div class="nav-section-label">第3章 初级语言</div>
+<a href="#c3-1" class="nav-link" data-sec="c3-1">核心模块详解<span class="nav-bookmark">🔖</span></a>
+<a href="#c3-2" class="nav-link" data-sec="c3-2">TRANSFER三模式<span class="nav-bookmark">🔖</span></a>
+<a href="#c3-3" class="nav-link" data-sec="c3-3">例题精讲<span class="nav-bookmark">🔖</span></a>
+<div class="nav-section-label">第4章 中级语言</div>
+<a href="#c4-1" class="nav-link" data-sec="c4-1">SNA码<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-2" class="nav-link" data-sec="c4-2">FUNCTION<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-3" class="nav-link" data-sec="c4-3">TEST/GATE/SELECT<span class="nav-bookmark">🔖</span></a>
+<a href="#c4-4" class="nav-link" data-sec="c4-4">例题精讲<span class="nav-bookmark">🔖</span></a>
+<div class="nav-section-label">第5章 高级语言</div>
+<a href="#c5-1" class="nav-link" data-sec="c5-1">TABLE/TABULATE<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-2" class="nav-link" data-sec="c5-2">★LOOP循环<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-3" class="nav-link" data-sec="c5-3">SPLIT/ASSEMBLE/GATHER<span class="nav-bookmark">🔖</span></a>
+<a href="#c5-4" class="nav-link" data-sec="c5-4">综合例题<span class="nav-bookmark">🔖</span></a>
+<div class="nav-section-label">收尾</div>
+<a href="#fix" class="nav-link" data-sec="fix">公式勘误<span class="nav-bookmark">🔖</span></a>
+<a href="#final" class="nav-link" data-sec="final">考前清单<span class="nav-bookmark">🔖</span></a>
 </nav>
+</div>
+
+<!-- TOC 1: 语法速查手册 -->
+<div class="toc-pane" id="toc-1">
+<div class="sidebar-header">
+<div class="sidebar-tag">语法速查手册</div>
+<div class="sidebar-title">GPSS World<br>完整语法参考</div>
+</div>
+<nav id="nav-1">
+<div class="nav-section-label">语法手册</div>
+<a href="#g-s1" class="nav-link">01 核心概念</a>
+<a href="#g-s2" class="nav-link">02 实体分类</a>
+<a href="#g-s3" class="nav-link">03 程序结构与格式</a>
+<a href="#g-s4" class="nav-link">04 初级模块语法</a>
+<a href="#g-s5" class="nav-link">05 中级模块与定义语句</a>
+<a href="#g-s6" class="nav-link">06 高级模块语法</a>
+<a href="#g-s7" class="nav-link">07 SNA速查表</a>
+<a href="#g-s8" class="nav-link">08 控制语句</a>
+<a href="#g-s9" class="nav-link">09 经典编程模式</a>
+</nav>
+</div>
+
+<!-- TOC 2: 三小时速成 -->
+<div class="toc-pane" id="toc-2">
+<div class="sidebar-header">
+<div class="sidebar-tag">GPSS 三小时速成</div>
+<div class="sidebar-title">12个程序<br>从零到能写编程题</div>
+</div>
+<div class="tool-panel">
+<h4>练习得分</h4>
+<div id="scoreDisplay2" style="font-family:var(--mono);font-size:15px;color:var(--accent);font-weight:700;">0 / 0</div>
+</div>
+<nav id="nav-2">
+<div class="nav-section-label">第一小时 · 初级语法</div>
+<a href="#p1" class="nav-link">01 单理发师</a>
+<a href="#p2" class="nav-link">02 多服务台（存储器）</a>
+<a href="#p3" class="nav-link">03 多服务台（TRANSFER）</a>
+<a href="#p4" class="nav-link">04 有限等待空间</a>
+<a href="#p5" class="nav-link">05 计时器模式</a>
+<div class="nav-section-label">第二小时 · 中级语法</div>
+<a href="#p6" class="nav-link">06 按概率分布到达</a>
+<a href="#p7" class="nav-link">07 选择最短队列</a>
+<a href="#p8" class="nav-link">08 VIP优先服务</a>
+<a href="#p9" class="nav-link">09 逻辑开关控制</a>
+<div class="nav-section-label">第三小时 · 高级语法</div>
+<a href="#p10" class="nav-link">10 统计逗留时间分布</a>
+<a href="#p11" class="nav-link">11 并行活动后合并</a>
+<a href="#p12" class="nav-link">12 循环累加</a>
+<div class="nav-section-label">综合</div>
+<a href="#final" class="nav-link">★ 综合题</a>
+</nav>
+</div>
+
+<!-- TOC 3: 老师原题 -->
+<div class="toc-pane" id="toc-3">
+<div class="sidebar-header">
+<div class="sidebar-tag">老师原题全解</div>
+<div class="sidebar-title">7道课堂题<br>知识点+解答+改编</div>
+</div>
+<nav id="nav-3">
+<div class="nav-section-label">低级题</div>
+<a href="#t32" class="nav-link">3.2 打靶练习</a>
+<a href="#t31" class="nav-link">3.1 理发店（三种服务）</a>
+<div class="nav-section-label">中级题</div>
+<a href="#t37" class="nav-link">3.7 三家洗车店</a>
+<a href="#t312" class="nav-link">3.12 两站顺序服务</a>
+<div class="nav-section-label">高级题</div>
+<a href="#t42" class="nav-link">4.2 纺织工厂</a>
+<a href="#t43" class="nav-link">4.3 加油站三种燃油</a>
+<a href="#t46" class="nav-link">4.6 超市购物（最难）</a>
+<div class="nav-section-label">考前策略</div>
+<a href="#t-strategy" class="nav-link">考前策略</a>
+</nav>
+</div>
+
 </aside>
 
-<main class="main">
+<main class="main-area" id="mainArea">
+
+<!-- PANEL 0 -->
+<div class="file-panel active" data-panel="0" id="panel-0">
 <div class="page-header">
 <div class="phase-badge">期末复习全集</div>
 <h1 class="page-title">离散事件系统建模仿真<br>完整复习资料</h1>
 <p class="page-subtitle">谢毅、缪亚萍《离散事件系统建模仿真及GPSSWorld教程》· 清华大学出版社<br>
-知识点 + 全部核心例题 + 考情重点 · 内置书签 / 问题标记 / 笔记功能（数据存于本地浏览器）</p>
+知识点 + 全部核心例题 + 考情重点 · 内置书签 / 问题标记 / 笔记功能</p>
 </div>
-
 <!-- ═══════════ 考前必看 ═══════════ -->
 <div class="chapter" id="exam-chapter" data-page="0">
 <div class="section" id="exam" data-section-id="exam" data-section-name="考试题型与策略">
@@ -1885,19 +2397,2507 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 </div>
 </div>
 </div>
+</div>
 
-<!-- 分页控件 -->
-<div class="pagination-bar" id="paginationBar">
-  <button class="pg-btn" id="pgPrev">← 上一章</button>
-  <div class="pg-info">
-    <strong id="pgLabel">考前必看</strong>
-    <div class="pg-dots" id="pgDots"></div>
+</div>
+
+<!-- PANEL 1 -->
+<div class="file-panel" data-panel="1" id="panel-1">
+<div class="panel-header">
+<div class="ph-tag">语法速查手册</div>
+<h1>GPSS World 语法速查手册</h1>
+<p>离散事件系统建模仿真 · 谢毅 缪亚萍 · 考前速成版</p>
+</div>
+<div class="section" id="g-s1">
+  <div class="section-title"><span class="num">01</span> GPSS World 核心概念</div>
+
+  <p>GPSS（General Purpose Simulation System）是专门用于离散事件系统仿真的语言。GPSS World 是它在 Windows 平台上的可视化集成环境。</p>
+
+  <p>核心思想：把现实系统抽象成<strong>活动实体</strong>（Transaction，事务）在<strong>固定实体</strong>（设施、存储器、队列等）之间流动的过程。程序就是描述这个流动轨迹的模块序列。</p>
+
+  <p>两种模型表示：框图式模型（画流程图，不能直接执行）和程序式模型（写代码，可以运行）。一般先画框图再写程序。</p>
+
+  <div class="tip"><strong>考试重点：</strong>理解"活动实体在模块之间流动"这个核心机制。所有的 block 都是在描述活动实体会经历什么。</div>
+</div>
+
+<!-- ===== 02 ===== -->
+<div class="section" id="g-s2">
+  <div class="section-title"><span class="num">02</span> 实体分类</div>
+
+  <h3>活动实体（Transaction）</h3>
+  <p>系统中可以移动的人、设备、信息等。是驱动 GPSS World 程序运行的原动力，程序的灵魂。每个活动实体有以下属性：</p>
+  <table>
+    <tr><th>属性</th><th>说明</th></tr>
+    <tr><td>优先级</td><td>竞争资源时的优先权，0~127，越大越优先，默认0</td></tr>
+    <tr><td>标记时间</td><td>实体产生的绝对时钟值</td></tr>
+    <tr><td>装配号</td><td>每个实体自带的正整数编号，用于 SPLIT/ASSEMBLE/MATCH</td></tr>
+    <tr><td>参数</td><td>实体可携带的属性值，用 ASSIGN 赋值，用 Pj 读取</td></tr>
+  </table>
+
+  <h3>固定实体</h3>
+  <p>位置固定的资源和统计工具：</p>
+
+  <h4>资源实体</h4>
+  <table>
+    <tr><th>类型</th><th>说明</th><th>相关模块</th></tr>
+    <tr><td>设施 FACILITY</td><td>一次只能被一个实体占用的服务资源（理发师、跑道、收银台）</td><td>SEIZE / RELEASE</td></tr>
+    <tr><td>队列 QUEUE</td><td>等候区，用于统计排队信息</td><td>QUEUE / DEPART</td></tr>
+    <tr><td>存储器 STORAGE</td><td>可同时容纳多个实体的资源（停车场、仓库），需先用 STORAGE 定义容量</td><td>ENTER / LEAVE</td></tr>
+    <tr><td>逻辑开关 LOGIC</td><td>两种状态（开/关）的开关设备</td><td>LOGIC S/R/I</td></tr>
+  </table>
+
+  <h4>统计实体</h4>
+  <p>表格（TABLE）和保存值（SAVEVALUE）用于收集和存储统计数据。</p>
+
+  <div class="tip"><strong>设施 vs 存储器：</strong>设施只能被1个实体占用（单服务台）；存储器可以同时被多个实体占用（多服务台用多个设施，或用一个存储器容量=服务台数）。4个加油枪 = 4个设施 或 1个容量为4的存储器。</div>
+</div>
+
+<!-- ===== 03 ===== -->
+<div class="section" id="g-s3">
+  <div class="section-title"><span class="num">03</span> 程序结构与语句格式</div>
+
+  <h3>程序三部分</h3>
+  <p>一个 GPSS World 程序包含 3 部分：</p>
+  <table>
+    <tr><th>部分</th><th>内容</th><th>是否必须</th></tr>
+    <tr><td>说明部分</td><td>定义语句：EQU、STORAGE、FUNCTION、VARIABLE、TABLE、INITIAL 等</td><td>可选</td></tr>
+    <tr><td>模块部分</td><td>模块语句序列，描述活动实体的行为轨迹</td><td>必须</td></tr>
+    <tr><td>控制部分</td><td>命令语句：START、RESET、CLEAR 等</td><td>可选（但一般要有 START）</td></tr>
+  </table>
+
+  <h3>语句格式</h3>
+  <p>每条语句占一行，最多250个字符，由5个数据域组成，空格分隔：</p>
+  <div class="syntax">行号(可选)  语句标签(可选)  操作码(必须)  操作数(可选)  ;注释(可选)</div>
+  <div class="code-block">        GENERATE    16,9        ;顾客每隔16±9分钟到来
+        QUEUE       LINE        ;进入队列LINE
+JOE     SEIZE       BARBER      ;占用理发师BARBER
+        DEPART      LINE        ;离开队列
+        ADVANCE     15,7        ;理发15±7分钟
+        RELEASE     BARBER      ;释放理发师
+        TERMINATE   1           ;离开系统
+        START       20          ;仿真20个顾客</div>
+
+  <div class="tip">
+    <strong>注释：</strong>整行注释用 <code>;</code> 或 <code>*</code> 开头；行内注释在数据域后面加 <code>;</code>。<br>
+    <strong>标签规则：</strong>不能用 SNA 码或系统关键字做标签。
   </div>
-  <button class="pg-btn primary" id="pgNext">下一章 →</button>
+</div>
+
+<!-- ===== 04 ===== -->
+<div class="section" id="g-s4">
+  <div class="section-title"><span class="num">04</span> 初级模块语法（第3章）</div>
+
+  <h3>与活动实体有关的模块</h3>
+
+  <!-- GENERATE -->
+  <div class="block-card">
+    <div class="block-name">GENERATE — 产生活动实体</div>
+    <div class="block-desc">所有活动实体的入口。没有 GENERATE 就没有实体进入系统。</div>
+    <div class="syntax">GENERATE    A, B, C, D, E</div>
+    <dl class="params">
+      <dt>A — 到达间隔均值</dt>
+      <dd>实体产生的时间间隔均值，默认0。可以是数值、名称、表达式、SNA码，但不能是实体参数。</dd>
+      <dt>B — 到达间隔半区间（或函数修正）</dt>
+      <dd>默认0。若A=16, B=9，则间隔在7~25之间均匀分布。若B是函数，则实际间隔=A×FN$函数名。</dd>
+      <dt>C — 首次到达时刻</dt>
+      <dd>第一个实体的产生时间，默认从仿真零时刻开始经过间隔A后产生。</dd>
+      <dt>D — 产生总数限制</dt>
+      <dd>默认不限。</dd>
+      <dt>E — 优先级</dt>
+      <dd>0~127，默认0，越大越优先。</dd>
+    </dl>
+    <div class="code-block">GENERATE    16,9          ;均匀分布 U(7,25)
+GENERATE    10,FN$EXP     ;指数分布，均值10
+GENERATE    ,,,1          ;只产生1个实体（计时器）
+GENERATE    100,,,1       ;100时刻产生1个实体</div>
+    <div class="entry-mode">进入模式：不需要活动实体触发（这是活动实体的源头）</div>
+  </div>
+
+  <!-- ADVANCE -->
+  <div class="block-card">
+    <div class="block-name">ADVANCE — 延时</div>
+    <div class="block-desc">让活动实体在仿真中停留一段时间（接受服务、等待等）。</div>
+    <div class="syntax">ADVANCE    A, B</div>
+    <dl class="params">
+      <dt>A — 延迟均值（必须）</dt>
+      <dd>必须是正数。</dd>
+      <dt>B — 延迟半区间</dt>
+      <dd>默认0。与 GENERATE 的 B 操作数用法相同。</dd>
+    </dl>
+    <div class="code-block">ADVANCE     15,7          ;延时 U(8,22)
+ADVANCE     20            ;固定延时20
+ADVANCE     101.6,50.3    ;延时 U(51.3, 151.9)</div>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- ASSIGN -->
+  <div class="block-card">
+    <div class="block-name">ASSIGN — 给活动实体参数赋值</div>
+    <div class="block-desc">设置或修改活动实体携带的参数。参数随实体存在而存在，随实体消亡（TERMINATE）而消失。</div>
+    <div class="syntax">ASSIGN    A, B, C</div>
+    <dl class="params">
+      <dt>A — 参数编号或名称</dt>
+      <dd>可附加 <code>+</code> 或 <code>-</code> 表示在原值基础上增减。</dd>
+      <dt>B — 赋值/增减的值</dt>
+      <dd>必须是名称、数值、字符串、表达式、SNA码。</dd>
+      <dt>C — 函数编号（可选）</dt>
+      <dd>用于函数修正。</dd>
+    </dl>
+    <div class="code-block">ASSIGN      1,2           ;参数1 = 2
+ASSIGN      1+,3          ;参数1 = 参数1 + 3
+ASSIGN      1-,3          ;参数1 = 参数1 - 3
+ASSIGN      B_1,5         ;名为B_1的参数 = 5</div>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- TRANSFER -->
+  <div class="block-card">
+    <div class="block-name">TRANSFER — 转向</div>
+    <div class="block-desc">让活动实体跳转到指定模块，类似高级语言的 goto。共有9种跳转模式。</div>
+    <div class="syntax">TRANSFER    A, B, C, D</div>
+
+    <h4>1. 无条件转向（A省略）</h4>
+    <div class="code-block">TRANSFER    ,ADD          ;无条件跳转到标签ADD</div>
+
+    <h4>2. 概率转向（A是小数）</h4>
+    <div class="code-block">TRANSFER    0.75,ADDB,ADDC  ;75%去ADDC，25%去ADDB
+TRANSFER    .75,,ADDC       ;75%去ADDC，25%去下一模块</div>
+    <p>规则：以概率A转向C，以概率(1-A)转向B（B省略则去下一模块）。若目标模块拒绝进入则等待。</p>
+
+    <h4>3. BOTH模式</h4>
+    <div class="code-block">TRANSFER    BOTH,ADDB,ADDC  ;先试B，不行试C，都不行等待</div>
+    <p>注意：B域地址的模块一定是有条件进入模块（如 SEIZE）才有意义。</p>
+
+    <h4>4. ALL模式</h4>
+    <div class="code-block">TRANSFER    ALL,ADDB,ADDC,3  ;从ADDB到ADDC每隔3个模块尝试进入</div>
+    <p>D默认1。从B开始按步长D逐个尝试到C，都拒绝则等待下次重试。C必须在B后面且C-B能被D整除。</p>
+
+    <h4>5. PICK模式</h4>
+    <div class="code-block">TRANSFER    PICK,ADDB,ADDC  ;随机选择ADDB或ADDC进入</div>
+    <p>从B到C之间随机选一个模块进入，进不去则等待。与BOTH的区别：BOTH优先B，PICK随机。</p>
+
+    <h4>6. P参数模式</h4>
+    <div class="code-block">TRANSFER    P,1,2          ;去参数1的值+2所指的模块</div>
+    <p>取实体参数Placemarker的值加上C，作为目标地址。</p>
+
+    <h4>7. SBR子程序模式</h4>
+    <div class="code-block">TRANSFER    SBR,New_Place,Placemarker</div>
+    <p>无条件转向B，同时将当前位置存入参数Placemarker（用于返回）。</p>
+
+    <h4>8. FN函数模式</h4>
+    <div class="code-block">TRANSFER    FN,FN_NAME     ;按函数值决定去向</div>
+
+    <h4>9. SIM同时模式</h4>
+    <div class="code-block">TRANSFER    SIM,Nodelay_Place,Delay_Place</div>
+    <p>检查延迟标志：被设置(set)则去Delay_Place并复位；被复位(reset)则去Nodelay_Place。</p>
+
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- PRIORITY -->
+  <div class="block-card">
+    <div class="block-name">PRIORITY — 改变优先级</div>
+    <div class="syntax">PRIORITY    A, B</div>
+    <dl class="params">
+      <dt>A — 新优先级</dt>
+      <dd>0~127之间的值。</dd>
+      <dt>B — 可选，BU</dt>
+      <dd>省略或缺省：放回CEC中同优先级实体前面；BU：放在同优先级实体之后。</dd>
+    </dl>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- BUFFER -->
+  <div class="block-card">
+    <div class="block-name">BUFFER — 重新调度</div>
+    <div class="block-desc">将活动实体放到CEC中同优先级实体的后面（让其他同优先级的先处理）。</div>
+    <div class="syntax">BUFFER</div>
+    <p>没有参数。主要用于提高仿真运行效率。</p>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- TERMINATE -->
+  <div class="block-card">
+    <div class="block-name">TERMINATE — 消除活动实体</div>
+    <div class="block-desc">活动实体的出口。GENERATE 是入口，TERMINATE 是出口，成对使用。</div>
+    <div class="syntax">TERMINATE    A</div>
+    <dl class="params">
+      <dt>A — 从仿真终止计数器减去的数</dt>
+      <dd>默认0。与 START 配合控制仿真终止。</dd>
+    </dl>
+    <div class="code-block">TERMINATE   1             ;减去1，配合 START 20 = 仿真20个实体后停止
+TERMINATE                 ;减去0，实体消亡但不影响仿真终止计数器</div>
+    <div class="tip"><strong>关键：</strong>仿真终止计数器的初值由 START 的 A 操作数给定。每有实体经过 TERMINATE，计数器减去该 TERMINATE 的 A 值。减到 ≤ 0 时仿真停止。计数器的终值不一定等于仿真的实体数目（因为可能有多个 TERMINATE，且 A 值不一定是1）。</div>
+    <div class="entry-mode">进入模式：无条件进入（终止模块，后面不能有模块）</div>
+  </div>
+
+  <h3>与设施有关的模块</h3>
+
+  <!-- SEIZE -->
+  <div class="block-card">
+    <div class="block-name">SEIZE — 占用设施</div>
+    <div class="block-desc">尝试占用一个设施。如果设施空闲则占用，否则在设施的延迟链中等候。</div>
+    <div class="syntax">SEIZE    A</div>
+    <dl class="params">
+      <dt>A — 设施编号或名称（必须）</dt>
+    </dl>
+    <div class="entry-mode">进入模式：<strong>有条件进入</strong>（设施空闲时才能进入）</div>
+    <div class="tip"><strong>注意：</strong>SEIZE 和 RELEASE 必须成对出现，设施名必须一致。占用后必须释放，否则其他实体永远无法使用。实体进入 SEIZE 后，也一定要经过 RELEASE，否则不能 TERMINATE。</div>
+  </div>
+
+  <!-- RELEASE -->
+  <div class="block-card">
+    <div class="block-name">RELEASE — 释放设施</div>
+    <div class="syntax">RELEASE    A</div>
+    <dl class="params">
+      <dt>A — 设施编号或名称（必须）</dt>
+      <dd>必须与前面的 SEIZE 对应。</dd>
+    </dl>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <h3>与队列有关的模块</h3>
+
+  <!-- QUEUE -->
+  <div class="block-card">
+    <div class="block-name">QUEUE — 进入队列排队</div>
+    <div class="block-desc">用于统计排队过程。活动实体进入队列时自动开始计时。</div>
+    <div class="syntax">QUEUE    A, B</div>
+    <dl class="params">
+      <dt>A — 队列编号或名称（必须）</dt>
+      <dt>B — 队长增加量（默认1）</dt>
+    </dl>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- DEPART -->
+  <div class="block-card">
+    <div class="block-name">DEPART — 离开队列</div>
+    <div class="syntax">DEPART    A, B</div>
+    <dl class="params">
+      <dt>A — 队列编号或名称（必须）</dt>
+      <dt>B — 队长减少量（默认1）</dt>
+      <dd>B 不能大于当前队长，否则报错。</dd>
+    </dl>
+    <div class="entry-mode">进入模式：无条件进入</div>
+    <div class="tip"><strong>QUEUE/DEPART 使用要点：</strong>一般放在 SEIZE 的前后。QUEUE 放在 SEIZE 前面（开始等待），DEPART 放在 SEIZE 后面（等到了就离队）。一个队列可以有多个出口（多个 DEPART）。</div>
+  </div>
+
+  <h3>与存储器有关的模块</h3>
+
+  <!-- STORAGE -->
+  <div class="block-card">
+    <div class="block-name">STORAGE — 定义存储器容量（定义语句）</div>
+    <div class="syntax">NAME    STORAGE    A</div>
+    <dl class="params">
+      <dt>NAME — 存储器名称（必须，合法名称，不能是数字）</dt>
+      <dt>A — 容量（必须，正整数）</dt>
+    </dl>
+    <div class="code-block">BAR     STORAGE     10    ;定义存储器BAR，容量10</div>
+    <p>放在程序的说明部分（GENERATE 之前）。</p>
+  </div>
+
+  <!-- ENTER -->
+  <div class="block-card">
+    <div class="block-name">ENTER — 进入存储器</div>
+    <div class="syntax">ENTER    A, B</div>
+    <dl class="params">
+      <dt>A — 存储器编号或名称（必须）</dt>
+      <dt>B — 占用的容量（默认1）</dt>
+    </dl>
+    <div class="entry-mode">进入模式：<strong>有条件进入</strong>（剩余容量 ≥ B 时才能进入）</div>
+  </div>
+
+  <!-- LEAVE -->
+  <div class="block-card">
+    <div class="block-name">LEAVE — 离开存储器</div>
+    <div class="syntax">LEAVE    A, B</div>
+    <dl class="params">
+      <dt>A — 存储器编号或名称（必须）</dt>
+      <dt>B — 释放的容量（默认1）</dt>
+      <dd>B 不能大于当前存储量。</dd>
+    </dl>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+</div>
+
+<!-- ===== 05 ===== -->
+<div class="section" id="g-s5">
+  <div class="section-title"><span class="num">05</span> 中级模块与定义语句（第4章）</div>
+
+  <h3>定义语句</h3>
+
+  <!-- EQU -->
+  <div class="block-card">
+    <div class="block-name">EQU — 符号定义</div>
+    <div class="block-desc">给常量或表达式取一个名字，提高可读性。放在程序说明部分。值在仿真开始时就确定，之后不变。</div>
+    <div class="syntax">NAME    EQU    X</div>
+    <div class="code-block">Q_1     EQU     1         ;Q_1 代表数字 1
+CONT    EQU     1+2       ;CONT 代表 3
+ABC     EQU     RN1       ;ABC 代表 RN1 在仿真开始时的值（固定）</div>
+    <div class="tip"><strong>注意：</strong>EQU 的 X 不能包含活动实体相关的 SNA 码（如 P1），因为定义时还没有活动实体。</div>
+  </div>
+
+  <!-- VARIABLE -->
+  <div class="block-card">
+    <div class="block-name">VARIABLE — 变量定义</div>
+    <div class="block-desc">定义一个可重复计算的表达式。每次引用时重新计算（与 EQU 不同）。</div>
+    <div class="syntax">NAME    VARIABLE    X</div>
+    <div class="code-block">V_1     VARIABLE    2*P1          ;实体参数1的2倍
+V_2     VARIABLE    P1<2          ;逻辑表达式
+V_MEAN  VARIABLE    10+RN1@11     ;10~20均匀分布的随机整数
+V_EXP   VARIABLE    -10#LOG(RN1/1000)  ;指数分布</div>
+    <p>使用时用 <code>V$NAME</code> 引用变量的值。</p>
+  </div>
+
+  <!-- FUNCTION -->
+  <div class="block-card">
+    <div class="block-name">FUNCTION — 函数定义</div>
+    <div class="block-desc">根据采样数据定义离散或连续的函数关系。至少占2行：定义行 + 数据行。</div>
+    <div class="syntax">NAME    FUNCTION    A, B
+X1,Y1/X2,Y2/X3,Y3/...</div>
+    <dl class="params">
+      <dt>A — 自变量</dt>
+      <dd>可以是 SNA 码、表达式。最常用 RNj（随机数发生器）。</dd>
+      <dt>B — 函数形式 + 数据点数</dt>
+      <dd>C = 连续值型，D = 离散值型，L = 列表值型，E = 属性值型，M = 属性列表值型。常用 C 和 D。</dd>
+    </dl>
+
+    <h4>离散值型函数（D）</h4>
+    <div class="code-block">FN_BAR  FUNCTION    RN1,D5
+0.15,3/0.4,4/0.7,5/0.9,6/1,7</div>
+    <p>数据行用的是<strong>累计概率</strong>。RN1∈[0,0.15)→3，[0.15,0.4)→4，[0.4,0.7)→5，[0.7,0.9)→6，[0.9,1)→7。</p>
+
+    <h4>连续值型函数（C）</h4>
+    <div class="code-block">FN_BAR  FUNCTION    RN1,C6
+0,0/0.15,3/0.4,4/0.7,5/0.9,6/1,7</div>
+    <p>数据点之间用线性内插。注意与离散型的区别：连续型的 X 数据行起点通常从0开始。</p>
+
+    <p>使用时用 <code>FN$NAME</code> 引用函数值。</p>
+    <div class="tip"><strong>RNj 说明：</strong>作为函数自变量时返回 0~0.999999 的均匀小数；直接用在整数表达式中返回 0~999 的均匀整数。</div>
+  </div>
+
+  <!-- RMULT -->
+  <div class="block-card">
+    <div class="block-name">RMULT — 设定随机数种子</div>
+    <div class="syntax">RMULT    ,,234,,456</div>
+    <p>修改指定编号的随机数发生器种子。用于多次运行获得不同结果的统计实验。配合 CLEAR 使用。</p>
+  </div>
+
+  <h3>中级模块</h3>
+
+  <!-- LOGIC -->
+  <div class="block-card">
+    <div class="block-name">LOGIC — 逻辑开关控制</div>
+    <div class="syntax">LOGIC O    A</div>
+    <dl class="params">
+      <dt>O — 辅助码（必须）</dt>
+      <dd><code>S</code> = SET（置为打开/1），<code>R</code> = RESET（置为关闭/0），<code>I</code> = INVERT（取反）。</dd>
+      <dt>A — 逻辑开关编号或名称</dt>
+    </dl>
+    <div class="code-block">LOGIC S     L_BAR         ;打开名为L_BAR的逻辑开关
+LOGIC R     P1            ;关闭参数1所指的逻辑开关
+LOGIC I     1             ;取反1号逻辑开关</div>
+    <p>相关 SNA：<code>LS$j</code> 返回逻辑开关状态（1=开，0=关）。</p>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- SAVEVALUE -->
+  <div class="block-card">
+    <div class="block-name">SAVEVALUE — 保存值</div>
+    <div class="block-desc">全局变量，不随活动实体消亡而消失（与参数 P 不同）。</div>
+    <div class="syntax">SAVEVALUE    A, B</div>
+    <dl class="params">
+      <dt>A — 保存值编号或名称</dt>
+      <dd>可附加 <code>+</code> 或 <code>-</code>。</dd>
+      <dt>B — 要存放/增减的值</dt>
+    </dl>
+    <div class="code-block">SAVEVALUE   1,2           ;保存值1 = 2
+SAVEVALUE   1+,P2         ;保存值1 += 实体参数2的值
+SAVEVALUE   P1,5          ;参数1所指的保存值 = 5
+SAVEVALUE   1-,X2         ;保存值1 -= 保存值2</div>
+    <p>相关 SNA：<code>X$j</code> 或 <code>Xj</code> 读取保存值。初值为0（或用 INITIAL 初始化）。遇到 CLEAR 恢复为0，遇到 RESET 保持不变。</p>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- INITIAL -->
+  <div class="block-card">
+    <div class="block-name">INITIAL — 初始化</div>
+    <div class="block-desc">初始化逻辑开关或保存值。放在说明部分。</div>
+    <div class="syntax">INITIAL    A, B</div>
+    <div class="code-block">INITIAL     LS1           ;1号逻辑开关初始为1（打开）
+INITIAL     LS$L_BAR      ;名为L_BAR的逻辑开关初始为1
+INITIAL     X1,5          ;1号保存值初始为5
+INITIAL     X$X_BAR,10    ;名为X_BAR的保存值初始为10</div>
+    <p>同一条 INITIAL 只能初始化一个实体。</p>
+  </div>
+
+  <!-- TEST -->
+  <div class="block-card">
+    <div class="block-name">TEST — 比较测试</div>
+    <div class="block-desc">比较两个数据的大小，根据结果控制活动实体走向。</div>
+    <div class="syntax">TEST O    A, B, C</div>
+    <dl class="params">
+      <dt>O — 比较类型（必须）</dt>
+      <dd><code>E</code>=等于, <code>NE</code>=不等, <code>L</code>=小于, <code>LE</code>=小于等于, <code>G</code>=大于, <code>GE</code>=大于等于。</dd>
+      <dt>A, B — 比较对象</dt>
+      <dt>C — 比较为假时跳转的地址（可选）</dt>
+      <dd>省略 C：条件满足才通过，否则等待（效率低）；有 C：条件满足则通过，否则跳转到 C。</dd>
+    </dl>
+    <div class="code-block">TEST E      Q2,3,ADD_BAR  ;若队列2长度=3，通过；否则去ADD_BAR
+TEST GE     X1,P1         ;若保存值1≥参数1，通过；否则等待</div>
+    <div class="entry-mode">进入模式：<strong>有条件进入</strong></div>
+  </div>
+
+  <!-- GATE -->
+  <div class="block-card">
+    <div class="block-name">GATE — 状态测试</div>
+    <div class="block-desc">测试设施、存储器、逻辑开关等实体的当前状态。效率比 TEST 高。</div>
+    <div class="syntax">GATE O    A, B</div>
+    <dl class="params">
+      <dt>O — 状态代码（必须）</dt>
+      <dt>A — 实体编号或名称</dt>
+      <dt>B — 状态不匹配时跳转的地址（可选）</dt>
+    </dl>
+
+    <table>
+      <tr><th>实体类型</th><th>代码</th><th>含义</th></tr>
+      <tr><td>设施</td><td>U / NU</td><td>在使用 / 未使用</td></tr>
+      <tr><td>设施</td><td>I / NI</td><td>被中断 / 未被中断</td></tr>
+      <tr><td>设施</td><td>FV / FNV</td><td>可用 / 不可用</td></tr>
+      <tr><td>存储器</td><td>SE / SF</td><td>空 / 满</td></tr>
+      <tr><td>存储器</td><td>SNE / SNF</td><td>不空 / 不满</td></tr>
+      <tr><td>存储器</td><td>SV</td><td>可用</td></tr>
+      <tr><td>逻辑开关</td><td>LS / LR</td><td>打开(1) / 关闭(0)</td></tr>
+    </table>
+
+    <div class="code-block">GATE LS     1             ;1号逻辑开关开着才通过
+GATE SNF    S_1,ADD_BYE   ;存储器S_1不满才通过，否则去ADD_BYE</div>
+    <div class="tip"><strong>TEST vs GATE：</strong>两者功能可以互相替代。但 GATE 效率更高——只在实体状态变化时才测试，不像 TEST 那样不断轮询。<strong>能用 GATE 的地方尽量用 GATE。</strong></div>
+    <div class="entry-mode">进入模式：<strong>有条件进入</strong></div>
+  </div>
+
+  <!-- SELECT -->
+  <div class="block-card">
+    <div class="block-name">SELECT — 选择实体</div>
+    <div class="block-desc">从一组实体中按条件选择一个，将编号存入活动实体参数。</div>
+    <div class="syntax">SELECT O    A, B, C, D, E, F</div>
+    <dl class="params">
+      <dt>O — 比较类型（E, NE, G, GE, L, LE 或极值模式 MIN/MAX）</dt>
+      <dt>A — 存放结果的参数编号或名称</dt>
+      <dt>B — 扫描范围的最小编号</dt>
+      <dt>C — 扫描范围的最大编号</dt>
+      <dt>D — 比较值</dt>
+      <dt>E — 要检查的 SNA 族名（S=存储器, Q=队列, F=设施）</dt>
+      <dt>F — 没找到时的跳转地址（可选）</dt>
+    </dl>
+    <div class="code-block">SELECT LE   1,4,7,10,S,ADD_BYE
+;从4~7号存储器中找含量≤10的，编号存入参数1</div>
+    <div class="entry-mode">进入模式：无条件进入（不拒绝实体）</div>
+  </div>
+</div>
+
+<!-- ===== 06 ===== -->
+<div class="section" id="g-s6">
+  <div class="section-title"><span class="num">06</span> 高级模块语法（第5章）</div>
+
+  <h3>居留时间与过境时间</h3>
+  <p><code>M1</code> = 活动实体在系统中的居留时间（当前时钟 - 标记时间）。<code>MP$j</code> = 当前时钟 - 参数j的值（两点间经过的时间）。</p>
+
+  <h3>表格实体</h3>
+
+  <!-- TABLE -->
+  <div class="block-card">
+    <div class="block-name">TABLE — 定义表格</div>
+    <div class="syntax">NAME    TABLE    A, B, C, D</div>
+    <dl class="params">
+      <dt>A — 要统计的数据项（SNA 码）</dt>
+      <dt>B — 第一区段上界</dt>
+      <dt>C — 中间区段宽度</dt>
+      <dt>D — 区段总数</dt>
+    </dl>
+    <div class="code-block">T_STAY  TABLE   M1,5,5,20   ;统计居留时间M1，第一段≤5，每段宽5，共20段</div>
+  </div>
+
+  <!-- TABULATE -->
+  <div class="block-card">
+    <div class="block-name">TABULATE — 表格统计</div>
+    <div class="syntax">TABULATE    A, B</div>
+    <dl class="params">
+      <dt>A — 表格名称或编号（必须）</dt>
+      <dt>B — 权重（默认1）</dt>
+    </dl>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- QTABLE -->
+  <div class="block-card">
+    <div class="block-name">QTABLE — 队列表格（定义语句）</div>
+    <div class="block-desc">专门统计队列等待时间的特殊表格，不需要 TABULATE 模块配合。</div>
+    <div class="syntax">NAME    QTABLE    A, B, C, D</div>
+    <dl class="params">
+      <dt>A — 要统计的队列名称或编号</dt>
+      <dt>B, C, D — 同 TABLE</dt>
+    </dl>
+    <div class="code-block">TQ_BAR  QTABLE  1,5,10,10     ;统计1号队列等待时间分布</div>
+    <p>QTABLE 自动在 QUEUE/DEPART 时记录数据，比 TABLE+TABULATE 更简便。</p>
+  </div>
+
+  <h3>循环与复制</h3>
+
+  <!-- LOOP -->
+  <div class="block-card">
+    <div class="block-name">LOOP — 循环</div>
+    <div class="syntax">LOOP    A, B</div>
+    <dl class="params">
+      <dt>A — 循环计数参数（编号或名称，值必须已存在且为正数）</dt>
+      <dt>B — 循环体起始地址</dt>
+    </dl>
+    <p>执行规则：进入 LOOP 时，参数 A 减1。若减后 > 0，跳转到 B；若 ≤ 0，继续到下一模块。</p>
+    <div class="code-block">        GENERATE    10
+        ASSIGN      1,5           ;参数1=5（循环5次）
+LP      SAVEVALUE   1+,P1         ;累加
+        LOOP        1,LP          ;参数1减1，>0则回LP
+        TERMINATE   1
+        START       1</div>
+    <p>注意：LOOP 的 A 操作数用的是参数编号"1"，不是"P1"。</p>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- SPLIT -->
+  <div class="block-card">
+    <div class="block-name">SPLIT — 复制活动实体</div>
+    <div class="syntax">SPLIT    A, B, C</div>
+    <dl class="params">
+      <dt>A — 复制的子体数量</dt>
+      <dt>B — 子体去往的模块地址（省略则与母体走同一条路）</dt>
+      <dt>C — 用于区分母体和子体的参数编号（可选）</dt>
+      <dd>母体和子体通过参数C的不同值来区分。母体的C参数不变，第一个子体 = 母体C值+1，依次递增。</dd>
+    </dl>
+    <p>母体和子体具有相同的装配编号（A1），这是 ASSEMBLE/GATHER/MATCH 识别它们的依据。XN1（唯一编号）不同。</p>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- ASSEMBLE -->
+  <div class="block-card">
+    <div class="block-name">ASSEMBLE — 装配</div>
+    <div class="block-desc">将同一装配集（A1相同）的多个实体合并为一个。</div>
+    <div class="syntax">ASSEMBLE    A</div>
+    <dl class="params">
+      <dt>A — 需要聚集的实体数量</dt>
+    </dl>
+    <p>保留第一个到达的实体，其余消除。数量达到 A 后合并的实体继续前进。进入200个但只出来100个（如果 SPLIT 1 + ASSEMBLE 2）。</p>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- GATHER -->
+  <div class="block-card">
+    <div class="block-name">GATHER — 聚集</div>
+    <div class="block-desc">与 ASSEMBLE 类似，但保留所有实体（不消除）。</div>
+    <div class="syntax">GATHER    A</div>
+    <p>等到同一装配集的 A 个实体都到达后，所有实体一起继续前进（数量不减少）。</p>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- MATCH -->
+  <div class="block-card">
+    <div class="block-name">MATCH — 匹配</div>
+    <div class="syntax">MATCH    A</div>
+    <dl class="params">
+      <dt>A — 配对 MATCH 模块的地址</dt>
+    </dl>
+    <p>两个 MATCH 成对使用。同一装配集的两个实体分别到达两个 MATCH 后，才同时放行。</p>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <h3>用户链</h3>
+
+  <!-- LINK -->
+  <div class="block-card">
+    <div class="block-name">LINK — 放入用户链</div>
+    <div class="syntax">LINK    A, B, C</div>
+    <dl class="params">
+      <dt>A — 用户链编号或名称</dt>
+      <dt>B — 排队规则</dt>
+      <dd><code>FIFO</code>、<code>LIFO</code>、或按参数/SNA排序。</dd>
+      <dt>C — 不进链时的跳转地址（可选）</dt>
+    </dl>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+
+  <!-- UNLINK -->
+  <div class="block-card">
+    <div class="block-name">UNLINK — 取出用户链</div>
+    <div class="syntax">UNLINK O    A, B, C, D, E, F</div>
+    <dl class="params">
+      <dt>O — 选取条件（空、E、G、GE、L、LE、NE）</dt>
+      <dt>A — 用户链编号或名称</dt>
+      <dt>B — 取出的实体去往的地址</dt>
+      <dt>C — 取出数量（ALL 表示全部取出）</dt>
+      <dt>D, E — 条件比较的参数</dt>
+      <dt>F — 链为空时的跳转地址</dt>
+    </dl>
+    <div class="entry-mode">进入模式：无条件进入</div>
+  </div>
+</div>
+
+<!-- ===== 07 ===== -->
+<div class="section" id="g-s7">
+  <div class="section-title"><span class="num">07</span> 系统数字属性（SNA）速查表</div>
+
+  <p>SNA 的4种引用形式（以 N 为例）：<code>Nj</code>（编号j），<code>N$Name</code>（名称），<code>N*j</code>（间接地址，取参数j的值再引用），<code>N*Name</code>（间接名称）。</p>
+
+  <h3>模拟钟</h3>
+  <table>
+    <tr><th>SNA</th><th>含义</th></tr>
+    <tr><td>AC1</td><td>绝对时钟值（实数）</td></tr>
+    <tr><td>C1</td><td>相对时钟值（实数），RESET 后归零</td></tr>
+  </table>
+
+  <h3>活动实体</h3>
+  <table>
+    <tr><th>SNA</th><th>含义</th></tr>
+    <tr><td>A1</td><td>装配编号</td></tr>
+    <tr><td>M1</td><td>居留时间（当前时钟 - 标记时间）</td></tr>
+    <tr><td>Pj</td><td>参数j的值</td></tr>
+    <tr><td>MPj</td><td>当前时钟 - 参数j的值（过境时间）</td></tr>
+    <tr><td>PR</td><td>优先级</td></tr>
+    <tr><td>XN1</td><td>唯一编号（序列号）</td></tr>
+  </table>
+
+  <h3>队列</h3>
+  <table>
+    <tr><th>SNA</th><th>含义</th></tr>
+    <tr><td>Qj</td><td>当前队长</td></tr>
+    <tr><td>QAj</td><td>平均队长</td></tr>
+    <tr><td>QCj</td><td>总排队人数</td></tr>
+    <tr><td>QMj</td><td>最大队长</td></tr>
+    <tr><td>QTj</td><td>平均等待时间</td></tr>
+    <tr><td>QXj</td><td>平均等待时间（不含零等待）</td></tr>
+    <tr><td>QZj</td><td>零等待实体数</td></tr>
+  </table>
+
+  <h3>设施</h3>
+  <table>
+    <tr><th>SNA</th><th>含义</th></tr>
+    <tr><td>Fj</td><td>状态（1=忙，0=闲）</td></tr>
+    <tr><td>FCj</td><td>进入总数</td></tr>
+    <tr><td>FIj</td><td>是否被抢占（1=是，0=否）</td></tr>
+    <tr><td>FRj</td><td>利用率（千分比）</td></tr>
+    <tr><td>FTj</td><td>平均占用时间</td></tr>
+    <tr><td>FVj</td><td>是否可用（1=是，0=否）</td></tr>
+  </table>
+
+  <h3>存储器</h3>
+  <table>
+    <tr><th>SNA</th><th>含义</th></tr>
+    <tr><td>Sj</td><td>当前含量</td></tr>
+    <tr><td>Rj</td><td>剩余容量</td></tr>
+    <tr><td>SAj</td><td>平均含量</td></tr>
+    <tr><td>SCj</td><td>进入总数</td></tr>
+    <tr><td>SEj</td><td>是否空（1=空，0=不空）</td></tr>
+    <tr><td>SFj</td><td>是否满（1=满，0=不满）</td></tr>
+    <tr><td>SMj</td><td>最大含量</td></tr>
+    <tr><td>SRj</td><td>利用率（千分比）</td></tr>
+    <tr><td>STj</td><td>平均滞留时间</td></tr>
+    <tr><td>SVj</td><td>是否可进入（1=是，0=否）</td></tr>
+  </table>
+
+  <h3>其他</h3>
+  <table>
+    <tr><th>SNA</th><th>含义</th></tr>
+    <tr><td>LSj</td><td>逻辑开关状态（1=开，0=关）</td></tr>
+    <tr><td>Xj</td><td>保存值</td></tr>
+    <tr><td>Vj</td><td>变量值</td></tr>
+    <tr><td>FNj</td><td>函数值</td></tr>
+    <tr><td>Nj</td><td>模块进入总数</td></tr>
+    <tr><td>Wj</td><td>模块当前停留数</td></tr>
+    <tr><td>RNj</td><td>随机数（整数0~999 或 小数0~0.999999）</td></tr>
+    <tr><td>TG1</td><td>仿真终止计数器当前值</td></tr>
+    <tr><td>TBj</td><td>表格统计变量平均值</td></tr>
+    <tr><td>TCj</td><td>表格进入总数</td></tr>
+    <tr><td>TDj</td><td>表格统计变量标准差</td></tr>
+  </table>
+</div>
+
+<!-- ===== 08 ===== -->
+<div class="section" id="g-s8">
+  <div class="section-title"><span class="num">08</span> 控制语句</div>
+
+  <div class="block-card">
+    <div class="block-name">START — 启动仿真</div>
+    <div class="syntax">START    A, B, C, D</div>
+    <dl class="params">
+      <dt>A — 仿真终止计数器初值（必须，正整数）</dt>
+      <dt>B — NP 表示不打印标准报告；省略则打印</dt>
+      <dt>C — 不使用</dt>
+      <dt>D — 省略或0则打印CEC和FEC；非0不打印</dt>
+    </dl>
+    <div class="code-block">START   100           ;仿真直到100个实体经过 TERMINATE（A=1的那些）
+START   1,NP          ;仿真1个实体，不打印报告</div>
+  </div>
+
+  <div class="block-card">
+    <div class="block-name">RESET — 统计复位</div>
+    <div class="block-desc">清除统计数据和相对时钟，但不改变系统当前状态。用于预热系统。</div>
+    <div class="syntax">RESET</div>
+    <p>无参数。保存值、逻辑开关、随机数种子、实体状态都不变。典型用法：先 START 预热，再 RESET，再 START 正式统计。</p>
+  </div>
+
+  <div class="block-card">
+    <div class="block-name">CLEAR — 完全清除</div>
+    <div class="syntax">CLEAR    A</div>
+    <dl class="params">
+      <dt>A — ON（默认）全部恢复初始状态；OFF 保留保存值、逻辑开关、数组及随机数</dt>
+    </dl>
+    <p>CLEAR ON 比 RESET 更彻底——清除所有实体、统计、时钟，恢复到仿真开始前。配合 RMULT 用于多次独立运行。</p>
+  </div>
+
+  <div class="tip"><strong>RESET vs CLEAR：</strong>RESET 不改变系统状态（设施是否被占、实体在哪），只清统计数据，适合预热。CLEAR 彻底重置一切（或保留部分），适合多次独立实验。</div>
+</div>
+
+<!-- ===== 09 ===== -->
+<div class="section" id="g-s9">
+  <div class="section-title"><span class="num">09</span> 经典编程模式与套路</div>
+
+  <h3>模式一：单服务台（最基本）</h3>
+  <div class="code-block">        GENERATE    A,B       ;顾客到达
+        QUEUE       Q1        ;开始排队
+        SEIZE       FAC1      ;占用服务台
+        DEPART      Q1        ;离开队列
+        ADVANCE     C,D       ;服务时间
+        RELEASE     FAC1      ;释放服务台
+        TERMINATE   1         ;离开
+        START       N         ;仿真N个顾客</div>
+
+  <h3>模式二：多服务台（用存储器）</h3>
+  <div class="code-block">BEDS    STORAGE     3         ;3张病床
+        GENERATE    A,B
+        QUEUE       Q1
+        ENTER       BEDS      ;进入存储器（有空床才能进）
+        DEPART      Q1
+        ADVANCE     C,D       ;住院时间
+        LEAVE       BEDS      ;出院
+        TERMINATE   1
+        START       N</div>
+
+  <h3>模式三：多服务台（用 TRANSFER BOTH/ALL 选择设施）</h3>
+  <div class="code-block">        GENERATE    A,B
+        QUEUE       Q1
+        TRANSFER    BOTH,S1,S2    ;先试服务台1，不行试2
+S1      SEIZE       FAC1
+        DEPART      Q1
+        ADVANCE     C,D
+        RELEASE     FAC1
+        TERMINATE   1
+S2      SEIZE       FAC2
+        DEPART      Q1
+        ADVANCE     E,F
+        RELEASE     FAC2
+        TERMINATE   1
+        START       N</div>
+
+  <h3>模式四：有限等待空间（用 TEST/GATE 控制）</h3>
+  <div class="code-block">WAIT    STORAGE     5         ;等待空间5
+        GENERATE    A,B
+        GATE SNF    WAIT,LEAVE    ;等待区不满才进入，否则离开
+        ENTER       WAIT
+        QUEUE       Q1
+        SEIZE       FAC1
+        DEPART      Q1
+        LEAVE       WAIT
+        ADVANCE     C,D
+        RELEASE     FAC1
+        TERMINATE   1
+LEAVE   TERMINATE   1         ;等待区满，顾客直接离开
+        START       N</div>
+
+  <h3>模式五：预热 + 正式统计</h3>
+  <div class="code-block">; ... 模型部分 ...
+        START       100,NP    ;先预热运行100个，不打印
+        RESET                 ;清除统计数据
+        START       1000      ;正式运行1000个</div>
+
+  <h3>模式六：多次独立实验</h3>
+  <div class="code-block">; ... 模型部分 ...
+        START       1000      ;第1次实验
+        RMULT       ,234,     ;换随机数种子
+        CLEAR                 ;完全清除
+        START       1000      ;第2次实验
+        RMULT       ,567,
+        CLEAR
+        START       1000      ;第3次实验</div>
+
+  <h3>模式七：计时器模式（按时间终止仿真）</h3>
+  <div class="code-block">; 服务流程（TERMINATE 不减计数器）
+        GENERATE    A,B
+        QUEUE       Q1
+        SEIZE       FAC1
+        DEPART      Q1
+        ADVANCE     C,D
+        RELEASE     FAC1
+        TERMINATE           ;注意：没有参数，减0
+
+; 计时器（控制仿真总时长）
+        GENERATE    480       ;480时间单位后产生一个实体
+        TERMINATE   1         ;减1，触发仿真终止
+        START       1         ;计数器初值1，被减到0就停</div>
+  <div class="tip"><strong>这个模式很重要！</strong>当你想按时间（而不是服务顾客数）来控制仿真时长时，用一个独立的 GENERATE-TERMINATE 段作为计时器。服务流程里的 TERMINATE 不带参数（减0），只有计时器的 TERMINATE 减1。</div>
+
+  <h3>模式八：SPLIT + ASSEMBLE（并行活动后合并）</h3>
+  <div class="code-block">        GENERATE    10
+        SPLIT       1,NAIL        ;母体继续，子体去NAIL
+        ADVANCE     5             ;母体做事5时间
+        TRANSFER    ,DONE
+NAIL    ADVANCE     6             ;子体做事6时间
+DONE    ASSEMBLE    2             ;等2个到齐后合并
+        TERMINATE   1
+        START       100</div>
+
+  <h3>运行结果报告阅读</h3>
+  <p>仿真结束后 GPSS World 自动输出标准报告，包含：</p>
+  <table>
+    <tr><th>报告区域</th><th>关键字段</th></tr>
+    <tr><td>模块统计</td><td>ENTRY COUNT（进入次数）、CURRENT COUNT（当前停留数）、RETRY</td></tr>
+    <tr><td>设施报告</td><td>ENTRIES（使用次数）、UTIL.（利用率）、AVE. TIME（平均占用时间）</td></tr>
+    <tr><td>队列报告</td><td>MAX（最大队长）、CONT.（当前队长）、ENTRY（总入队数）、ENTRY(0)（零等待数）、AVE.CONT.（平均队长）、AVE.TIME（平均等待时间）、AVE.(-0)（非零平均等待时间）</td></tr>
+    <tr><td>存储器报告</td><td>CAP（容量）、ENTRIES、UTIL.（利用率）、AVE.C（平均含量）</td></tr>
+  </table>
+
+  <h3>GPSS World 表达式运算符优先级</h3>
+  <p>从高到低：<code>'</code> (取反) → <code>#</code> 或 <code>*</code> (乘) → <code>/</code> <code>\</code> (除/模) → <code>@</code> (取余) → <code>-</code> <code>+</code> → <code>>=</code> <code><=</code> <code>></code> <code><</code> <code>=</code> <code>!=</code> → <code>&</code> (AND) → <code>|</code> (OR)</p>
+  <p>同优先级从左到右。</p>
+</div>
+
+<div style="text-align:center; padding: 40px 0; color: var(--text-secondary); font-size: 13px; border-top: 1px solid var(--border); margin-top: 40px;">
+  为 Faye 制作 · 考前速成 · 80分够用
+</div>
+</div>
+
+<!-- PANEL 2 -->
+<div class="file-panel" data-panel="2" id="panel-2">
+<div class="panel-header">
+<div class="ph-tag">GPSS 三小时速成</div>
+<h1>GPSS World 三小时速成</h1>
+<p>12个程序 · 从零到能写编程题</p>
+</div>
+<!-- ==================== 第一小时 ==================== -->
+<div class="hour">第一小时 · 初级语法（5个程序）</div>
+
+<!-- 程序1 -->
+<div class="prog" id="p1">
+  <div class="prog-title"><span class="num">01</span>单理发师</div>
+  <div class="prog-desc">学会最基本的7个block：GENERATE → QUEUE → SEIZE → DEPART → ADVANCE → RELEASE → TERMINATE + START</div>
+
+  <h3>场景</h3>
+  <p class="theory">一家理发店只有1个理发师Joe。顾客每隔16±9分钟到来，理发需要15±7分钟。仿真20个顾客。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block</th><th>作用</th><th>语法</th></tr>
+    <tr><td>GENERATE</td><td>产生活动实体（顾客入口）</td><td>GENERATE A,B — A是间隔均值，B是半区间</td></tr>
+    <tr><td>QUEUE</td><td>进入队列（开始计时统计）</td><td>QUEUE A — A是队列名称</td></tr>
+    <tr><td>SEIZE</td><td>占用设施（有条件进入！空闲才能进）</td><td>SEIZE A — A是设施名称</td></tr>
+    <tr><td>DEPART</td><td>离开队列（停止计时统计）</td><td>DEPART A — A是队列名称</td></tr>
+    <tr><td>ADVANCE</td><td>延时（服务时间）</td><td>ADVANCE A,B — A是均值，B是半区间</td></tr>
+    <tr><td>RELEASE</td><td>释放设施</td><td>RELEASE A — A是设施名称</td></tr>
+    <tr><td>TERMINATE</td><td>实体离开系统</td><td>TERMINATE A — A是终止计数器减去的数</td></tr>
+  </table>
+  <div class="tip"><b>核心逻辑：</b>QUEUE在SEIZE前，DEPART在SEIZE后。SEIZE和RELEASE成对出现。TERMINATE的A配合START控制仿真何时停止。</div>
+
+  <h3>例题程序</h3>
+  <div class="code">        GENERATE    16,9        ;顾客每隔16±9分钟到来
+        QUEUE       LINE        ;进入名为LINE的队列
+        SEIZE       JOE         ;占用理发师JOE
+        DEPART      LINE        ;离开队列（不再算等待时间）
+        ADVANCE     15,7        ;理发15±7分钟
+        RELEASE     JOE         ;释放理发师
+        TERMINATE   1           ;离开系统，终止计数器减1
+        START       20          ;仿真直到20个实体经过TERMINATE</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>GENERATE 16,9：</strong>每隔16±9=7~25分钟产生一个顾客，均匀分布。</p>
+  <p class="ann"><strong>QUEUE/DEPART：</strong>纯统计用途，不影响实体流动。夹住SEIZE来统计等待时间。</p>
+  <p class="ann"><strong>SEIZE JOE：</strong>如果JOE空闲，占用它继续往下走；如果JOE忙，实体停在这里等（进入设施的延迟链）。这就是条件延迟。</p>
+  <p class="ann"><strong>ADVANCE 15,7：</strong>理发过程，时间确定，放入FEL。这就是无条件延迟。</p>
+  <p class="ann"><strong>TERMINATE 1 + START 20：</strong>每过一个顾客终止计数器减1，初值20，减到0停止。所以仿真20个顾客。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个银行只有1个柜员TELLER。客户每隔10±5分钟到来，办理业务需要8±3分钟。仿真50个客户。</p>
+    <p>写出完整的GPSS World程序：</p>
+    <div class="gpss-editor" data-rows="8" data-id="p1"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    10,5
+        QUEUE       WAIT
+        SEIZE       TELLER
+        DEPART      WAIT
+        ADVANCE     8,3
+        RELEASE     TELLER
+        TERMINATE   1
+        START       50</div>
+      <p>关键检查点：GENERATE的操作数是10,5不是10±5；队列名、设施名前后一致；TERMINATE是1；START是50。</p>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序2 -->
+<div class="prog" id="p2">
+  <div class="prog-title"><span class="num">02</span>多服务台（存储器）</div>
+  <div class="prog-desc">新增：STORAGE定义语句 + ENTER + LEAVE — 当多个服务台做同样的事时用存储器</div>
+
+  <h3>场景</h3>
+  <p class="theory">一个停车场有5个车位。车辆每隔8±4分钟到达，停留时间30±15分钟。仿真100辆车。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block</th><th>作用</th><th>语法</th></tr>
+    <tr><td>STORAGE</td><td>定义存储器容量（说明部分！在GENERATE之前）</td><td>NAME STORAGE A</td></tr>
+    <tr><td>ENTER</td><td>进入存储器（有条件进入！剩余容量≥B才能进）</td><td>ENTER A,B — A是名称，B是占用量默认1</td></tr>
+    <tr><td>LEAVE</td><td>离开存储器</td><td>LEAVE A,B — A是名称，B是释放量默认1</td></tr>
+  </table>
+  <div class="tip"><b>设施 vs 存储器：</b>设施容量=1（SEIZE/RELEASE），存储器容量自定（ENTER/LEAVE）。5个完全相同的服务台 → 用一个容量为5的存储器。</div>
+
+  <h3>例题程序</h3>
+  <div class="code">LOT     STORAGE     5           ;定义停车场，5个车位
+        GENERATE    8,4         ;车辆到达
+        QUEUE       WAIT        ;开始排队
+        ENTER       LOT         ;进入停车场（有车位才能进）
+        DEPART      WAIT        ;离队
+        ADVANCE     30,15       ;停留
+        LEAVE       LOT         ;离开停车场
+        TERMINATE   1
+        START       100</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>LOT STORAGE 5：</strong>放在程序最前面（说明部分）。名字LOT必须是名称不能是数字。</p>
+  <p class="ann"><strong>ENTER/LEAVE vs SEIZE/RELEASE：</strong>结构完全一样，只是ENTER可以同时让多个实体进入（只要容量够）。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个医院有3张病床BEDS。病人每隔20±10分钟到达，住院时间120±60分钟。仿真80个病人。</p>
+    <div class="gpss-editor" data-rows="8" data-id="p2"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">BEDS    STORAGE     3
+        GENERATE    20,10
+        QUEUE       WAIT
+        ENTER       BEDS
+        DEPART      WAIT
+        ADVANCE     120,60
+        LEAVE       BEDS
+        TERMINATE   1
+        START       80</div>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序3 -->
+<div class="prog" id="p3">
+  <div class="prog-title"><span class="num">03</span>多服务台（TRANSFER选择设施）</div>
+  <div class="prog-desc">新增：TRANSFER的无条件/概率/BOTH/ALL模式 — 当多个服务台做不同的事时用多个设施+TRANSFER</div>
+
+  <h3>场景</h3>
+  <p class="theory">两个理发师，理发时间不同。顾客到达后先试1号，1号忙再试2号，都忙就等。</p>
+
+  <h3>TRANSFER常用模式</h3>
+  <table class="key-table">
+    <tr><th>模式</th><th>写法</th><th>含义</th></tr>
+    <tr><td>无条件</td><td>TRANSFER ,标签</td><td>直接跳转到标签</td></tr>
+    <tr><td>概率</td><td>TRANSFER .75,B标签,C标签</td><td>75%去C，25%去B</td></tr>
+    <tr><td>BOTH</td><td>TRANSFER BOTH,B标签,C标签</td><td>先试B，被拒试C，都拒等待</td></tr>
+    <tr><td>ALL</td><td>TRANSFER ALL,B标签,C标签,步长</td><td>从B到C按步长逐个试</td></tr>
+    <tr><td>PICK</td><td>TRANSFER PICK,B标签,C标签</td><td>B到C之间随机选一个</td></tr>
+  </table>
+
+  <h3>例题程序</h3>
+  <div class="code">        GENERATE    10,5
+        QUEUE       LINE
+        TRANSFER    BOTH,S1,S2    ;先试S1，不行试S2
+S1      SEIZE       BAR1
+        DEPART      LINE
+        ADVANCE     20,5
+        RELEASE     BAR1
+        TERMINATE   1
+S2      SEIZE       BAR2
+        DEPART      LINE
+        ADVANCE     15,5
+        RELEASE     BAR2
+        TERMINATE   1
+        START       100</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>TRANSFER BOTH,S1,S2：</strong>先试跳到S1（SEIZE BAR1），如果BAR1忙被拒绝，再试S2（SEIZE BAR2），如果也忙就等待在TRANSFER这里，下次有设施空了再重试。</p>
+  <p class="ann"><strong>两段独立的SEIZE-RELEASE：</strong>因为两个理发师服务时间不同，所以需要两段分别写。注意每段都有自己的DEPART和TERMINATE。</p>
+  <p class="ann"><strong>DEPART放在SEIZE后面：</strong>不管去了哪个理发师，都要离开同一个队列LINE。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一家快餐店有两个窗口WINDOW1和WINDOW2。顾客每隔5±2分钟到达，窗口1出餐8±3分钟，窗口2出餐6±2分钟。顾客以60%概率去窗口1，40%概率去窗口2。仿真200个顾客。</p>
+    <p>提示：用概率模式的TRANSFER。</p>
+    <div class="gpss-editor" data-rows="11" data-id="p3"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    5,2
+        QUEUE       LINE
+        TRANSFER    .40,W1,W2     ;40%去W2，60%去W1
+W1      SEIZE       WINDOW1
+        DEPART      LINE
+        ADVANCE     8,3
+        RELEASE     WINDOW1
+        TERMINATE   1
+W2      SEIZE       WINDOW2
+        DEPART      LINE
+        ADVANCE     6,2
+        RELEASE     WINDOW2
+        TERMINATE   1
+        START       200</div>
+      <p>注意：TRANSFER .40,W1,W2 表示40%去W2（C域），60%去W1（B域）。概率值指的是去C的概率，不是去B的！</p>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序4 -->
+<div class="prog" id="p4">
+  <div class="prog-title"><span class="num">04</span>有限等待空间</div>
+  <div class="prog-desc">新增：GATE — 测试实体状态，满了就走</div>
+
+  <h3>场景</h3>
+  <p class="theory">理发店等候区只有3个座位。顾客到达时如果等候区满了就离开（不等了）。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block</th><th>作用</th><th>语法</th></tr>
+    <tr><td>GATE</td><td>测试实体状态（有条件进入）</td><td>GATE O A,B — O是条件码，A是实体，B是不满足时跳转地址</td></tr>
+  </table>
+  <table class="key-table">
+    <tr><th>条件码</th><th>含义</th></tr>
+    <tr><td>SNF</td><td>存储器不满（Still Not Full）</td></tr>
+    <tr><td>SE</td><td>存储器空</td></tr>
+    <tr><td>LS</td><td>逻辑开关打开</td></tr>
+    <tr><td>U / NU</td><td>设施在使用 / 未使用</td></tr>
+  </table>
+
+  <h3>例题程序</h3>
+  <div class="code">ROOM    STORAGE     3           ;等候区3个座位
+        GENERATE    10,5
+        GATE SNF    ROOM,AWAY   ;等候区不满才进，满了跳到AWAY
+        ENTER       ROOM
+        QUEUE       LINE
+        SEIZE       BARBER
+        DEPART      LINE
+        LEAVE       ROOM        ;离开等候区（坐到理发椅上了）
+        ADVANCE     15,7
+        RELEASE     BARBER
+        TERMINATE   1
+AWAY    TERMINATE   1           ;等候区满，顾客直接走人
+        START       100</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>GATE SNF ROOM,AWAY：</strong>检查存储器ROOM是否"不满"——不满则通过（继续ENTER），满了则跳到AWAY标签直接TERMINATE。</p>
+  <p class="ann"><strong>LEAVE ROOM 的位置：</strong>放在SEIZE之后、ADVANCE之前。因为顾客坐上理发椅后就不占等候区座位了。</p>
+  <p class="ann"><strong>两个TERMINATE都是1：</strong>不管是正常服务完走的还是满了直接走的，都算"处理完一个"。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个洗车店有1台洗车机WASHER，等候区只能停2辆车WAIT_AREA。车辆每隔12±5分钟到达，洗车需要18±6分钟。等候区满了车辆就离开。仿真60辆车。</p>
+    <div class="gpss-editor" data-rows="11" data-id="p4"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">WAIT_AREA STORAGE   2
+        GENERATE    12,5
+        GATE SNF    WAIT_AREA,AWAY
+        ENTER       WAIT_AREA
+        QUEUE       LINE
+        SEIZE       WASHER
+        DEPART      LINE
+        LEAVE       WAIT_AREA
+        ADVANCE     18,6
+        RELEASE     WASHER
+        TERMINATE   1
+AWAY    TERMINATE   1
+        START       60</div>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序5 -->
+<div class="prog" id="p5">
+  <div class="prog-title"><span class="num">05</span>计时器模式（按时间终止）</div>
+  <div class="prog-desc">核心考点：理解TERMINATE参数 + START配合控制仿真时长</div>
+
+  <h3>场景</h3>
+  <p class="theory">理发店营业480分钟（8小时）。不是"服务N个顾客后停"，而是"营业到点就关门"。</p>
+
+  <h3>原理</h3>
+  <p class="theory">用一个独立的GENERATE-TERMINATE段做"计时器"。服务流程的TERMINATE不带参数（减0），只有计时器的TERMINATE带1。START设为1，计时器产生一个实体经过TERMINATE减1，计数器归零，仿真结束。</p>
+
+  <h3>例题程序</h3>
+  <div class="code">; ===== 服务流程 =====
+        GENERATE    16,9
+        QUEUE       LINE
+        SEIZE       BARBER
+        DEPART      LINE
+        ADVANCE     15,7
+        RELEASE     BARBER
+        TERMINATE           ;注意：不写参数，默认减0！
+
+; ===== 计时器 =====
+        GENERATE    480     ;480分钟时产生一个实体
+        TERMINATE   1       ;减1，终止计数器归零
+        START       1       ;计数器初值1</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>第一段TERMINATE无参数：</strong>顾客离开系统，但不影响终止计数器。系统不会因为服务完顾客而停止。</p>
+  <p class="ann"><strong>第二段GENERATE 480：</strong>在480时间单位后产生一个"计时"实体，这个实体经过TERMINATE 1让计数器从1变成0。</p>
+  <p class="ann"><strong>START 1：</strong>和计时器的TERMINATE 1配合，被减一次就归零停止。</p>
+  <div class="tip"><b>这个模式考试经常考！</b>看到"仿真X小时/分钟"而不是"仿真N个顾客"就用这个模式。</div>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个收费站有1个窗口BOOTH，车辆每隔3±1分钟到达，收费需要2±0.5分钟。仿真一个工作日（600分钟）。</p>
+    <div class="gpss-editor" data-rows="10" data-id="p5"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    3,1
+        QUEUE       LINE
+        SEIZE       BOOTH
+        DEPART      LINE
+        ADVANCE     2,0.5
+        RELEASE     BOOTH
+        TERMINATE
+
+        GENERATE    600
+        TERMINATE   1
+        START       1</div>
+      <p>关键：第一个TERMINATE没有参数（或写0），第二个TERMINATE写1。GENERATE 600表示600分钟后。</p>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ==================== 第二小时 ==================== -->
+<div class="hour">第二小时 · 中级语法（4个程序）</div>
+
+<!-- 程序6 -->
+<div class="prog" id="p6">
+  <div class="prog-title"><span class="num">06</span>按概率分布到达</div>
+  <div class="prog-desc">新增：FUNCTION（离散型D和连续型C）— 用函数定义非均匀分布</div>
+
+  <h3>场景</h3>
+  <p class="theory">100位顾客的到达间隔调查：15%间隔3分钟，25%间隔4分钟，30%间隔5分钟，20%间隔6分钟，10%间隔7分钟。</p>
+
+  <h3>新block速查</h3>
+  <p class="theory">FUNCTION定义占两行：第一行是名称、自变量和类型；第二行是数据点。</p>
+  <div class="syntax">NAME    FUNCTION    RN1,D5        ;名字，自变量RN1，离散型D，5个点
+0.15,3/0.40,4/0.70,5/0.90,6/1.0,7    ;累计概率,值</div>
+  <div class="tip"><b>离散型（D）数据行用累计概率：</b>0.15→3 表示RN1落在[0,0.15)时函数值为3。0.40→4 表示[0.15,0.40)时为4。以此类推。最后一个累计概率必须是1。</div>
+
+  <h3>例题程序</h3>
+  <div class="code">ARR     FUNCTION    RN1,D5
+0.15,3/0.40,4/0.70,5/0.90,6/1.0,7
+        GENERATE    FN$ARR      ;到达间隔由函数ARR决定
+        QUEUE       LINE
+        SEIZE       BARBER
+        DEPART      LINE
+        ADVANCE     15,7
+        RELEASE     BARBER
+        TERMINATE   1
+        START       100</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>GENERATE FN$ARR：</strong>每次产生实体时调用函数ARR，用RN1产生一个随机数查函数表得到间隔值。注意 <code>FN$ARR</code> 中间的 <code>$</code> 是因为用了名称（而非编号）。</p>
+  <p class="ann"><strong>连续型（C）的区别：</strong>把D5改成C6，数据行要加起点 <code>0,0/0.15,3/0.40,4/0.70,5/0.90,6/1.0,7</code>，各点之间线性内插。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个服务台，服务时间分布：20%为5分钟，30%为8分钟，35%为10分钟，15%为15分钟。顾客每隔10±4分钟均匀到达。仿真50个顾客。</p>
+    <p>要求：用离散型函数定义服务时间分布。</p>
+    <div class="gpss-editor" data-rows="10" data-id="p6"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">SVC     FUNCTION    RN1,D4
+0.20,5/0.50,8/0.85,10/1.0,15
+        GENERATE    10,4
+        QUEUE       LINE
+        SEIZE       SERVER
+        DEPART      LINE
+        ADVANCE     FN$SVC      ;服务时间由函数决定
+        RELEASE     SERVER
+        TERMINATE   1
+        START       50</div>
+      <p>累计概率：0.20, 0.20+0.30=0.50, 0.50+0.35=0.85, 0.85+0.15=1.0。</p>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序7 -->
+<div class="prog" id="p7">
+  <div class="prog-title"><span class="num">07</span>选择最短队列</div>
+  <div class="prog-desc">新增：TEST + SAVEVALUE + SNA引用（Q$名称读队长）</div>
+
+  <h3>场景</h3>
+  <p class="theory">超市有2个收银台，顾客到达后选择队伍较短的那个排队。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block</th><th>作用</th><th>语法</th></tr>
+    <tr><td>TEST</td><td>比较两个值，控制走向</td><td>TEST O A,B,C — O是E/NE/G/GE/L/LE</td></tr>
+    <tr><td>SAVEVALUE</td><td>全局变量存取</td><td>SAVEVALUE A,B — A是编号/名称（可加+/-），B是值</td></tr>
+  </table>
+  <p class="theory">常用SNA：<code>Q$名称</code> 返回队列当前长度，<code>X$名称</code> 返回保存值。</p>
+
+  <h3>例题程序</h3>
+  <div class="code">        GENERATE    8,3
+        TEST LE     Q$L1,Q$L2,GO2   ;队列1≤队列2？是则去队列1，否则去GO2
+GO1     QUEUE       L1
+        SEIZE       CASH1
+        DEPART      L1
+        ADVANCE     10,4
+        RELEASE     CASH1
+        TERMINATE   1
+GO2     QUEUE       L2
+        SEIZE       CASH2
+        DEPART      L2
+        ADVANCE     12,4
+        RELEASE     CASH2
+        TERMINATE   1
+        START       200</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>TEST LE Q$L1,Q$L2,GO2：</strong>比较队列L1的长度和队列L2的长度。如果L1≤L2（条件为真），通过继续走下一行（GO1 QUEUE L1）；否则跳转到GO2。</p>
+  <p class="ann"><strong>Q$L1：</strong>SNA码，<code>Q</code>是队列长度，<code>$L1</code>是按名称引用。如果队列用数字编号则写 <code>Q1</code>。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>两个加油机PUMP1和PUMP2，各有自己的队列Q1和Q2。车辆每隔6±2分钟到达，加油时间都是5±2分钟。车辆选择队伍短的排队（一样长去PUMP1）。仿真150辆车。</p>
+    <div class="gpss-editor" data-rows="11" data-id="p7"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    6,2
+        TEST LE     Q$Q1,Q$Q2,P2
+P1      QUEUE       Q1
+        SEIZE       PUMP1
+        DEPART      Q1
+        ADVANCE     5,2
+        RELEASE     PUMP1
+        TERMINATE   1
+P2      QUEUE       Q2
+        SEIZE       PUMP2
+        DEPART      Q2
+        ADVANCE     5,2
+        RELEASE     PUMP2
+        TERMINATE   1
+        START       150</div>
+      <p>TEST LE 表示"小于等于"，相等时条件为真，去PUMP1，满足"一样长去PUMP1"的要求。</p>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序8 -->
+<div class="prog" id="p8">
+  <div class="prog-title"><span class="num">08</span>VIP优先服务</div>
+  <div class="prog-desc">新增：ASSIGN + PRIORITY + 参数P的使用</div>
+
+  <h3>场景</h3>
+  <p class="theory">银行有1个VIP窗口。普通客户（70%）优先级0，VIP客户（30%）优先级1。优先级高的先服务。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block</th><th>作用</th><th>语法</th></tr>
+    <tr><td>ASSIGN</td><td>给实体参数赋值</td><td>ASSIGN A,B — A是参数号，B是值</td></tr>
+    <tr><td>PRIORITY</td><td>改变优先级</td><td>PRIORITY A — A是新优先级(0~127)</td></tr>
+  </table>
+
+  <h3>例题程序</h3>
+  <div class="code">        GENERATE    10,5
+        TRANSFER    .30,,VIP      ;30%是VIP
+        PRIORITY    0             ;70%普通客户，优先级0
+        TRANSFER    ,SERVE
+VIP     PRIORITY    1             ;VIP客户，优先级1
+SERVE   QUEUE       LINE
+        SEIZE       WINDOW
+        DEPART      LINE
+        ADVANCE     8,3
+        RELEASE     WINDOW
+        TERMINATE   1
+        START       100</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>TRANSFER .30,,VIP：</strong>30%概率跳转到VIP标签（成为VIP），70%继续走下一行（普通客户）。注意B省略表示"下一模块"。</p>
+  <p class="ann"><strong>PRIORITY 的作用：</strong>设施的延迟链按优先级从高到低排列。当WINDOW空出来时，优先级高的VIP先上。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个急诊室有1个医生DOCTOR。病人每隔15±8分钟到达。20%是急诊（优先级5），80%是普通（优先级0）。诊疗时间急诊25±10分钟，普通10±5分钟。仿真运行480分钟。</p>
+    <p>提示：急诊和普通的服务时间不同，要分两条路。用计时器模式。</p>
+    <div class="gpss-editor" data-rows="14" data-id="p8"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    15,8
+        TRANSFER    .20,,EMRG
+        PRIORITY    0
+        QUEUE       LINE
+        SEIZE       DOCTOR
+        DEPART      LINE
+        ADVANCE     10,5
+        RELEASE     DOCTOR
+        TERMINATE
+EMRG    PRIORITY    5
+        QUEUE       LINE
+        SEIZE       DOCTOR
+        DEPART      LINE
+        ADVANCE     25,10
+        RELEASE     DOCTOR
+        TERMINATE
+
+        GENERATE    480
+        TERMINATE   1
+        START       1</div>
+      <p>注意：两段服务流程的TERMINATE都不带参数（减0）。只有计时器的TERMINATE带1。两段共用同一个队列LINE和设施DOCTOR。</p>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序9 -->
+<div class="prog" id="p9">
+  <div class="prog-title"><span class="num">09</span>逻辑开关控制</div>
+  <div class="prog-desc">新增：LOGIC + GATE LS/LR + INITIAL + EQU + VARIABLE</div>
+
+  <h3>场景</h3>
+  <p class="theory">一个加油站，开放时间由一个逻辑开关控制。开关打开时可以加油，关闭时新来的车直接走。每工作100分钟休息20分钟。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block</th><th>作用</th><th>语法</th></tr>
+    <tr><td>LOGIC S/R/I</td><td>打开/关闭/取反逻辑开关</td><td>LOGIC S 名称 — 打开；LOGIC R 名称 — 关闭</td></tr>
+    <tr><td>GATE LS/LR</td><td>检查逻辑开关状态</td><td>GATE LS 名称,跳转 — 打开才通过</td></tr>
+    <tr><td>INITIAL</td><td>初始化逻辑开关/保存值</td><td>INITIAL LS$名称 — 初始为打开</td></tr>
+    <tr><td>EQU</td><td>给常量取名</td><td>NAME EQU 值</td></tr>
+    <tr><td>VARIABLE</td><td>定义可重复计算的表达式</td><td>NAME VARIABLE 表达式</td></tr>
+  </table>
+
+  <h3>例题程序</h3>
+  <div class="code">INITIAL     LS$OPEN           ;逻辑开关OPEN初始为打开
+; ===== 加油流程 =====
+        GENERATE    8,3
+        GATE LS     OPEN,AWAY     ;开关打开才进，关了跳AWAY
+        QUEUE       LINE
+        SEIZE       PUMP
+        DEPART      LINE
+        ADVANCE     6,2
+        RELEASE     PUMP
+        TERMINATE
+AWAY    TERMINATE
+
+; ===== 开关控制 =====
+        GENERATE    100           ;每100分钟
+        LOGIC R     OPEN          ;关闭开关（休息）
+        ADVANCE     20            ;休息20分钟
+        LOGIC S     OPEN          ;重新打开
+        TRANSFER    ,BACK         ;循环（跳回GENERATE的下一个有效位置）
+
+; ===== 计时器 =====
+BACK    GENERATE    480
+        TERMINATE   1
+        START       1</div>
+
+  <p class="ann"><strong>INITIAL LS$OPEN：</strong>初始化名为OPEN的逻辑开关为1（打开）。不写INITIAL的话默认是0（关闭）。</p>
+  <p class="ann"><strong>开关控制段：</strong>一个独立的GENERATE每100分钟产生一个"控制"实体，它关闭开关 → 等20分钟 → 打开开关。注意这个实体不走加油流程，走的是控制流程。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个检票口GATE1，用逻辑开关SIGNAL控制。每50分钟开放一次（开放30分钟，关闭20分钟），初始关闭。旅客每隔5±2分钟到达，关闭时直接走。检票需要2±1分钟。仿真480分钟。</p>
+    <p>提示：INITIAL 不需要写（默认关闭）。控制段先打开再关闭。</p>
+    <div class="gpss-editor" data-rows="14" data-id="p9"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">; 检票流程
+        GENERATE    5,2
+        GATE LS     SIGNAL,AWAY
+        QUEUE       LINE
+        SEIZE       GATE1
+        DEPART      LINE
+        ADVANCE     2,1
+        RELEASE     GATE1
+        TERMINATE
+AWAY    TERMINATE
+
+; 开关控制（初始关闭，先打开）
+        GENERATE    ,,,1          ;立刻产生1个控制实体
+CTRL    LOGIC S     SIGNAL        ;打开
+        ADVANCE     30            ;开放30分钟
+        LOGIC R     SIGNAL        ;关闭
+        ADVANCE     20            ;关闭20分钟
+        TRANSFER    ,CTRL         ;循环
+
+; 计时器
+        GENERATE    480
+        TERMINATE   1
+        START       1</div>
+      <p>控制段用 GENERATE ,,,1 立刻产生一个实体，然后用 TRANSFER 循环实现反复开关。注意每50分钟一个周期（30开+20关）。</p>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ==================== 第三小时 ==================== -->
+<div class="hour">第三小时 · 高级语法（3个程序）+ 综合练习</div>
+
+<!-- 程序10 -->
+<div class="prog" id="p10">
+  <div class="prog-title"><span class="num">10</span>统计逗留时间分布</div>
+  <div class="prog-desc">新增：TABLE + TABULATE + QTABLE + M1</div>
+
+  <h3>场景</h3>
+  <p class="theory">理发店要统计顾客在系统中的逗留时间分布和排队等待时间分布。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block/语句</th><th>作用</th><th>语法</th></tr>
+    <tr><td>TABLE</td><td>定义统计表格（说明部分）</td><td>NAME TABLE A,B,C,D — A要统计的SNA，B第一段上界，C段宽，D段数</td></tr>
+    <tr><td>TABULATE</td><td>将当前值送入表格统计</td><td>TABULATE A — A是表格名</td></tr>
+    <tr><td>QTABLE</td><td>队列专用表格（自动统计，不用TABULATE）</td><td>NAME QTABLE A,B,C,D — A是队列名</td></tr>
+    <tr><td>M1</td><td>SNA码：当前实体在系统中的逗留时间</td><td>当前时钟 - 实体产生时的时钟</td></tr>
+  </table>
+
+  <h3>例题程序</h3>
+  <div class="code">T_STAY  TABLE       M1,5,5,20       ;统计逗留时间，第一段≤5，每段宽5，共20段
+TQ_BAR  QTABLE      LINE,2,2,20     ;统计队列LINE的等待时间分布
+        GENERATE    16,9
+        QUEUE       LINE
+        SEIZE       BARBER
+        DEPART      LINE
+        ADVANCE     15,7
+        RELEASE     BARBER
+        TABULATE    T_STAY          ;在离开前把逗留时间M1记入表格
+        TERMINATE   1
+        START       200</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>TABLE M1,5,5,20：</strong>第一段是≤5，第二段(5,10]，第三段(10,15]...一直到第20段。统计每个区间有多少个实体。</p>
+  <p class="ann"><strong>TABULATE T_STAY 的位置：</strong>放在 RELEASE 之后、TERMINATE 之前。此时M1已经包含了完整的逗留时间。</p>
+  <p class="ann"><strong>QTABLE 不需要 TABULATE：</strong>它自动在 QUEUE/DEPART 之间记录等待时间，更方便。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个银行柜台，顾客每隔10±4分钟到达，服务8±3分钟。要求：(1) 用TABLE统计逗留时间分布，起始上界3，段宽3，共15段。(2) 用QTABLE统计排队等待时间分布，起始上界1，段宽2，共10段。仿真300个顾客。</p>
+    <div class="gpss-editor" data-rows="10" data-id="p10"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">T_SYS   TABLE       M1,3,3,15
+TQ_W    QTABLE      LINE,1,2,10
+        GENERATE    10,4
+        QUEUE       LINE
+        SEIZE       TELLER
+        DEPART      LINE
+        ADVANCE     8,3
+        RELEASE     TELLER
+        TABULATE    T_SYS
+        TERMINATE   1
+        START       300</div>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序11 -->
+<div class="prog" id="p11">
+  <div class="prog-title"><span class="num">11</span>并行活动后合并</div>
+  <div class="prog-desc">新增：SPLIT + ASSEMBLE（+ GATHER的区别）</div>
+
+  <h3>场景</h3>
+  <p class="theory">美发沙龙：顾客到达后同时洗头（5分钟）和修指甲（6分钟），两个都做完后结账离开。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block</th><th>作用</th><th>语法</th></tr>
+    <tr><td>SPLIT</td><td>复制出子体（母体继续，子体去B）</td><td>SPLIT A,B,C — A复制数，B子体去向，C序列号参数</td></tr>
+    <tr><td>ASSEMBLE</td><td>合并同装配集的实体（消除多余的）</td><td>ASSEMBLE A — A个到齐后合为1个</td></tr>
+    <tr><td>GATHER</td><td>同ASSEMBLE但不消除，全部放行</td><td>GATHER A</td></tr>
+  </table>
+  <div class="tip"><b>ASSEMBLE vs GATHER：</b>ASSEMBLE 吃掉多余的（200进100出）；GATHER 全部保留（200进200出，但要等齐了才放行）。</div>
+
+  <h3>例题程序</h3>
+  <div class="code">        GENERATE    10
+        SPLIT       1,NAIL        ;复制1个子体去NAIL，母体继续
+        ADVANCE     5             ;母体：洗头5分钟
+        TRANSFER    ,DONE
+NAIL    ADVANCE     6             ;子体：修指甲6分钟
+DONE    ASSEMBLE    2             ;等2个到齐（母体+子体），合为1个
+        TERMINATE   1
+        START       100</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>SPLIT 1,NAIL：</strong>产生1个子体去NAIL标签，母体继续走下一行（ADVANCE 5）。母体和子体有相同的装配编号A1。</p>
+  <p class="ann"><strong>TRANSFER ,DONE：</strong>母体洗完头后无条件跳到DONE（跳过NAIL段）。</p>
+  <p class="ann"><strong>ASSEMBLE 2：</strong>等同一装配编号的2个实体都到达DONE后，合并为1个继续走。先到的等后到的。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个汽车维修站：车辆到达后同时进行外观检查（8分钟）和机械检查（12分钟），两项都完成后交付。车辆每隔20±8分钟到达。仿真50辆车。</p>
+    <div class="gpss-editor" data-rows="8" data-id="p11"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    20,8
+        SPLIT       1,MECH
+        ADVANCE     8             ;外观检查
+        TRANSFER    ,DONE
+MECH    ADVANCE     12            ;机械检查
+DONE    ASSEMBLE    2
+        TERMINATE   1
+        START       50</div>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- 程序12 -->
+<div class="prog" id="p12">
+  <div class="prog-title"><span class="num">12</span>循环累加</div>
+  <div class="prog-desc">新增：LOOP — 用参数控制重复次数</div>
+
+  <h3>场景</h3>
+  <p class="theory">每个顾客需要购买5件商品，每件商品的挑选时间为3分钟。用LOOP实现循环。</p>
+
+  <h3>新block速查</h3>
+  <table class="key-table">
+    <tr><th>Block</th><th>作用</th><th>语法</th></tr>
+    <tr><td>LOOP</td><td>循环：参数减1，>0则跳转到B，≤0则继续</td><td>LOOP A,B — A是参数编号（不是P编号！），B是循环起点</td></tr>
+  </table>
+  <div class="tip"><b>LOOP的A操作数：</b>写参数编号"1"，不是"P1"！LOOP自动去取参数1的值减1。</div>
+
+  <h3>例题程序</h3>
+  <div class="code">        GENERATE    10
+        ASSIGN      1,5           ;参数1=5（循环5次）
+SHOP    ADVANCE     3             ;挑选一件商品3分钟
+        LOOP        1,SHOP        ;参数1减1，>0回SHOP
+        QUEUE       LINE          ;5件都挑完了，去结账
+        SEIZE       CASHIER
+        DEPART      LINE
+        ADVANCE     2             ;结账2分钟
+        RELEASE     CASHIER
+        TERMINATE   1
+        START       100</div>
+
+  <h3>逐行解析</h3>
+  <p class="ann"><strong>ASSIGN 1,5：</strong>给实体的1号参数赋值5。</p>
+  <p class="ann"><strong>LOOP 1,SHOP：</strong>取参数1的值减1。第一次：5→4>0，跳回SHOP。第二次：4→3>0。...第五次：1→0≤0，不跳，继续走下一行QUEUE。</p>
+  <p class="ann"><strong>整个过程：</strong>每个顾客经历5次ADVANCE 3（共15分钟挑选），然后排队结账。</p>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 练习：改编</div>
+    <p>一个工厂：每个产品需要经过3道工序，每道工序耗时4±1分钟。产品每隔15±5分钟产生。加工完成后送检（SEIZE INSPECT，检验时间2分钟）。仿真80个产品。</p>
+    <div class="gpss-editor" data-rows="9" data-id="p12"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    15,5
+        ASSIGN      1,3
+PROC    ADVANCE     4,1
+        LOOP        1,PROC
+        QUEUE       LINE
+        SEIZE       INSPECT
+        DEPART      LINE
+        ADVANCE     2
+        RELEASE     INSPECT
+        TERMINATE   1
+        START       80</div>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 写对了</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ==================== 综合题 ==================== -->
+<div class="hour">综合练习 · 把所有东西串起来</div>
+
+<div class="prog" id="final">
+  <div class="prog-title"><span class="num">★</span>综合题：医院急诊模拟</div>
+
+  <div class="exercise">
+    <div class="exercise-title">题目</div>
+    <p>一个小型急诊科，情况如下：</p>
+    <p>1. 病人到达间隔服从以下分布：30%间隔8分钟，50%间隔12分钟，20%间隔20分钟。</p>
+    <p>2. 病人中40%是重症（优先级3），60%是轻症（优先级0）。</p>
+    <p>3. 只有1个医生DOCTOR。重症诊疗20±8分钟，轻症10±4分钟。</p>
+    <p>4. 候诊区只有6个座位。满了病人直接离开。</p>
+    <p>5. 统计候诊时间分布（QTABLE，起始2，段宽2，10段）。</p>
+    <p>6. 仿真运行480分钟。</p>
+    <p>要求用到的知识点：FUNCTION、TRANSFER概率、PRIORITY、STORAGE+GATE、QTABLE、计时器模式。</p>
+    <div class="gpss-editor" data-rows="18" data-id="final"></div>
+  </div>
+
+  <details>
+    <summary>点击查看参考答案</summary>
+    <div class="answer">
+      <div class="code">; ===== 说明部分 =====
+ARR     FUNCTION    RN1,D3
+0.30,8/0.80,12/1.0,20
+SEATS   STORAGE     6
+TQ_W    QTABLE      LINE,2,2,10
+
+; ===== 病人流程 =====
+        GENERATE    FN$ARR
+        GATE SNF    SEATS,AWAY        ;候诊区不满才进
+        ENTER       SEATS
+        TRANSFER    .40,,HEAVY        ;40%重症
+; 轻症
+        PRIORITY    0
+        QUEUE       LINE
+        SEIZE       DOCTOR
+        DEPART      LINE
+        LEAVE       SEATS
+        ADVANCE     10,4
+        RELEASE     DOCTOR
+        TERMINATE
+; 重症
+HEAVY   PRIORITY    3
+        QUEUE       LINE
+        SEIZE       DOCTOR
+        DEPART      LINE
+        LEAVE       SEATS
+        ADVANCE     20,8
+        RELEASE     DOCTOR
+        TERMINATE
+; 满员离开
+AWAY    TERMINATE
+
+; ===== 计时器 =====
+        GENERATE    480
+        TERMINATE   1
+        START       1</div>
+      <p><b>易错点：</b></p>
+      <p>1. FUNCTION数据行是累计概率：0.30, 0.30+0.50=0.80, 0.80+0.20=1.0</p>
+      <p>2. LEAVE SEATS 放在 SEIZE 之后（坐到诊室就不占候诊座位了）</p>
+      <p>3. 所有服务流程的 TERMINATE 不带参数，只有计时器的带1</p>
+      <p>4. GATE SNF 要在 ENTER 之前，否则已经进去了再检查就没意义了</p>
+      <p>5. TRANSFER .40,,HEAVY 是40%去HEAVY（重症），60%继续走下面（轻症）</p>
+      <div class="score-row">
+        <span>自评：</span>
+        <button class="score-btn correct" onclick="addScore(1)">✓ 基本正确</button>
+        <button class="score-btn wrong" onclick="addScore(0)">✗ 有较多错误</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<div style="text-align:center;padding:40px 0;color:var(--sub);font-size:13px;border-top:1px solid var(--border);margin-top:40px;">
+  为 Faye 制作 · 12个程序从零到会写 · 80分够用
+</div>
+</div>
+
+<!-- PANEL 3 -->
+<div class="file-panel" data-panel="3" id="panel-3">
+<div class="panel-header">
+<div class="ph-tag">老师原题全解</div>
+<h1>老师原题全解</h1>
+<p>7道课堂题 · 按难度分级 · 知识点+解答+改编练习</p>
+</div>
+<!-- 难度总览 -->
+<div class="prob" style="background:var(--bg);">
+  <h3>难度总览</h3>
+  <table>
+    <tr><th>题号</th><th>难度</th><th>场景</th><th>核心知识点</th></tr>
+    <tr><td>3.2</td><td><span class="level-tag lv-low">低</span></td><td>打靶练习</td><td>概率TRANSFER + 终止计数器</td></tr>
+    <tr><td>3.1</td><td><span class="level-tag lv-low">低</span></td><td>理发店三种服务</td><td>概率TRANSFER + 计时器模式</td></tr>
+    <tr><td>3.7</td><td><span class="level-tag lv-mid">中</span></td><td>三家洗车店偏好选择</td><td>TRANSFER BOTH + GATE NU + STORAGE</td></tr>
+    <tr><td>3.12</td><td><span class="level-tag lv-mid">中</span></td><td>两站顺序服务</td><td>STORAGE + 顺序流 + 有限缓冲</td></tr>
+    <tr><td>4.2</td><td><span class="level-tag lv-high">高</span></td><td>纺织工厂三道工序</td><td>多STORAGE + 缓冲区 + 计时器</td></tr>
+    <tr><td>4.3</td><td><span class="level-tag lv-high">高</span></td><td>加油站三种燃油</td><td>指数分布 + FUNCTION + VARIABLE计算</td></tr>
+    <tr><td>4.6</td><td><span class="level-tag lv-high">高</span></td><td>超市购物全流程</td><td>综合全部语法</td></tr>
+  </table>
+</div>
+
+<!-- ======================== 低级 ======================== -->
+<h2>低级题（基础block + 概率转向）</h2>
+
+<!-- 3.2 -->
+<div class="prob" id="t32">
+  <div class="prob-title"><span class="level-tag lv-low">低</span> 3.2 打靶练习</div>
+  <div class="prob-desc">目标以10±5秒出现一个，每枪命中率80%，问打中50个目标要多长时间？</div>
+  <div class="kp-list">
+    <span class="kp">GENERATE</span><span class="kp">TRANSFER概率</span><span class="kp">TERMINATE计数器</span>
+  </div>
+
+  <h3>思路</h3>
+  <p>80%命中 → 命中的实体TERMINATE 1（计数器减1），未命中的TERMINATE（减0直接消失）。START 50表示打中50个停止。仿真结束时的时钟值就是答案。</p>
+
+  <details>
+    <summary>完整程序</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    10,5          ;目标每10±5秒出现
+        TRANSFER    .20,,MISS     ;20%未命中
+        TERMINATE   1             ;命中，计数器减1
+MISS    TERMINATE                 ;未命中，减0
+        START       50            ;打中50个停止</div>
+      <p><b>关键：</b>TRANSFER .20,,MISS 表示20%去MISS（未命中），80%继续走下一行（命中）。仿真结束时看报告里的END TIME就是答案。</p>
+    </div>
+  </details>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 改编练习</div>
+    <p>投篮练习，每次投篮间隔6±2秒，命中率70%，问投中100个需要多久？</p>
+    <textarea class="write-area" placeholder="写你的程序..."></textarea>
+  </div>
+  <details>
+    <summary>改编答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    6,2
+        TRANSFER    .30,,MISS
+        TERMINATE   1
+MISS    TERMINATE
+        START       100</div>
+    </div>
+  </details>
+</div>
+
+<!-- 3.1 -->
+<div class="prob" id="t31">
+  <div class="prob-title"><span class="level-tag lv-low">低</span> 3.1 理发店（三种服务）</div>
+  <div class="prob-desc">1个理发师，顾客20±8分钟到达。60%理发(20±5分)，30%烫发(35±15分)，10%剃须(10±5分)。仿真8小时，统计利用率和平均滞留时间。</div>
+  <div class="kp-list">
+    <span class="kp">TRANSFER概率</span><span class="kp">多分支服务</span><span class="kp">计时器模式</span><span class="kp">TABLE统计M1</span>
+  </div>
+
+  <h3>思路</h3>
+  <p>用两次TRANSFER概率分流：先分出10%剃须，再从剩余90%中分出30%烫发（实际概率 = 30/90 = 33.3%），剩下60%理发。或者用嵌套概率。</p>
+  <p>更简单的做法：先TRANSFER .10,,SHAVE分出剃须，再TRANSFER .333,,PERM从剩余中分出烫发。但这样不精确。</p>
+  <p>更好的做法：用离散型FUNCTION，返回1/2/3表示服务类型，然后用TRANSFER P模式跳转。</p>
+
+  <details>
+    <summary>完整程序（方法一：嵌套TRANSFER）</summary>
+    <div class="answer">
+      <div class="code">T_STAY  TABLE       M1,5,5,20
+        GENERATE    20,8
+        QUEUE       LINE
+        SEIZE       BARBER
+        DEPART      LINE
+        TRANSFER    .10,,SHAVE    ;10%剃须
+        TRANSFER    .333,,PERM    ;剩余90%中的1/3=30%烫发
+; 理发（60%）
+        ADVANCE     20,5
+        TRANSFER    ,DONE
+; 烫发（30%）
+PERM    ADVANCE     35,15
+        TRANSFER    ,DONE
+; 剃须（10%）
+SHAVE   ADVANCE     10,5
+DONE    RELEASE     BARBER
+        TABULATE    T_STAY
+        TERMINATE
+
+; 计时器
+        GENERATE    480           ;8小时=480分钟
+        TERMINATE   1
+        START       1</div>
+      <p><b>注意：</b>三种服务共用同一个SEIZE/RELEASE和QUEUE/DEPART，只有ADVANCE不同。DEPART放在SEIZE后面（三种服务前），RELEASE放在三条路汇合后。</p>
+      <p><b>概率计算：</b>第一个TRANSFER分出10%。剩余90%进入第二个TRANSFER，其中.333≈1/3去烫发（90%×33.3%≈30%），其余60%理发。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>完整程序（方法二：FUNCTION分流，更精确）</summary>
+    <div class="answer">
+      <div class="code">; 服务类型函数：返回1=理发，2=烫发，3=剃须
+STYPE   FUNCTION    RN1,D3
+.60,1/.90,2/1.0,3
+
+T_STAY  TABLE       M1,5,5,20
+        GENERATE    20,8
+        ASSIGN      1,FN$STYPE      ;P1=服务类型(1/2/3)
+        QUEUE       LINE
+        SEIZE       BARBER
+        DEPART      LINE
+        TRANSFER    P,1,0           ;跳转到P1值+0对应的模块
+; 以下三行必须紧挨着排列！
+CUT     ADVANCE     20,5            ;理发 (P1=1时跳到第1个模块=这里)
+        TRANSFER    ,DONE
+PERM    ADVANCE     35,15           ;烫发 (P1=2时跳到第2个模块)
+        TRANSFER    ,DONE
+SHAVE   ADVANCE     10,5            ;剃须 (P1=3时跳到第3个模块)
+DONE    RELEASE     BARBER
+        TABULATE    T_STAY
+        TERMINATE
+
+        GENERATE    480
+        TERMINATE   1
+        START       1</div>
+      <p><b>TRANSFER P,1,0 的含义：</b>取参数1的值，加上0，作为目标模块的行号。如果P1=1就去第1个ADVANCE，P1=2去第2个，P1=3去第3个。要求三段ADVANCE按顺序紧挨排列。</p>
+      <p><b>FUNCTION分流更精确：</b>累计概率0.60→1, 0.90→2, 1.0→3，完全对应60%/30%/10%。</p>
+    </div>
+  </details>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 改编练习</div>
+    <p>一个诊所只有1个医生，病人每隔15±6分钟到达。50%是感冒(8±3分)，30%是外伤(15±5分)，20%是体检(25±10分)。仿真10小时。统计逗留时间分布(TABLE: M1,5,5,15)。</p>
+    <textarea class="write-area" placeholder="写你的程序..."></textarea>
+  </div>
+  <details>
+    <summary>改编答案</summary>
+    <div class="answer">
+      <div class="code">STYPE   FUNCTION    RN1,D3
+.50,1/.80,2/1.0,3
+T_STAY  TABLE       M1,5,5,15
+        GENERATE    15,6
+        QUEUE       LINE
+        SEIZE       DOCTOR
+        DEPART      LINE
+        TRANSFER    .20,,CHECK        ;20%体检
+        TRANSFER    .375,,WOUND       ;剩余80%中37.5%=外伤(30%)
+; 感冒（50%）
+        ADVANCE     8,3
+        TRANSFER    ,DONE
+; 外伤（30%）
+WOUND   ADVANCE     15,5
+        TRANSFER    ,DONE
+; 体检（20%）
+CHECK   ADVANCE     25,10
+DONE    RELEASE     DOCTOR
+        TABULATE    T_STAY
+        TERMINATE
+
+        GENERATE    600               ;10小时=600分钟
+        TERMINATE   1
+        START       1</div>
+      <p><b>概率计算：</b>先分出20%体检（TRANSFER .20,,CHECK）。剩余80%中外伤占30/80=37.5%（TRANSFER .375,,WOUND）。剩下的就是感冒50%。</p>
+    </div>
+  </details>
+</div>
+
+<!-- ======================== 中级 ======================== -->
+<h2>中级题（TRANSFER BOTH/ALL + GATE + 顺序服务）</h2>
+
+<!-- 3.7 -->
+<div class="prob" id="t37">
+  <div class="prob-title"><span class="level-tag lv-mid">中</span> 3.7 三家洗车店（两问）</div>
+  <div class="prob-desc">A、B、C三家洗车店，偏好A>B>C。车8±5分钟到达，洗车15±6分钟。喜欢的忙就选空的，都忙就离开。第二问：都忙则排队等待。仿真100小时。</div>
+  <div class="kp-list">
+    <span class="kp">TRANSFER BOTH</span><span class="kp">GATE NU</span><span class="kp">STORAGE（第二问）</span><span class="kp">计时器模式</span>
+  </div>
+
+  <details>
+    <summary>第一问：都忙就离开</summary>
+    <div class="answer">
+      <h4>思路</h4>
+      <p>顾客偏好A>B>C → 先试A，A忙试B，B忙试C，C也忙就走。这正好是TRANSFER BOTH嵌套使用。但BOTH只能试两个，所以需要用GATE NU（设施未使用）来串联判断。</p>
+      <div class="code">        GENERATE    8,5
+        GATE NU     A,TRY_B       ;A空→进A，A忙→试B
+        SEIZE       A
+        ADVANCE     15,6
+        RELEASE     A
+        TERMINATE
+TRY_B   GATE NU     B,TRY_C       ;B空→进B，B忙→试C
+        SEIZE       B
+        ADVANCE     15,6
+        RELEASE     B
+        TERMINATE
+TRY_C   GATE NU     C,AWAY        ;C空→进C，C忙→走
+        SEIZE       C
+        ADVANCE     15,6
+        RELEASE     C
+        TERMINATE
+AWAY    TERMINATE                  ;都忙，离开
+
+        GENERATE    6000           ;100小时=6000分钟
+        TERMINATE   1
+        START       1</div>
+      <p><b>为什么用GATE NU而不用TRANSFER BOTH？</b>因为BOTH模式如果两个都忙会让实体等待，而这道题要求"都忙就离开"。GATE NU可以在不满足时跳到指定标签，实现"不等直接走"。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>第二问：都忙就排队等待</summary>
+    <div class="answer">
+      <h4>思路</h4>
+      <p>都忙时排队等待，哪个先空就去哪个。用TRANSFER BOTH嵌套或TRANSFER ALL。</p>
+      <div class="code">WAIT    STORAGE     3             ;等待区容量3（提示要加存储器）
+        GENERATE    8,5
+        QUEUE       LINE
+        TRANSFER    BOTH,SA,SB    ;先试A，不行试B
+SA      SEIZE       A
+        DEPART      LINE
+        ADVANCE     15,6
+        RELEASE     A
+        TERMINATE   1
+SB      TRANSFER    BOTH,SB2,SC   ;再试B，不行试C
+SB2     SEIZE       B
+        DEPART      LINE
+        ADVANCE     15,6
+        RELEASE     B
+        TERMINATE   1
+SC      SEIZE       C
+        DEPART      LINE
+        ADVANCE     15,6
+        RELEASE     C
+        TERMINATE   1
+
+        GENERATE    6000
+        TERMINATE   1
+        START       1</div>
+      <p><b>或者更简洁，用TRANSFER ALL：</b></p>
+      <div class="code">        GENERATE    8,5
+        QUEUE       LINE
+        TRANSFER    ALL,SA,SC,1   ;从SA到SC逐个试，步长1
+SA      SEIZE       A
+        DEPART      LINE
+        ADVANCE     15,6
+        RELEASE     A
+        TERMINATE   1
+SB      SEIZE       B
+        DEPART      LINE
+        ADVANCE     15,6
+        RELEASE     B
+        TERMINATE   1
+SC      SEIZE       C
+        DEPART      LINE
+        ADVANCE     15,6
+        RELEASE     C
+        TERMINATE   1
+
+        GENERATE    6000
+        TERMINATE   1
+        START       1</div>
+      <p><b>注意：</b>TRANSFER ALL,SA,SC,1 表示从SA开始每隔1个模块尝试进入，到SC为止。SA、SB、SC三个SEIZE必须连续排列（中间间隔相同）。这里步长1指的是"每次跳到下一个SEIZE所在段的起点"。</p>
+      <p><b>实际上ALL模式的步长是按模块编号计算的</b>，所以SA到SB之间的模块数必须等于步长。这里每段有5个模块（SEIZE/DEPART/ADVANCE/RELEASE/TERMINATE），步长应该是5。</p>
+      <div class="code">        TRANSFER    ALL,SA,SC,5   ;步长=每段的模块数</div>
+    </div>
+  </details>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 改编练习</div>
+    <p>三家餐厅X、Y、Z，偏好X>Y>Z。顾客每10±4分钟到达，用餐20±8分钟。喜欢的满了就选空的，都满了就离开。仿真480分钟。（只做第一问：都忙离开）</p>
+    <textarea class="write-area" placeholder="写你的程序..."></textarea>
+  </div>
+  <details>
+    <summary>改编答案</summary>
+    <div class="answer">
+      <div class="code">        GENERATE    10,4
+        GATE NU     X,TRY_Y
+        SEIZE       X
+        ADVANCE     20,8
+        RELEASE     X
+        TERMINATE
+TRY_Y   GATE NU     Y,TRY_Z
+        SEIZE       Y
+        ADVANCE     20,8
+        RELEASE     Y
+        TERMINATE
+TRY_Z   GATE NU     Z,AWAY
+        SEIZE       Z
+        ADVANCE     20,8
+        RELEASE     Z
+        TERMINATE
+AWAY    TERMINATE
+
+        GENERATE    480
+        TERMINATE   1
+        START       1</div>
+      <p><b>关键：</b>用GATE NU逐级检查设施是否未使用，不满足就跳到下一个尝试。</p>
+    </div>
+  </details>
+</div>
+
+<!-- 3.12 -->
+<div class="prob" id="t312">
+  <div class="prob-title"><span class="level-tag lv-mid">中</span> 3.12 两站顺序服务</div>
+  <div class="prob-desc">顾客先到站1（3个服务员，335±160秒），再到站2（1个服务员，110±75秒）。到达间隔120±50秒。仿真24小时。两种情况：(1)队列无限 (2)站2只有1个等候位。</div>
+  <div class="kp-list">
+    <span class="kp">STORAGE多服务台</span><span class="kp">顺序服务</span><span class="kp">GATE有限缓冲</span><span class="kp">TABLE统计M1</span>
+  </div>
+
+  <details>
+    <summary>第一问：队列空间不受限</summary>
+    <div class="answer">
+      <div class="code">S1      STORAGE     3             ;站1有3个服务员
+T_STAY  TABLE       M1,100,100,20
+        GENERATE    120,50        ;顾客到达
+; 站1
+        QUEUE       Q1
+        ENTER       S1
+        DEPART      Q1
+        ADVANCE     335,160       ;站1服务
+        LEAVE       S1
+; 站2
+        QUEUE       Q2
+        SEIZE       SERVER2       ;站2只有1个
+        DEPART      Q2
+        ADVANCE     110,75        ;站2服务
+        RELEASE     SERVER2
+        TABULATE    T_STAY
+        TERMINATE
+
+; 计时器
+        GENERATE    86400         ;24小时=86400秒
+        TERMINATE   1
+        START       1</div>
+      <p><b>关键：</b>站1用STORAGE（3个服务员），站2用SEIZE（1个）。顾客先经过站1的ENTER-LEAVE，再经过站2的SEIZE-RELEASE，顺序执行。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>第二问：站2只有1个等候位</summary>
+    <div class="answer">
+      <h4>思路</h4>
+      <p>站2队列只有1个位置 → 用STORAGE容量=1模拟等候位。完成站1服务后，要检查站2的等候位是否有空。如果满了，顾客不能离开站1（占着站1的服务员不放）。</p>
+      <div class="code">S1      STORAGE     3
+WAIT2   STORAGE     1             ;站2等候位只有1个
+T_STAY  TABLE       M1,100,100,20
+        GENERATE    120,50
+; 站1
+        QUEUE       Q1
+        ENTER       S1
+        DEPART      Q1
+        ADVANCE     335,160
+; 站1完成后，试进站2等候位
+        ENTER       WAIT2         ;等候位满则等在这里（不释放站1！）
+        LEAVE       S1            ;进了等候位才释放站1
+; 站2
+        QUEUE       Q2
+        SEIZE       SERVER2
+        DEPART      Q2
+        LEAVE       WAIT2         ;坐上站2服务椅，释放等候位
+        ADVANCE     110,75
+        RELEASE     SERVER2
+        TABULATE    T_STAY
+        TERMINATE
+
+        GENERATE    86400
+        TERMINATE   1
+        START       1</div>
+      <p><b>精妙之处：</b>ENTER WAIT2 在 LEAVE S1 之前。如果等候位满了，顾客卡在ENTER这里，S1不释放，后面的顾客也进不了站1。这就模拟了"站2满时阻塞站1"的效果。</p>
+    </div>
+  </details>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 改编练习</div>
+    <p>洗车流水线：第一步冲洗（2台冲洗机，10±3分钟），第二步烘干（1台烘干机，5±2分钟）。车辆每8±3分钟到达。队列空间不限。仿真600分钟。统计逗留时间(TABLE: M1,5,5,15)。</p>
+    <textarea class="write-area" placeholder="写你的程序..."></textarea>
+  </div>
+  <details>
+    <summary>改编答案</summary>
+    <div class="answer">
+      <div class="code">WASH    STORAGE     2
+T_STAY  TABLE       M1,5,5,15
+        GENERATE    8,3
+; 冲洗
+        QUEUE       Q1
+        ENTER       WASH
+        DEPART      Q1
+        ADVANCE     10,3
+        LEAVE       WASH
+; 烘干
+        QUEUE       Q2
+        SEIZE       DRYER
+        DEPART      Q2
+        ADVANCE     5,2
+        RELEASE     DRYER
+        TABULATE    T_STAY
+        TERMINATE
+
+        GENERATE    600
+        TERMINATE   1
+        START       1</div>
+      <p><b>结构：</b>站1用STORAGE(2台)，站2用SEIZE(1台)。顾客依次经过两站，与3.12结构完全一致。</p>
+    </div>
+  </details>
+</div>
+
+<!-- ======================== 高级 ======================== -->
+<h2>高级题（多工序 + FUNCTION + VARIABLE）</h2>
+
+<!-- 4.2 -->
+<div class="prob" id="t42">
+  <div class="prob-title"><span class="level-tag lv-high">高</span> 4.2 纺织工厂</div>
+  <div class="prob-desc">三道工序：工序1(5台减压器,38±12分/单位) → 缓冲100 → 工序2(40台细纱机,320±120分/单位) → 缓冲50 → 工序3(8台线圈框架,64±24分/单位) → 成品仓50 → 货柜200。原材料每12分钟到达1单位。每16小时调运一次。仿真800小时。</div>
+  <div class="kp-list">
+    <span class="kp">多STORAGE</span><span class="kp">缓冲区建模</span><span class="kp">顺序工序</span><span class="kp">定期调运</span><span class="kp">计时器模式</span>
+  </div>
+
+  <details>
+    <summary>完整程序</summary>
+    <div class="answer">
+      <h4>建模思路</h4>
+      <p>缓冲区用STORAGE模拟：材料进缓冲区=ENTER，材料出缓冲区=LEAVE。缓冲区满则上游阻塞。</p>
+      <p>三组机器也用STORAGE：5台减压器=STORAGE 5，40台细纱机=STORAGE 40，8台线圈框架=STORAGE 8。</p>
+
+      <div class="code">; ===== 说明部分 =====
+PRESS   STORAGE     5             ;5台减压器框架
+SPIN    STORAGE     40            ;40台细纱机
+COIL    STORAGE     8             ;8台线圈框架
+BUF1    STORAGE     100           ;工序1-2之间的压缩材料缓冲
+BUF2    STORAGE     50            ;工序2-3之间的纱材料缓冲
+DONE    STORAGE     50            ;成品纱缓冲
+TRUCK   STORAGE     200           ;货柜容量
+
+; ===== 生产流程 =====
+        GENERATE    12            ;原材料每12分钟到达1单位
+
+; 工序1：减压器框架
+        ENTER       PRESS         ;占用1台减压器
+        ADVANCE     38,12         ;加工38±12分钟
+        LEAVE       PRESS         ;释放减压器
+
+; 进入缓冲区1
+        ENTER       BUF1          ;缓冲区满则等待（阻塞工序1）
+
+; 工序2：细纱机
+        ENTER       SPIN
+        LEAVE       BUF1          ;进了细纱机就释放缓冲区1
+        ADVANCE     320,120
+        LEAVE       SPIN
+
+; 进入缓冲区2
+        ENTER       BUF2
+
+; 工序3：线圈框架
+        ENTER       COIL
+        LEAVE       BUF2
+        ADVANCE     64,24
+        LEAVE       COIL
+
+; 进入成品仓
+        ENTER       DONE
+        TERMINATE
+
+; ===== 调运流程 =====
+        GENERATE    960           ;每16小时=960分钟调运一次
+; 把成品仓的货搬到货柜
+; （简化处理：清空成品仓）
+        TERMINATE
+
+; ===== 计时器 =====
+        GENERATE    48000         ;800小时=48000分钟
+        TERMINATE   1
+        START       1</div>
+
+      <p><b>缓冲区建模的关键：</b>ENTER BUF1 在 ENTER SPIN 之前，LEAVE BUF1 在 ENTER SPIN 之后。这意味着材料先进缓冲区占一个位置，等到细纱机有空了再进细纱机并释放缓冲区位置。如果缓冲区满了(100单位)，工序1加工完的材料就卡在ENTER BUF1等待，减压器也不释放（因为LEAVE PRESS在ENTER BUF1之前）。</p>
+
+      <p><b>等等，上面的顺序有问题。</b>应该是工序1完成后先释放减压器再进缓冲区：</p>
+      <div class="code">; 修正后的工序1→缓冲区1→工序2流程：
+        ENTER       PRESS         ;占减压器
+        ADVANCE     38,12         ;加工
+        LEAVE       PRESS         ;释放减压器
+        ENTER       BUF1          ;进缓冲区（满则等，但减压器已释放）
+        ENTER       SPIN          ;占细纱机（满则等，但在缓冲区里等）
+        LEAVE       BUF1          ;进了细纱机，离开缓冲区
+        ADVANCE     320,120       ;细纱加工
+        LEAVE       SPIN          ;释放细纱机</div>
+      <p>这样减压器不会被缓冲区阻塞，只有缓冲区满时材料会堆积在ENTER BUF1处等待（但减压器已经空出来了）。</p>
+
+      <div class="tip"><b>这道题的核心就是理清ENTER和LEAVE的顺序：</b>先LEAVE上游设备 → 再ENTER缓冲区 → 再ENTER下游设备 → 再LEAVE缓冲区。</div>
+    </div>
+  </details>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 改编练习</div>
+    <p>面包工厂两道工序：工序1搅拌（3台搅拌机，20±5分钟/单位），工序2烘焙（2台烤箱，45±10分钟/单位）。两道工序之间的面团缓冲区容量30单位。面粉每8分钟到达1单位。仿真480分钟。</p>
+    <p>提示：只有两道工序+一个缓冲区，比原题简单。</p>
+    <textarea class="write-area" placeholder="写你的程序..."></textarea>
+  </div>
+  <details>
+    <summary>改编答案</summary>
+    <div class="answer">
+      <div class="code">MIX     STORAGE     3
+OVEN    STORAGE     2
+BUF     STORAGE     30
+        GENERATE    8
+; 工序1：搅拌
+        ENTER       MIX
+        ADVANCE     20,5
+        LEAVE       MIX
+; 缓冲区
+        ENTER       BUF
+; 工序2：烘焙
+        ENTER       OVEN
+        LEAVE       BUF
+        ADVANCE     45,10
+        LEAVE       OVEN
+        TERMINATE
+
+; 计时器
+        GENERATE    480
+        TERMINATE   1
+        START       1</div>
+      <p><b>顺序：</b>LEAVE MIX → ENTER BUF → ENTER OVEN → LEAVE BUF。搅拌完先释放搅拌机，进缓冲区等烤箱，烤箱空了进去并释放缓冲区位置。</p>
+    </div>
+  </details>
+</div>
+
+<!-- 4.3 -->
+<div class="prob" id="t43">
+  <div class="prob-title"><span class="level-tag lv-high">高</span> 4.3 加油站三种燃油</div>
+  <div class="prob-desc">三种燃油各有一个油泵。订单量3000~5000加仑(均匀)。站点最多容纳12辆车。到达间隔指数分布均值18分钟。加油时间取决于油泵效率、订单大小、已容纳车辆数、2分钟准备时间。仿真5天。</div>
+  <div class="kp-list">
+    <span class="kp">指数分布FUNCTION</span><span class="kp">STORAGE容量限制</span><span class="kp">VARIABLE时间计算</span><span class="kp">ASSIGN参数</span><span class="kp">概率TRANSFER三路分流</span>
+  </div>
+
+  <details>
+    <summary>解题思路</summary>
+    <div class="answer">
+      <h4>建模要点</h4>
+      <p>1. 到达：指数分布均值18分钟 → <code>GENERATE 18,FN$XPDIS</code></p>
+      <p>2. 站点容量12辆 → <code>SITE STORAGE 12</code>，满了就离开</p>
+      <p>3. 三种燃油各1个油泵 → 3个设施PUMP1/PUMP2/PUMP3，等概率(各1/3)选择</p>
+      <p>4. 订单量3000~5000加仑 → 用VARIABLE或FUNCTION产生均匀随机数</p>
+      <p>5. 加油时间 = 效率×订单量/1000 + 已容纳车辆×0.5分钟 + 2分钟</p>
+      <p>其中效率：油泵1=6分/千加仑，油泵2=5分/千加仑，油泵3=7分/千加仑</p>
+      <p>加油时间需要用VARIABLE和ASSIGN来计算，比较复杂。</p>
+
+      <div class="code">; 指数分布（标准）
+XPDIS   FUNCTION    RN1,C24
+0,0/.1,.104/.2,.222/.3,.355/.4,.509/.5,.69/.6,.915/.7,1.2
+/.75,1.38/.8,1.6/.84,1.83/.88,2.12/.9,2.3/.92,2.52/.94,2.81
+/.95,2.99/.96,3.2/.97,3.5/.98,3.9/.99,4.6/.995,5.3/.998,6.2/.999,7/.9998,8
+
+; 订单量（3000~5000加仑，均匀分布）
+ORDER   FUNCTION    RN2,C2
+0,3000/1,5000
+
+SITE    STORAGE     12            ;站点最多12辆车
+
+        GENERATE    18,FN$XPDIS   ;指数分布到达
+        GATE SNF    SITE,AWAY     ;站点不满才进
+        ENTER       SITE
+        ASSIGN      1,FN$ORDER    ;P1=订单量(加仑)
+        ASSIGN      2,S$SITE      ;P2=当前站点车辆数
+
+; 1/3概率选择油泵
+        TRANSFER    .333,,P2_GO
+        TRANSFER    .500,,P3_GO
+
+; 油泵1（效率6分/千加仑）
+        QUEUE       Q1
+        SEIZE       PUMP1
+        DEPART      Q1
+        ADVANCE     (6*P1/1000+P2/2+2)   ;简化的时间计算
+        RELEASE     PUMP1
+        TRANSFER    ,DONE
+
+; 油泵2（效率5分/千加仑）
+P2_GO   QUEUE       Q2
+        SEIZE       PUMP2
+        DEPART      Q2
+        ADVANCE     (5*P1/1000+P2/2+2)
+        RELEASE     PUMP2
+        TRANSFER    ,DONE
+
+; 油泵3（效率7分/千加仑）
+P3_GO   QUEUE       Q3
+        SEIZE       PUMP3
+        DEPART      Q3
+        ADVANCE     (7*P1/1000+P2/2+2)
+        RELEASE     PUMP3
+
+DONE    LEAVE       SITE
+        TERMINATE
+
+AWAY    TERMINATE                 ;站点满，离开
+
+; 计时器：5天=5×24×60=7200分钟
+        GENERATE    7200
+        TERMINATE   1
+        START       1</div>
+      <div class="tip"><b>注意：</b>ADVANCE里的表达式在实际GPSS World中可能需要用VARIABLE定义。这里简化写在了ADVANCE的操作数里。严格写法是先用VARIABLE定义时间计算公式，再用 <code>ADVANCE V$TIME1</code> 引用。</div>
+    </div>
+  </details>
+
+  <div class="exercise">
+    <div class="exercise-title">✏️ 改编练习</div>
+    <p>简化版加油站：2种油泵（普通油PUMP1用时8分钟/车，高级油PUMP2用时12分钟/车）。60%的车加普通油，40%加高级油。到达间隔指数分布均值10分钟。站点最多8辆车，满了就离开。仿真600分钟。</p>
+    <textarea class="write-area" placeholder="写你的程序..."></textarea>
+  </div>
+  <details>
+    <summary>改编答案</summary>
+    <div class="answer">
+      <div class="code">XPDIS   FUNCTION    RN1,C24
+0,0/.1,.104/.2,.222/.3,.355/.4,.509/.5,.69/.6,.915/.7,1.2
+/.75,1.38/.8,1.6/.84,1.83/.88,2.12/.9,2.3/.92,2.52/.94,2.81
+/.95,2.99/.96,3.2/.97,3.5/.98,3.9/.99,4.6/.995,5.3/.998,6.2/.999,7/.9998,8
+
+SITE    STORAGE     8
+        GENERATE    10,FN$XPDIS
+        GATE SNF    SITE,AWAY
+        ENTER       SITE
+        TRANSFER    .40,,PREM         ;40%高级油
+; 普通油（60%）
+        QUEUE       Q1
+        SEIZE       PUMP1
+        DEPART      Q1
+        ADVANCE     8
+        RELEASE     PUMP1
+        TRANSFER    ,DONE
+; 高级油（40%）
+PREM    QUEUE       Q2
+        SEIZE       PUMP2
+        DEPART      Q2
+        ADVANCE     12
+        RELEASE     PUMP2
+DONE    LEAVE       SITE
+        TERMINATE
+
+AWAY    TERMINATE
+
+        GENERATE    600
+        TERMINATE   1
+        START       1</div>
+      <p><b>结构：</b>指数分布到达 + GATE SNF限容量 + TRANSFER概率分流 + 两个设施分别服务 + 汇合后LEAVE SITE。</p>
+    </div>
+  </details>
+</div>
+
+<!-- 4.6 -->
+<div class="prob" id="t46">
+  <div class="prob-title"><span class="level-tag lv-high">高</span> 4.6 超市购物（最难）</div>
+  <div class="prob-desc">停车场650辆→购物(5~100件，购物篮/购物车)→18个付款台(1特快+17普通)→走60秒到停车场。指数分布到达（随时间变化），营业12小时。</div>
+  <div class="kp-list">
+    <span class="kp">STORAGE×3</span><span class="kp">GATE</span><span class="kp">FUNCTION</span><span class="kp">LOOP</span><span class="kp">SELECT</span><span class="kp">TEST</span><span class="kp">ASSIGN</span><span class="kp">VARIABLE</span><span class="kp">TRANSFER</span><span class="kp">全部语法</span>
+  </div>
+
+  <details>
+    <summary>解题框架（这题太复杂，给出关键结构）</summary>
+    <div class="answer">
+      <h4>程序结构框架</h4>
+      <div class="code">; ===== 说明部分 =====
+PARK    STORAGE     650           ;停车场
+BASKET  STORAGE     70            ;购物篮
+CART    STORAGE     650           ;购物车
+; 18个付款台用18个设施 CASH1~CASH18
+; CASH1=特快付款台，CASH2~CASH18=普通付款台
+
+; 到达间隔函数（随时间变化，用书中表4.9）
+; 商品数量函数（5~100均匀分布）
+
+; ===== 顾客流程 =====
+; 1. 到达 → 停车场(满则离开)
+; 2. 走60秒到超市
+; 3. 确定购物件数(5~100均匀)
+; 4. ≤10件用购物篮(BASKET)，>10件用购物车(CART)
+; 5. 购物(每件10秒 → LOOP循环)
+; 6. 选付款台：
+;    >10件 → 选17个普通台中队最短的(SELECT)
+;    ≤10件 → 比较特快台队长和普通最短队长×2.5
+; 7. 付款(每件2秒 + 25/30/35秒随机)
+; 8. 归还购物篮/车
+; 9. 走60秒到停车场 → 离开
+
+; ===== 计时器 =====
+        GENERATE    720           ;12小时=720分钟=43200秒
+        TERMINATE   1
+        START       1</div>
+      <p><b>这道题基本把所有语法都用上了。</b>考试如果出这种难度，写出正确的框架结构就能拿大部分分。细节可能有错但结构分很重要。</p>
+    </div>
+  </details>
+</div>
+
+<!-- ======================== 综合建议 ======================== -->
+<div class="prob" id="t-strategy" style="background:var(--hi);border-color:#e0d4a8;">
+  <h3>考前策略</h3>
+  <p><b>必须能独立写出来的：</b>3.2（打靶）、3.1（三种服务）、3.7第一问（偏好选择都忙离开）、3.12第一问（顺序服务）。这四道覆盖了低级和中级全部语法。</p>
+  <p><b>理解结构即可的：</b>3.7第二问、3.12第二问、4.2（纺织工厂）。重点理解缓冲区的ENTER/LEAVE顺序。</p>
+  <p><b>知道思路即可的：</b>4.3（加油站）、4.6（超市）。这两道太复杂，考试不太可能原样出，但其中的子模块（指数分布、LOOP循环、SELECT选最短队）可能单独考。</p>
+  <p><b>编程题拿分策略：</b>先写框架（GENERATE → QUEUE → SEIZE → DEPART → ADVANCE → RELEASE → TERMINATE → START），再往里面加特殊逻辑。框架正确就有一半以上的分。</p>
+</div>
+
+<div style="text-align:center;padding:30px 0;color:var(--sub);font-size:13px;border-top:1px solid var(--border);margin-top:30px;">
+  为 Faye 制作 · 老师原题全解 · 80分够用
+</div>
 </div>
 
 </main>
 </div>
+
+<div class="score-badge" id="scoreBadge">练习得分：0 / 0</div>
 
 <!-- Floating action buttons -->
 <div class="fab">
@@ -1979,7 +4979,259 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 </div>
 </div>
 
+
+<datalist id="gpss-blocks">
+  <option value="GENERATE"><option value="QUEUE"><option value="SEIZE"><option value="DEPART">
+  <option value="ADVANCE"><option value="RELEASE"><option value="TERMINATE"><option value="START">
+  <option value="STORAGE"><option value="ENTER"><option value="LEAVE"><option value="TRANSFER">
+  <option value="GATE"><option value="GATE SNF"><option value="GATE SE"><option value="GATE LS"><option value="GATE LR">
+  <option value="GATE U"><option value="GATE NU">
+  <option value="LOGIC S"><option value="LOGIC R"><option value="LOGIC I">
+  <option value="ASSIGN"><option value="PRIORITY"><option value="INITIAL">
+  <option value="TABLE"><option value="TABULATE"><option value="QTABLE">
+  <option value="SPLIT"><option value="ASSEMBLE"><option value="GATHER"><option value="LOOP">
+  <option value="SAVEVALUE"><option value="TEST"><option value="TEST E"><option value="TEST NE">
+  <option value="TEST G"><option value="TEST GE"><option value="TEST L"><option value="TEST LE">
+  <option value="FUNCTION"><option value="VARIABLE"><option value="EQU">
+</datalist>
+
 <script>
+// ── Panel switching & breadcrumb ──
+let currentFile = 0;
+function switchFile(n){
+  currentFile = n;
+  document.querySelectorAll('.file-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+  document.querySelectorAll('.toc-pane').forEach((t,i)=>t.classList.toggle('active',i===n));
+  document.querySelectorAll('.bc-tab').forEach((t,i)=>t.classList.toggle('active',i===n));
+  document.getElementById('bcSection').textContent='';
+  document.getElementById('bcSep2').style.display='none';
+  const badge=document.getElementById('scoreBadge');
+  if(badge) badge.classList.toggle('visible', n===2);
+  window.scrollTo({top:0,behavior:'smooth'});
+  try{localStorage.setItem('gpss_active_file',n);}catch(e){}
+}
+document.querySelectorAll('.bc-tab').forEach((btn,i)=>btn.addEventListener('click',()=>switchFile(i)));
+try{const s=parseInt(localStorage.getItem('gpss_active_file')||'0');if(s>0)switchFile(s);}catch(e){}
+
+// ── Section breadcrumb via IntersectionObserver ──
+const bcSectionEl=document.getElementById('bcSection');
+const bcSep2El=document.getElementById('bcSep2');
+const allSections=[
+  ...document.querySelectorAll('.file-panel[data-panel="0"] [data-section-id]'),
+  ...document.querySelectorAll('.file-panel[data-panel="1"] .section[id]'),
+  ...document.querySelectorAll('.file-panel[data-panel="2"] .prog[id], .file-panel[data-panel="2"] .hour'),
+  ...document.querySelectorAll('.file-panel[data-panel="3"] .prob[id], .file-panel[data-panel="3"] h2'),
+];
+const secObserver=new IntersectionObserver((entries)=>{
+  for(const e of entries){
+    if(e.isIntersecting){
+      const el=e.target;
+      let name=el.dataset.sectionName||el.querySelector('h2,h3,.section-title,.prog-title,.prob-title,.cb-title')?.textContent?.trim()?.replace(/\s+/g,' ').slice(0,30)||(el.tagName==='H2'?el.textContent.trim().slice(0,30):'');
+      if(name){bcSectionEl.textContent=name;bcSep2El.style.display='';}
+    }
+  }
+},{rootMargin:'-12% 0px -82% 0px',threshold:0});
+allSections.forEach(s=>secObserver.observe(s));
+
+// ── Sidebar nav links: smooth scroll within active panel ──
+document.querySelectorAll('.toc-pane .nav-link[href^="#"]').forEach(link=>{
+  link.addEventListener('click',e=>{
+    const id=link.getAttribute('href').slice(1);
+    const target=document.getElementById(id);
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+
+// ── Score system (panel 2) ──
+let scoreCorrect=0,scoreTotal=0;
+function addScore(v){
+  scoreTotal++;if(v)scoreCorrect++;
+  const el=document.getElementById('scoreDisplay2');
+  if(el)el.textContent=scoreCorrect+' / '+scoreTotal;
+  const badge=document.getElementById('scoreBadge');
+  if(badge)badge.textContent='练习得分：'+scoreCorrect+' / '+scoreTotal;
+}
+
+// ── GPSS interactive editor ──
+
+
+
+/* ===== GPSS 三列编辑器 ===== */
+const BLOCKS = [
+  'GENERATE','QUEUE','SEIZE','DEPART','ADVANCE','RELEASE','TERMINATE','START',
+  'STORAGE','ENTER','LEAVE','TRANSFER','GATE SNF','GATE SE','GATE LS','GATE LR',
+  'GATE U','GATE NU','LOGIC S','LOGIC R','LOGIC I','ASSIGN','PRIORITY','INITIAL',
+  'TABLE','TABULATE','QTABLE','SPLIT','ASSEMBLE','GATHER','LOOP',
+  'SAVEVALUE','TEST E','TEST NE','TEST G','TEST GE','TEST L','TEST LE',
+  'FUNCTION','VARIABLE','EQU'
+];
+
+function buildEditor(el) {
+  const rows = parseInt(el.dataset.rows) || 8;
+  const id = el.dataset.id || Math.random().toString(36).slice(2);
+
+  el.innerHTML = `
+    <div class="gpss-editor-head">
+      <span></span>
+      <span>标签 LABEL</span>
+      <span>指令块 BLOCK</span>
+      <span>操作数 OPERANDS</span>
+      <span>注释 COMMENT</span>
+      <span></span>
+    </div>
+    <div class="gpss-rows" id="rows-${id}"></div>
+    <div class="gpss-toolbar">
+      <button class="gpss-btn" onclick="addRow('${id}',false)">＋ 添加行</button>
+      <button class="gpss-btn" onclick="addRow('${id}',true)">＋ 注释行</button>
+      <button class="gpss-btn" onclick="copyCode('${id}',this)" style="margin-left:auto">复制代码</button>
+      <button class="gpss-btn" onclick="clearEditor('${id}')" style="color:var(--red)">清空</button>
+    </div>
+    <div class="gpss-preview-wrap" id="preview-${id}">
+      <div class="gpss-preview-title">; ── 生成的 GPSS World 代码 ──</div>
+      <pre class="gpss-preview" id="code-${id}"></pre>
+    </div>`;
+
+  const rowsEl = document.getElementById('rows-' + id);
+  for (let i = 0; i < rows; i++) appendRow(rowsEl, id, false);
+}
+
+function appendRow(container, id, isSep) {
+  const row = document.createElement('div');
+  if (isSep) {
+    row.className = 'gpss-sep-row';
+    row.draggable = true;
+    row.innerHTML = `<span class="gpss-drag-handle" title="拖拽移行">⠿</span><input type="text" placeholder="; 注释 / 说明行（整行）">`;
+  } else {
+    row.className = 'gpss-row';
+    row.draggable = true;
+    row.innerHTML = `
+      <span class="gpss-drag-handle" title="拖拽移行">⠿</span>
+      <div class="gpss-col-label"><input type="text" placeholder="标签" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+      <div class="gpss-col-block"><input type="text" placeholder="BLOCK" autocomplete="off" autocapitalize="characters" spellcheck="false" oninput="this.value=this.value.toUpperCase()"></div>
+      <div class="gpss-col-ops"><input type="text" placeholder="A,B,C…" autocomplete="off" spellcheck="false"></div>
+      <div class="gpss-col-cmt"><input type="text" placeholder="; 注释" autocomplete="off" spellcheck="false"></div>
+      <button class="gpss-row-del" title="删除此行" onclick="this.closest('[draggable]').remove()">×</button>`;
+  }
+  container.appendChild(row);
+  row.querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => refreshPreview(id)));
+  initDrag(row, container);
+}
+
+/* ===== 拖拽排序 ===== */
+let dragSrc = null;
+
+function initDrag(row, container) {
+  const handle = row.querySelector('.gpss-drag-handle');
+
+  handle.addEventListener('mousedown', () => { row.draggable = true; });
+  handle.addEventListener('touchstart', () => { row.draggable = true; }, {passive:true});
+
+  row.addEventListener('dragstart', e => {
+    dragSrc = row;
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(() => row.classList.add('dragging'), 0);
+  });
+  row.addEventListener('dragend', () => {
+    row.classList.remove('dragging');
+    container.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    dragSrc = null;
+  });
+  row.addEventListener('dragover', e => {
+    if (!dragSrc || dragSrc === row) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    container.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    row.classList.add('drag-over');
+  });
+  row.addEventListener('drop', e => {
+    if (!dragSrc || dragSrc === row) return;
+    e.preventDefault();
+    const rows = [...container.children];
+    const srcIdx = rows.indexOf(dragSrc);
+    const tgtIdx = rows.indexOf(row);
+    if (srcIdx < tgtIdx) container.insertBefore(dragSrc, row.nextSibling);
+    else container.insertBefore(dragSrc, row);
+    row.classList.remove('drag-over');
+  });
+}
+
+function addRow(id, isSep) {
+  const c = document.getElementById('rows-' + id);
+  appendRow(c, id, isSep);
+}
+
+function clearEditor(id) {
+  const c = document.getElementById('rows-' + id);
+  c.innerHTML = '';
+  for (let i = 0; i < 6; i++) appendRow(c, id, false);
+  document.getElementById('preview-' + id).classList.remove('open');
+}
+
+function getCode(id) {
+  const rows = document.getElementById('rows-' + id).children;
+  let lines = [];
+  for (const row of rows) {
+    if (row.classList.contains('gpss-sep-row')) {
+      const v = row.querySelector('input').value.trim();
+      if (v) lines.push(v.startsWith(';') ? v : '; ' + v);
+      else lines.push('');
+      continue;
+    }
+    const inputs = row.querySelectorAll('input');
+    const label = inputs[0].value.trim();
+    const block = inputs[1].value.trim().toUpperCase();
+    const ops   = inputs[2].value.trim();
+    const cmt   = inputs[3].value.trim();
+    if (!label && !block && !ops && !cmt) { lines.push(''); continue; }
+    let line = '';
+    if (label) {
+      line = label.padEnd(8);
+    } else {
+      line = ' '.repeat(8);
+    }
+    if (block) line += block.padEnd(12);
+    if (ops)   line += ops;
+    if (cmt)   {
+      const pad = ops ? '   ' : ' '.repeat(ops ? 3 : Math.max(1, 20 - ops.length));
+      line = line.trimEnd() + (ops ? '   ' : (block ? '                    '.slice(block.length+8) : ' '.repeat(20))) + (cmt.startsWith(';') ? cmt : ';' + cmt);
+    }
+    lines.push(line.trimEnd());
+  }
+  // trim trailing blank lines
+  while (lines.length && lines[lines.length-1] === '') lines.pop();
+  return lines.join('\n');
+}
+
+function refreshPreview(id) {
+  const wrap = document.getElementById('preview-' + id);
+  if (wrap.classList.contains('open')) {
+    document.getElementById('code-' + id).textContent = getCode(id);
+  }
+}
+
+function togglePreview(id, btn) {
+  const wrap = document.getElementById('preview-' + id);
+  const open = wrap.classList.toggle('open');
+  btn.textContent = open ? '收起预览' : '预览代码';
+  if (open) document.getElementById('code-' + id).textContent = getCode(id);
+}
+
+function copyCode(id, btn) {
+  const code = getCode(id);
+  if (!code.trim()) { btn.textContent = '（空）'; setTimeout(()=>btn.textContent='复制代码',1200); return; }
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = '✓ 已复制';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '复制代码'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+// 初始化所有编辑器
+document.querySelectorAll('.gpss-editor').forEach(buildEditor);
+
+
+// ── Original review-outline features (bookmarks / notes / dashboard) ──
+
 // ============ 存储层：文件优先，localStorage 兜底 ============
 const STORAGE_KEY = 'des_review_data_v1';
 const EMPTY = ()=>({bookmarks:{},problems:{},notes:{},lastRead:null});
@@ -2466,99 +5718,7 @@ async function initStorage(){
 }
 initStorage();
 
-// ============ 分页系统 ============
-const PAGE_LABELS = ['考前必看','第1章 绪论','第2章 仿真原理','第3章 初级语言','第4章 中级语言','第5章 高级语言','收尾'];
-const chapters = [...document.querySelectorAll('.chapter[data-page]')];
-const totalPages = chapters.length;
-let currentPage = 0;
 
-function buildDots(){
-  const dotsEl = document.getElementById('pgDots');
-  dotsEl.innerHTML = '';
-  for(let i=0;i<totalPages;i++){
-    const d = document.createElement('button');
-    d.className = 'pg-dot' + (i===currentPage?' active':'');
-    d.title = PAGE_LABELS[i]||('第'+(i+1)+'章');
-    d.addEventListener('click',()=>goToPage(i));
-    dotsEl.appendChild(d);
-  }
-}
-
-function goToPage(n, scroll){
-  currentPage = Math.max(0, Math.min(n, totalPages-1));
-  // 显示/隐藏章节
-  chapters.forEach((ch,i)=>{
-    ch.classList.toggle('active-page', i===currentPage);
-  });
-  // 更新按钮状态
-  document.getElementById('pgPrev').disabled = currentPage===0;
-  document.getElementById('pgNext').disabled = currentPage===totalPages-1;
-  document.getElementById('pgLabel').textContent = PAGE_LABELS[currentPage]||'';
-  // 更新小圆点
-  document.querySelectorAll('.pg-dot').forEach((d,i)=>d.classList.toggle('active',i===currentPage));
-  // 更新侧边栏高亮
-  document.querySelectorAll('.nav-chapter-btn').forEach(btn=>{
-    btn.classList.toggle('active-chapter', parseInt(btn.dataset.gotoPage)===currentPage);
-  });
-  if(scroll!==false) window.scrollTo({top:0,behavior:'smooth'});
-}
-
-document.getElementById('pgPrev').addEventListener('click',()=>goToPage(currentPage-1));
-document.getElementById('pgNext').addEventListener('click',()=>goToPage(currentPage+1));
-
-// 侧边栏章节按钮点击
-document.querySelectorAll('.nav-chapter-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>goToPage(parseInt(btn.dataset.gotoPage)));
-});
-
-// 侧边栏 section 链接点击：先跳页再跳锚点
-document.querySelectorAll('.nav-link[data-page-of]').forEach(link=>{
-  link.addEventListener('click', e=>{
-    const p = parseInt(link.dataset.pageOf);
-    if(p !== currentPage){
-      e.preventDefault();
-      goToPage(p, false);
-      setTimeout(()=>{
-        const target = document.querySelector(link.getAttribute('href'));
-        if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-      }, 50);
-    }
-  });
-});
-
-// "回到上次复习处"也要先切页
-const origResumeBtn = document.getElementById('resumeBtn');
-origResumeBtn.replaceWith(origResumeBtn.cloneNode(true));
-document.getElementById('resumeBtn').addEventListener('click',()=>{
-  if(data.lastRead){
-    const el = document.querySelector('[data-section-id="'+data.lastRead+'"]');
-    if(el){
-      const ch = el.closest('.chapter[data-page]');
-      if(ch) goToPage(parseInt(ch.dataset.page), false);
-      setTimeout(()=>{ el.scrollIntoView({behavior:'smooth',block:'start'}); flashSection(el); }, 80);
-    }
-  } else {
-    alert('还没有标记复习位置。点击任意章节的"🔖书签"按钮来记录复习进度。');
-  }
-});
-
-// dashboard 跳转也修正
-const origDash = dashboard;
-origDash.addEventListener('click', e=>{
-  const goto = e.target.dataset.goto;
-  if(goto){
-    const el = document.querySelector('[data-section-id="'+goto+'"]');
-    if(el){
-      const ch = el.closest('.chapter[data-page]');
-      if(ch) goToPage(parseInt(ch.dataset.page), false);
-      setTimeout(()=>{ dashboard.classList.remove('active'); el.scrollIntoView({behavior:'smooth'}); flashSection(el); }, 80);
-    }
-  }
-}, true);
-
-// 初始化
-buildDots();
-goToPage(0, false);
 </script>
 </body>
 </html>
