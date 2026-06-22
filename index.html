@@ -4409,18 +4409,18 @@ SA      SEIZE       A
         DEPART      LINE
         ADVANCE     15,6
         RELEASE     A
-        TERMINATE   1
+        TERMINATE
 SB      TRANSFER    BOTH,SB2,SC   ;再试B，不行试C
 SB2     SEIZE       B
         DEPART      LINE
         ADVANCE     15,6
         RELEASE     B
-        TERMINATE   1
+        TERMINATE
 SC      SEIZE       C
         DEPART      LINE
         ADVANCE     15,6
         RELEASE     C
-        TERMINATE   1
+        TERMINATE
 
         GENERATE    6000
         TERMINATE   1
@@ -4433,17 +4433,17 @@ SA      SEIZE       A
         DEPART      LINE
         ADVANCE     15,6
         RELEASE     A
-        TERMINATE   1
+        TERMINATE
 SB      SEIZE       B
         DEPART      LINE
         ADVANCE     15,6
         RELEASE     B
-        TERMINATE   1
+        TERMINATE
 SC      SEIZE       C
         DEPART      LINE
         ADVANCE     15,6
         RELEASE     C
-        TERMINATE   1
+        TERMINATE
 
         GENERATE    6000
         TERMINATE   1
