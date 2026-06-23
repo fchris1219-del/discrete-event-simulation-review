@@ -1385,8 +1385,8 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 <p style="font-size:13px;color:var(--ink-faint)">手工仿真表的每一步都在模拟事件调度法的执行过程。掌握这4步，就能独立填写任何手工仿真表。</p>
 <ol class="step-list">
 <li class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">从事件表中找最早事件</div><div class="step-body">将事件表中发生时间最小的事件取出，将仿真时钟推进到该时刻。若有多个事件同时发生（同一时刻），按解结规则处理。</div></div></li>
-<li class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">判断事件类型，执行对应逻辑</div><div class="step-body"><strong>若是到达事件 A(i,t)：</strong>①产生下一顾客到达事件（t+到达间隔，插入事件表）；②判断理发师状态——空闲则开始服务（产生离开事件，StS=1），忙则排队（StQ+1）。<br><strong>若是离开事件 D(i,t)：</strong>①C+1，B加上本次服务时长；②判断队列——非空则继续服务下一人（StQ-1，产生新离开事件，W+=等待时长），队列空则理发师置闲（StS=0）。</div></div></li>
-<li class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">更新系统状态和统计计数器</div><div class="step-body">更新 StQ(t) 和 StS(t)，更新 C、B、W。注意 W 只在顾客开始接受服务时更新（W += 开始服务时刻 − 到达时刻）。</div></div></li>
+<li class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">判断事件类型，执行对应逻辑</div><div class="step-body"><strong>若是到达事件 A(i,t)：</strong>①产生下一顾客到达事件（t+到达间隔，插入事件表）；②判断理发师状态——空闲则开始服务（产生离开事件，StS=1），忙则排队（StQ+1）。<br><strong>若是离开事件 D(i,t)：</strong>①C+1；②判断队列——非空则继续服务下一人（StQ-1，产生新离开事件），队列空则理发师置闲（StS=0）。（B、W 的累加见步骤3，按区间分段进行）</div></div></li>
+<li class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">更新系统状态和统计计数器</div><div class="step-body">更新 StQ(t)、StS(t) 和 C。B、W 按区间分段累加：每推进一次仿真钟，B += 上一时刻到当前时刻之间理发师的忙碌时长，W += 该区间内队列中所有等待顾客的等待时长之和。（不要等顾客离开或开始服务时才一次性记入）</div></div></li>
 <li class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">维护事件表，进入下一步</div><div class="step-body">删除已处理的事件，把新产生的事件按时间先后插入事件表，准备下一轮循环。</div></div></li>
 </ol>
 
@@ -1409,7 +1409,7 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 <div class="col-block-title">服务完毕/顾客离开事件例程</div>
 <ul>
 <li>顾客完成数 C+1</li>
-<li>IF 队列非空（StQ &gt; 0）：StQ-1；产生服务时间；安排下一顾客服务结束事件；W += 该顾客等待时长</li>
+<li>IF 队列非空（StQ &gt; 0）：StQ-1；产生服务时间；安排下一顾客服务结束事件</li>
 <li>ELSE（队列为空）：置理发师"闲"（StS=0）</li>
 </ul>
 </div>
@@ -1437,7 +1437,7 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 <tbody>
 <tr><td>0</td><td>0</td><td>0</td><td>A(1,3)</td><td>初始化</td><td>0</td><td>0</td><td>0</td></tr>
 <tr class="row-a"><td>3</td><td>0</td><td>1</td><td>D(1,28),A(2,18)</td><td>A(1,3)：顾客1到达,闲→服务,产生A(2,18)和D(1,28)</td><td>0</td><td>0</td><td>0</td></tr>
-<tr class="row-a"><td>18</td><td>1</td><td>1</td><td>D(1,28),A(3,26)</td><td>A(2,18)：忙→排队,StQ=1,产生A(3,26)</td><td>0</td><td>0</td><td>0</td></tr>
+<tr class="row-a"><td>18</td><td>1</td><td>1</td><td>D(1,28),A(3,26)</td><td>A(2,18)：忙→排队,StQ=1,产生A(3,26)</td><td>0</td><td>15</td><td>0</td></tr>
 <tr class="row-a"><td>26</td><td>2</td><td>1</td><td>D(1,28),A(4,62)</td><td>A(3,26)：忙→排队,StQ=2,产生A(4,62)</td><td>0</td><td>23</td><td>8</td></tr>
 <tr class="row-d"><td>28</td><td>1</td><td>1</td><td>D(2,46),A(4,62)</td><td>D(1,28)：顾客1离开,C=1;StQ-1=1,服务顾客2,产生D(2,46)</td><td>1</td><td>25</td><td>12</td></tr>
 <tr class="row-d"><td>46</td><td>0</td><td>1</td><td>D(3,57),A(4,62)</td><td>D(2,46)：顾客2离开,C=2;StQ-1=0,服务顾客3,产生D(3,57)</td><td>2</td><td>43</td><td>30</td></tr>
@@ -1455,8 +1455,8 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 
 <div class="callout callout-warn">
 <div class="cl">B和W更新规则（最易错）</div>
-<p><strong>B（忙碌时间）</strong>：每次"离开"事件时,B += 本次服务时长(=结束时刻-开始时刻)。顾客1服务3→28,B+=25;顾客2服务28→46,B+=18...</p>
-<p><strong>W（等待时间）</strong>：每次顾客"开始服务"时,W += (开始时刻-到达时刻)。顾客2:18到达28服务,W+=10;顾客3:26到达46服务,W+=20;顾客7:139到达144服务,W+=5。其余顾客(1,4,5,6)到达即服务,W不变。</p>
+<p><strong>B（忙碌时间）</strong>：每次推进仿真钟,B 累加上一时刻到当前时刻之间理发师的忙碌时长(理发师空闲的区间不计入)。例如时钟3→18理发师一直在为顾客1服务,B 累加15得B=15;18→26再累加8得B=23;26→28再累加2得B=25……记账是分段进行的。最终在某顾客离开时,其完整服务时长恰好等于这些分段忙碌时间之和(如顾客1的25=15+8+2),但累加过程是逐段进行、而非在离开时一次性记入的。</p>
+<p><strong>W（等待时间）</strong>：每次推进仿真钟,W 累加上一时刻到当前时刻之间队列中所有等待顾客的等待时长之和。例如时钟18→26只有顾客2在排队(1人),W 累加8得W=8;26→28顾客2、顾客3同时排队(2人),W 累加2×2=4得W=12;28→46顾客3仍在排队(1人),W 累加18得W=30……同样是逐段累加,而非在某顾客开始服务时一次性记入。最终某顾客的完整等待时长等于其排队各区间之和。</p>
 </div>
 
 <div class="callout callout-must">
@@ -1470,7 +1470,7 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 
 <div class="callout callout-tip">
 <div class="cl">手工仿真满分步骤口诀</div>
-<p>① 从事件表取最早事件,推进时钟 → ② 判类型:到达就产生下个到达+判忙闲;离开就C+1、B累加+判队列 → ③ 更新StQ/StS/C/B/W → ④ 同时刻先离开后到达(解结)</p>
+<p>① 从事件表取最早事件,推进时钟,并按本区间(上一时刻→当前时刻)分段累加B(理发师忙碌时长)和W(队列中所有等待顾客的等待时长之和) → ② 判类型:到达就产生下个到达+判忙闲;离开就C+1+判队列 → ③ 更新StQ/StS/C → ④ 同时刻先离开后到达(解结)</p>
 </div>
 
 <div class="subsection" style="margin-top:1.5rem">
@@ -1478,8 +1478,8 @@ table.compare-full td:first-child{background:var(--paper-warm);white-space:nowra
 <div class="table-wrap"><table>
 <thead><tr><th>错误类型</th><th>错误描述</th><th>正确做法</th></tr></thead>
 <tbody>
-<tr><td>W更新时机错误</td><td>把W的更新放在顾客"到达"时，而不是"开始服务"时</td><td>W只在顾客开始服务时更新：W += 开始服务时刻 − 到达时刻</td></tr>
-<tr><td>B更新方式错误</td><td>每次时钟推进都尝试更新B，导致重复计算</td><td>B只在"服务完毕/顾客离开"事件处理时更新一次：B += 本次服务时长</td></tr>
+<tr><td>W更新方式错误</td><td>误以为W要等顾客"开始服务"时（或在"到达"时）才一次性记入整段等待时间</td><td>每次推进仿真钟分段累加：W += 本区间内排队等待的顾客人数 × 区间时长。最终各段之和等价于 ∑(开始服务时刻 − 到达时刻)</td></tr>
+<tr><td>B更新方式错误</td><td>误以为B要等"顾客离开"事件时才一次性记入本次服务时长</td><td>每次推进仿真钟分段累加：B += 本区间内理发师的忙碌时长（空闲区间不计）。最终各段之和等价于 ∑本次服务时长</td></tr>
 <tr><td>忽略解结规则</td><td>同时刻到达和离开事件，随意决定处理顺序</td><td>严格按题目给定的解结规则。无特别说明时通常先处理离开再处理到达</td></tr>
 <tr><td>事件表维护错误</td><td>处理完事件后忘记删除已处理事件，或产生的新事件没加入</td><td>每次处理完一个事件：①删除该事件 ②把新产生的事件加入事件表</td></tr>
 <tr><td>StQ计算错误</td><td>把正在接受服务的顾客也算进队长</td><td>StQ只计算排队等待的人数，不包含正在服务的顾客。StS=1时理发师正在服务1人，这1人不在StQ里</td></tr>
